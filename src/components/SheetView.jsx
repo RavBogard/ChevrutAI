@@ -236,8 +236,8 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder }) => {
                     A Project of <strong>Rabbi Daniel Bogard</strong> • Powered by <a href="https://www.sefaria.org" target="_blank" rel="noopener noreferrer">Sefaria</a> • <a href="https://github.com/RavBogard/ChevrutAI" target="_blank" rel="noopener noreferrer">View on GitHub</a>
                 </p>
                 <div className="footer-legal">
-                    <Link to="/privacy">Privacy Policy</Link> • <Link to="/terms">Terms of Service</Link>
-                    <span className="version-tag"> • v1.0.4</span>
+                    <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
+                    <span className="version-tag"> • v1.0.5</span>
                 </div>
             </footer>
         </div>
