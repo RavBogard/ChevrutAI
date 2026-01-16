@@ -4,16 +4,35 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSo
 import { CSS } from '@dnd-kit/utilities';
 import html2pdf from 'html2pdf.js';
 import { exportToGoogleDoc } from '../services/google';
+import { getSefariaTextByVersion } from '../services/sefaria';
 
-const SourceBlock = ({ source, onRemove, dragHandleProps }) => {
+const SourceBlock = ({ source, onRemove, onUpdate, dragHandleProps }) => {
     const [viewMode, setViewMode] = useState('bilingual'); // bilingual, hebrew, english
+    const [loadingVersion, setLoadingVersion] = useState(false);
 
     // Helper to render content safely (Sefaria API can return strings or arrays)
     const renderText = (text) => {
+        if (!text) return null;
         if (Array.isArray(text)) {
             return text.map((t, i) => <p key={i} dangerouslySetInnerHTML={{ __html: t }} />);
         }
         return <p dangerouslySetInnerHTML={{ __html: text }} />;
+    };
+
+    const handleVersionChange = async (e) => {
+        const newTitle = e.target.value;
+        if (newTitle === source.versionTitle) return;
+
+        setLoadingVersion(true);
+        const newText = await getSefariaTextByVersion(source.ref, newTitle);
+        setLoadingVersion(false);
+
+        if (newText) {
+            onUpdate({
+                en: newText,
+                versionTitle: newTitle
+            });
+        }
     };
 
     return (
@@ -35,6 +54,26 @@ const SourceBlock = ({ source, onRemove, dragHandleProps }) => {
                 </div>
 
                 <div className="source-controls" data-html2canvas-ignore="true">
+                    {source.versions && source.versions.length > 1 && (
+                        <select
+                            className="version-select"
+                            value={source.versionTitle || ""}
+                            onChange={handleVersionChange}
+                            disabled={loadingVersion}
+                            style={{ maxWidth: '150px', marginRight: '0.5rem' }}
+                        >
+                            {/* Ensure current version is an option even if not in list for some reason */}
+                            {!source.versions.find(v => v.versionTitle === source.versionTitle) && source.versionTitle && (
+                                <option value={source.versionTitle}>{source.versionTitle}</option>
+                            )}
+                            {source.versions.map((v, i) => (
+                                <option key={i} value={v.versionTitle}>
+                                    {v.versionTitle}
+                                </option>
+                            ))}
+                        </select>
+                    )}
+
                     <select
                         value={viewMode}
                         onChange={(e) => setViewMode(e.target.value)}
@@ -51,23 +90,30 @@ const SourceBlock = ({ source, onRemove, dragHandleProps }) => {
             </div>
 
             <div className={`source-content view-${viewMode}`}>
-                {(viewMode === 'bilingual' || viewMode === 'english') && (
-                    <div className="text-eng" dir="ltr">
-                        {renderText(source.en)}
-                    </div>
-                )}
+                {loadingVersion ? (
+                    <div className="loading-text">Loading translation...</div>
+                ) : (
+                    <>
+                        {(viewMode === 'bilingual' || viewMode === 'english') && (
+                            <div className="text-eng" dir="ltr">
+                                {renderText(source.en)}
+                                <small className="version-label">{source.versionTitle}</small>
+                            </div>
+                        )}
 
-                {(viewMode === 'bilingual' || viewMode === 'hebrew') && (
-                    <div className="text-heb" dir="rtl">
-                        {renderText(source.he)}
-                    </div>
+                        {(viewMode === 'bilingual' || viewMode === 'hebrew') && (
+                            <div className="text-heb" dir="rtl">
+                                {renderText(source.he)}
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
         </div>
     );
 };
 
-const SortableSourceItem = ({ source, id, onRemove }) => {
+const SortableSourceItem = ({ source, id, onRemove, onUpdate }) => {
     const {
         attributes,
         listeners,
@@ -86,13 +132,14 @@ const SortableSourceItem = ({ source, id, onRemove }) => {
             <SourceBlock
                 source={source}
                 onRemove={onRemove}
+                onUpdate={onUpdate}
                 dragHandleProps={{ ...attributes, ...listeners }}
             />
         </div>
     );
 };
 
-const SheetView = ({ sources, onRemoveSource, onReorder }) => {
+const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder }) => {
     const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
@@ -175,6 +222,7 @@ const SheetView = ({ sources, onRemoveSource, onReorder }) => {
                                     id={source.ref}
                                     source={source}
                                     onRemove={() => onRemoveSource(index)}
+                                    onUpdate={(newData) => onUpdateSource(index, newData)}
                                 />
                             ))}
                         </SortableContext>

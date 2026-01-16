@@ -137,6 +137,10 @@ function ChevrutaApp() {
     setSourcesList(prev => prev.filter((_, i) => i !== index));
   };
 
+  const handleUpdateSource = (index, newSourceData) => {
+    setSourcesList(prev => prev.map((s, i) => i === index ? { ...s, ...newSourceData } : s));
+  };
+
   return (
     <div className="app-container">
       <ChatSidebar
@@ -148,6 +152,7 @@ function ChevrutaApp() {
       <SheetView
         sources={sourcesList}
         onRemoveSource={handleRemoveSource}
+        onUpdateSource={handleUpdateSource}
         onReorder={setSourcesList}
       />
     </div>
