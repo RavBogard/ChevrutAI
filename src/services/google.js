@@ -2,7 +2,7 @@
 const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const API_KEY = ""; // Not strictly needed if using access token, but good for discovery. We'll use Token model.
 const DISCOVERY_DOC = 'https://docs.googleapis.com/$discovery/rest?version=v1';
-const SCOPES = 'https://www.googleapis.com/auth/drive.file';
+const SCOPES = 'https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive.file';
 
 let tokenClient;
 let gapiInited = false;
