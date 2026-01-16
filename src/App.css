@@ -496,3 +496,27 @@ body {
   text-align: center;
   width: 100%;
 }
+.sheet-footer {
+  margin-top: 3rem;
+  padding: 2rem;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 0.9rem;
+  border-top: 1px solid #e5e7eb;
+  width: 100%;
+  max-width: 900px;
+}
+
+.sheet-footer a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.sheet-footer a:hover {
+  text-decoration: underline;
+}
+
+.footer-legal {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+}

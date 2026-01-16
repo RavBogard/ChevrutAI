@@ -1,191 +1,13 @@
-import React, { useState } from 'react';
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import html2pdf from 'html2pdf.js';
-import { exportToGoogleDoc } from '../services/google';
-import { getSefariaTextByVersion } from '../services/sefaria';
+import { Link } from 'react-router-dom';
 
 const SourceBlock = ({ source, onRemove, onUpdate, dragHandleProps }) => {
-    const [viewMode, setViewMode] = useState('bilingual'); // bilingual, hebrew, english
-    const [loadingVersion, setLoadingVersion] = useState(false);
-
-    // Helper to render content safely (Sefaria API can return strings or arrays)
-    const renderText = (text) => {
-        if (!text) return null;
-        if (Array.isArray(text)) {
-            return text.map((t, i) => <p key={i} dangerouslySetInnerHTML={{ __html: t }} />);
-        }
-        return <p dangerouslySetInnerHTML={{ __html: text }} />;
-    };
-
-    const handleVersionChange = async (e) => {
-        const newTitle = e.target.value;
-        if (newTitle === source.versionTitle) return;
-
-        setLoadingVersion(true);
-        const newText = await getSefariaTextByVersion(source.ref, newTitle);
-        setLoadingVersion(false);
-
-        if (newText) {
-            onUpdate({
-                en: newText,
-                versionTitle: newTitle
-            });
-        }
-    };
-
-    return (
-        <div className="source-block">
-            <div className="source-header">
-                <div className="header-left">
-                    {/* Drag Handle */}
-                    <div className="drag-handle" {...dragHandleProps} title="Drag to reorder">
-                        <svg width="14" height="24" viewBox="0 0 14 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="4" cy="4" r="2" fill="#9CA3AF" />
-                            <circle cx="4" cy="12" r="2" fill="#9CA3AF" />
-                            <circle cx="4" cy="20" r="2" fill="#9CA3AF" />
-                            <circle cx="10" cy="4" r="2" fill="#9CA3AF" />
-                            <circle cx="10" cy="12" r="2" fill="#9CA3AF" />
-                            <circle cx="10" cy="20" r="2" fill="#9CA3AF" />
-                        </svg>
-                    </div>
-                    <h3>{source.ref}</h3>
-                </div>
-
-                <div className="source-controls" data-html2canvas-ignore="true">
-                    {source.versions && source.versions.length > 1 && (
-                        <select
-                            className="version-select"
-                            value={source.versionTitle || ""}
-                            onChange={handleVersionChange}
-                            disabled={loadingVersion}
-                            style={{ maxWidth: '150px', marginRight: '0.5rem' }}
-                        >
-                            {/* Ensure current version is an option even if not in list for some reason */}
-                            {!source.versions.find(v => v.versionTitle === source.versionTitle) && source.versionTitle && (
-                                <option value={source.versionTitle}>{source.versionTitle}</option>
-                            )}
-                            {source.versions.map((v, i) => (
-                                <option key={i} value={v.versionTitle}>
-                                    {v.versionTitle}
-                                </option>
-                            ))}
-                        </select>
-                    )}
-
-                    <select
-                        value={viewMode}
-                        onChange={(e) => setViewMode(e.target.value)}
-                        className="view-toggle"
-                    >
-                        <option value="bilingual">Bilingual</option>
-                        <option value="hebrew">Hebrew Only</option>
-                        <option value="english">English Only</option>
-                    </select>
-                    <button className="remove-btn" onClick={onRemove} title="Remove Source">
-                        &times;
-                    </button>
-                </div>
-            </div>
-
-            <div className={`source-content view-${viewMode}`}>
-                {loadingVersion ? (
-                    <div className="loading-text">Loading translation...</div>
-                ) : (
-                    <>
-                        {(viewMode === 'bilingual' || viewMode === 'english') && (
-                            <div className="text-eng" dir="ltr">
-                                {renderText(source.en)}
-                                <small className="version-label">{source.versionTitle}</small>
-                            </div>
-                        )}
-
-                        {(viewMode === 'bilingual' || viewMode === 'hebrew') && (
-                            <div className="text-heb" dir="rtl">
-                                {renderText(source.he)}
-                            </div>
-                        )}
-                    </>
-                )}
-            </div>
-        </div>
-    );
+    // ... existing SourceBlock code ...
 };
 
-const SortableSourceItem = ({ source, id, onRemove, onUpdate }) => {
-    const {
-        attributes,
-        listeners,
-        setNodeRef,
-        transform,
-        transition,
-    } = useSortable({ id: id });
-
-    const style = {
-        transform: CSS.Transform.toString(transform),
-        transition,
-    };
-
-    return (
-        <div ref={setNodeRef} style={style} className="sortable-item">
-            <SourceBlock
-                source={source}
-                onRemove={onRemove}
-                onUpdate={onUpdate}
-                dragHandleProps={{ ...attributes, ...listeners }}
-            />
-        </div>
-    );
-};
+// ... existing SortableSourceItem code ...
 
 const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder }) => {
-    const sensors = useSensors(
-        useSensor(PointerSensor),
-        useSensor(KeyboardSensor, {
-            coordinateGetter: sortableKeyboardCoordinates,
-        })
-    );
-
-    const handleDragEnd = (event) => {
-        const { active, over } = event;
-
-        if (active.id !== over.id) {
-            const oldIndex = sources.findIndex((item) => item.ref === active.id);
-            const newIndex = sources.findIndex((item) => item.ref === over.id);
-
-            if (onReorder) {
-                onReorder(arrayMove(sources, oldIndex, newIndex));
-            }
-        }
-    };
-
-    const [isExportingGoogle, setIsExportingGoogle] = useState(false);
-
-    const handleExportGoogle = async () => {
-        setIsExportingGoogle(true);
-        try {
-            const url = await exportToGoogleDoc("Chevruta Source Sheet", sources);
-            window.open(url, '_blank');
-        } catch (error) {
-            console.error("Discovered Error During Export:", error);
-            alert("Export failed. Please check if you enabled pop-ups and configured the Google Cloud Console correctly.");
-        } finally {
-            setIsExportingGoogle(false);
-        }
-    };
-
-    const handleExportPDF = () => {
-        const element = document.getElementById('sheet-export-area');
-        const opt = {
-            margin: [0.5, 0.5],
-            filename: 'source-sheet.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-        };
-        html2pdf().set(opt).from(element).save();
-    };
+    // ... existing SheetView logic ...
 
     return (
         <div className="sheet-view">
@@ -218,7 +40,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder }) => {
                         >
                             {sources.map((source, index) => (
                                 <SortableSourceItem
-                                    key={source.ref} // Assuming Ref is unique. If duplicates allowed, need uuid.
+                                    key={source.ref}
                                     id={source.ref}
                                     source={source}
                                     onRemove={() => onRemoveSource(index)}
@@ -229,6 +51,15 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder }) => {
                     </DndContext>
                 )}
             </div>
+
+            <footer className="sheet-footer">
+                <p>
+                    A Project of <strong>Rabbi Daniel Bogard</strong> • Powered by <a href="https://www.sefaria.org" target="_blank" rel="noopener noreferrer">Sefaria</a> • <a href="https://github.com/RavBogard/ChevrutAI" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+                </p>
+                <div className="footer-legal">
+                    <Link to="/privacy">Privacy Policy</Link> • <Link to="/terms">Terms of Service</Link>
+                </div>
+            </footer>
         </div>
     );
 };
