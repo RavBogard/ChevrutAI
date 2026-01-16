@@ -57,14 +57,21 @@ function App() {
       // Construct history for context (last 10 messages to save tokens)
       // Gemini requires history to start with 'user' role.
       let historyMessages = messages.slice(-10);
+
+      // Filter out any messages with empty/null text to prevent API errors
+      historyMessages = historyMessages.filter(m => m.text && m.text.trim() !== '');
+
       if (historyMessages.length > 0 && historyMessages[0].role === 'model') {
         historyMessages = historyMessages.slice(1);
       }
 
       const history = historyMessages.map(m => ({
         role: m.role === 'model' ? 'model' : 'user',
-        parts: [{ text: m.text }]
+        parts: [{ text: m.text || " " }] // Fallback to space if somehow empty, to prevent "oneof data" error
       }));
+
+      console.log("Sending History to Gemini:", history);
+      console.log("Sending User Text:", userText);
 
       const chat = model.startChat({
         history: history
