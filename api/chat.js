@@ -29,8 +29,18 @@ export default async function handler(req, res) {
     }
 
     try {
-        // Vercel automatically parses JSON body
-        const { message, history } = req.body || {};
+        let body = req.body;
+        // Sometimes body is a string (if content-type isn't perfectly matched or config setting)
+        if (typeof body === 'string') {
+            try {
+                body = JSON.parse(body);
+            } catch (e) {
+                console.error("Failed to parse body string:", body);
+                return res.status(400).json({ error: 'Invalid JSON body' });
+            }
+        }
+
+        const { message, history } = body || {};
         console.log("Received request with message:", message);
         const apiKey = process.env.GEMINI_API_KEY;
 
