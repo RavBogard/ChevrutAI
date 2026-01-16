@@ -22,7 +22,7 @@ const ChatSidebar = ({ messages, onSendMessage, onAddSource, isLoading }) => {
     return (
         <div className="chat-sidebar">
             <div className="chat-header">
-                <h2>Chevruta Bot</h2>
+                <img src="/logo.png" alt="ChevrutAI" className="sidebar-logo" />
                 <span className="status-indicator">Online</span>
             </div>
 
