@@ -1,8 +1,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-export const config = {
-    runtime: 'edge', // Use Edge runtime for faster cold starts
-};
+// Using default Node.js runtime for maximum compatibility
+
 
 const SYSTEM_INSTRUCTION = `
 You are "Chevruta Bot", an expert Jewish librarian and study partner. 
