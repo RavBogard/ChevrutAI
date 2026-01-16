@@ -140,6 +140,7 @@ function App() {
       <SheetView
         sources={sourcesList}
         onRemoveSource={handleRemoveSource}
+        onReorder={setSourcesList}
       />
     </div>
   );
