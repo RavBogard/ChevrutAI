@@ -37,6 +37,8 @@ function App() {
     }
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  /* console.log is effectively global, adjusting prompt */
+  const [prompt, setPrompt] = useState('');
 
   const sendMessageToGemini = async (userText) => {
     try {
@@ -45,21 +47,44 @@ function App() {
       if (!apiKey) throw new Error("API Key missing");
 
       const genAI = new GoogleGenerativeAI(apiKey);
+      // Use standard gemini-pro (1.0) which is most widely available
       const model = genAI.getGenerativeModel({
-        model: 'gemini-3.0-flash',
-        systemInstruction: SYSTEM_INSTRUCTION,
-        generationConfig: { responseMimeType: "application/json" }
+        model: 'gemini-pro'
       });
 
-      // Construct history for context (last 10 messages to save tokens)
-      // Map internal message format to Gemini format
-      const history = messages.slice(-10).map(m => ({
-        role: m.role === 'model' ? 'model' : 'user',
-        parts: [{ text: m.text }] // use the text content
-      }));
+      // Manually inject system instruction into the chat via a modified history or prompt
+      // We will pretend the system instruction is the first message interaction if needed, 
+      // or just prepend it to the context.
+
+      // Strategy: Create a new history array that starts with the system instruction as a user message
+      // and a model acknowledgement (to set the stage), then the rest of the conversation.
+
+      const prePrompt = `
+      SYSTEM INSTRUCTION:
+      ${SYSTEM_INSTRUCTION}
+      
+      IMPORTANT: You must response in JSON format as previously defined.
+      `;
+
+      const refinedHistory = [
+        {
+          role: "user",
+          parts: [{ text: prePrompt }]
+        },
+        {
+          role: "model",
+          parts: [{ text: "Understood. I will act as Chevruta Bot and output JSON." }]
+        },
+        // Filter out the initial welcome message from app state to avoid role errors
+        // and map the rest
+        ...messages.slice(-10).filter(m => !(m.id === 'welcome' && m.role === 'model')).map(m => ({
+          role: m.role === 'model' ? 'model' : 'user',
+          parts: [{ text: m.text }]
+        }))
+      ];
 
       const chat = model.startChat({
-        history: history
+        history: refinedHistory
       });
 
       const result = await chat.sendMessage(userText);
@@ -91,7 +116,7 @@ function App() {
       setMessages(prev => [...prev, {
         id: Date.now().toString(),
         role: 'model',
-        text: "I apologize, I encountered an error connecting to the yeshiva (API). Please try again."
+        text: `Error connecting to Gemini API: ${error.message || error}. Please check your API Key and connection.`
       }]);
     } finally {
       setIsLoading(false);
