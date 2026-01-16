@@ -4,6 +4,7 @@ import './App.css';
 
 function App() {
   const [prompt, setPrompt] = useState('');
+  console.log("Running version: gemini-3.0-flash build " + Date.now());
   const [response, setResponse] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
