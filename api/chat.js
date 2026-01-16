@@ -29,7 +29,9 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { message, history } = req.body;
+        // Vercel automatically parses JSON body
+        const { message, history } = req.body || {};
+        console.log("Received request with message:", message);
         const apiKey = process.env.GEMINI_API_KEY;
 
         if (!apiKey) {
