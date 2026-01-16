@@ -395,6 +395,7 @@ body {
     gap: 1rem;
   }
 }
+
 /* Drag and Drop & Export Styles */
 
 .header-actions {
@@ -404,12 +405,24 @@ body {
 .export-btn {
   background-color: var(--primary-color);
   color: white;
+  border: none;
   padding: 0.5rem 1rem;
   border-radius: 6px;
-  border: none;
-  font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s;
+  font-family: inherit;
+  font-size: 0.875rem;
+  transition: opacity 0.2s;
+}
+
+.google-btn {
+  background: #4285F4;
+  /* Google Blue */
+  margin-right: 0.5rem;
+}
+
+.google-btn:disabled {
+  background: #a0c3ff;
+  cursor: not-allowed;
 }
 
 .export-btn:hover {
@@ -445,5 +458,5 @@ body {
 }
 
 .sortable-item {
-    touch-action: none;
+  touch-action: none;
 }

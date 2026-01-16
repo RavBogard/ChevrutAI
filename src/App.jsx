@@ -1,7 +1,10 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import ChatSidebar from './components/ChatSidebar';
 import SheetView from './components/SheetView';
+import Privacy from './components/Privacy';
+import Terms from './components/Terms';
 import { getSefariaText } from './services/sefaria';
 import './App.css';
 
@@ -26,7 +29,7 @@ Protocol:
 6. Do NOT provide the full text in the "content" field, just the citation and likelihood of relevance. The user will click to add the full text to the sheet.
 `;
 
-function App() {
+function ChevrutaApp() {
   const [sourcesList, setSourcesList] = useState([]);
   const [messages, setMessages] = useState([
     {
@@ -37,8 +40,6 @@ function App() {
     }
   ]);
   const [isLoading, setIsLoading] = useState(false);
-  /* console.log is effectively global, adjusting prompt */
-  const [prompt, setPrompt] = useState('');
 
   const sendMessageToGemini = async (userText) => {
     try {
@@ -150,6 +151,18 @@ function App() {
         onReorder={setSourcesList}
       />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<ChevrutaApp />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
+      </Routes>
+    </Router>
   );
 }
 

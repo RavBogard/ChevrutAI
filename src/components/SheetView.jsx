@@ -3,6 +3,7 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import html2pdf from 'html2pdf.js';
+import { exportToGoogleDoc } from '../services/google';
 
 const SourceBlock = ({ source, onRemove, dragHandleProps }) => {
     const [viewMode, setViewMode] = useState('bilingual'); // bilingual, hebrew, english
@@ -112,6 +113,21 @@ const SheetView = ({ sources, onRemoveSource, onReorder }) => {
         }
     };
 
+    const [isExportingGoogle, setIsExportingGoogle] = useState(false);
+
+    const handleExportGoogle = async () => {
+        setIsExportingGoogle(true);
+        try {
+            const url = await exportToGoogleDoc("Chevruta Source Sheet", sources);
+            window.open(url, '_blank');
+        } catch (error) {
+            console.error("Discovered Error During Export:", error);
+            alert("Export failed. Please check if you enabled pop-ups and configured the Google Cloud Console correctly.");
+        } finally {
+            setIsExportingGoogle(false);
+        }
+    };
+
     const handleExportPDF = () => {
         const element = document.getElementById('sheet-export-area');
         const opt = {
@@ -129,6 +145,9 @@ const SheetView = ({ sources, onRemoveSource, onReorder }) => {
             <div className="sheet-header">
                 <h1>New Source Sheet</h1>
                 <div className="header-actions">
+                    <button className="export-btn google-btn" onClick={handleExportGoogle} disabled={isExportingGoogle}>
+                        {isExportingGoogle ? 'Exporting...' : 'Export to Docs'}
+                    </button>
                     <button className="export-btn" onClick={handleExportPDF}>Download PDF</button>
                 </div>
                 <p className="sheet-meta">Created with ChevrutAI</p>
