@@ -44,16 +44,6 @@ function ChevrutaApp() {
   const sendMessageToGemini = async (userText) => {
     try {
       setIsLoading(true);
-      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-      if (!apiKey) throw new Error("API Key missing");
-
-      const genAI = new GoogleGenerativeAI(apiKey);
-      // Use the verified Gemini 3.0 Flash Preview model
-      const model = genAI.getGenerativeModel({
-        model: 'gemini-3-flash-preview',
-        systemInstruction: SYSTEM_INSTRUCTION,
-        generationConfig: { responseMimeType: "application/json" }
-      });
 
       // Construct history for context (last 10 messages to save tokens)
       // Gemini requires history to start with 'user' role.
@@ -68,24 +58,30 @@ function ChevrutaApp() {
 
       const history = historyMessages.map(m => ({
         role: m.role === 'model' ? 'model' : 'user',
-        parts: [{ text: m.text || " " }] // Fallback to space if somehow empty, to prevent "oneof data" error
+        parts: [{ text: m.text || " " }]
       }));
 
-      console.log("Sending History to Gemini:", history);
-      console.log("Sending User Text:", userText);
-
-      const chat = model.startChat({
-        history: history
+      // Call our secure backend endpoint instead of exposing the key here!
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: userText,
+          history: history
+        })
       });
 
-      const result = await chat.sendMessage(userText);
-      const responseText = result.response.text();
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.statusText}`);
+      }
 
-      console.log("Gemini Raw Response:", responseText); // Debugging
+      const responseText = await response.text();
+      console.log("Gemini Raw Response:", responseText);
 
       let parsedResponse;
       try {
-        // Sanitize response in case it includes markdown formatting
         const cleanText = responseText.replace(/```json|```/g, '').trim();
         parsedResponse = JSON.parse(cleanText);
       } catch (e) {
@@ -107,7 +103,7 @@ function ChevrutaApp() {
       setMessages(prev => [...prev, {
         id: Date.now().toString(),
         role: 'model',
-        text: `Error connecting to Gemini API: ${error.message || error}. Please check your API Key and connection.`
+        text: `Error connecting to Chevruta Brain: ${error.message || error}. Please try again later.`
       }]);
     } finally {
       setIsLoading(false);
