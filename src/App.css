@@ -460,9 +460,13 @@ body {
 .sortable-item {
   touch-action: none;
 }
+
 .sidebar-logo {
-  max-width: 180px;
+  width: 100%;
+  max-width: none;
   height: auto;
   display: block;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
+  box-sizing: border-box;
+  /* Ensure padding doesn't cause overflow */
 }
