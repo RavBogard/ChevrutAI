@@ -35,7 +35,7 @@ function ChevrutaApp() {
     {
       id: 'welcome',
       role: 'model',
-      text: 'Shalom! I am your Chevruta. What topic shall we study today?',
+      text: 'Shalom! What kind of text sheet do you want to create together?',
       suggestedSources: []
     }
   ]);
