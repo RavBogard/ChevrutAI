@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import ChatSidebar from './components/ChatSidebar';
 import SheetView from './components/SheetView';
@@ -153,6 +153,7 @@ function ChevrutaApp() {
     </div>
   );
 }
+
 
 function App() {
   return (
