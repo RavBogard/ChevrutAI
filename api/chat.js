@@ -23,22 +23,23 @@ Protocol:
 6. Do NOT provide the full text in the "content" field, just the citation and likelihood of relevance. The user will click to add the full text to the sheet.
 `;
 
-export default async function handler(req) {
+export default async function handler(req, res) {
     if (req.method !== 'POST') {
-        return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405 });
+        return res.status(405).json({ error: 'Method not allowed' });
     }
 
     try {
-        const { message, history } = await req.json();
-        const apiKey = process.env.GEMINI_API_KEY; // Accessing environment variable securely on the server!
+        const { message, history } = req.body;
+        const apiKey = process.env.GEMINI_API_KEY;
 
         if (!apiKey) {
-            return new Response(JSON.stringify({ error: 'Server configuration error: Missing API Key' }), { status: 500 });
+            console.error("API Key missing on server");
+            return res.status(500).json({ error: 'Server configuration error: Missing API Key' });
         }
 
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({
-            model: 'gemini-1.5-flash', // Use standard Flash model
+            model: 'gemini-1.5-flash',
             systemInstruction: SYSTEM_INSTRUCTION,
             generationConfig: { responseMimeType: "application/json" }
         });
@@ -51,13 +52,10 @@ export default async function handler(req) {
         const response = await result.response;
         const text = response.text();
 
-        return new Response(text, {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' }
-        });
+        return res.status(200).send(text);
 
     } catch (error) {
         console.error("Gemini API Error:", error);
-        return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+        return res.status(500).json({ error: error.message });
     }
 }
