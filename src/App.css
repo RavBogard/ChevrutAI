@@ -520,3 +520,9 @@ body {
   margin-top: 0.5rem;
   font-size: 0.8rem;
 }
+
+.version-tag {
+  color: #6b7280;
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
