@@ -90,20 +90,26 @@ export async function exportToGoogleDoc(sheetTitle, sources) {
         title: sheetTitle || 'Chevruta Source Sheet'
     });
     const documentId = createResponse.result.documentId;
+    const documentUrl = `https://docs.google.com/document/d/${documentId}/edit`;
 
-    // 2. Construct Content & Styling Ranges
-    // We will build one large text string and track the start/end indices for styling.
-    // NOTE: Google Docs uses a 1-based index where the doc starts with 1 character (a newline).
-    // So if we insert at index 1, our text starts at index 1.
+    // 2. Build Requests
+    // We maintain 'currentIndex' which represents the end of the document.
+    // Initial Doc (empty) has 2 chars: index 1 (start) to index 2 (end).
 
-    let fullText = "";
+    // We assume starting index is 1.
     let currentIndex = 1;
     const requests = [];
 
     // --- Title ---
     const titleText = (sheetTitle || "Chevruta Sheet") + "\n\n";
-    fullText += titleText;
+    requests.push({
+        insertText: {
+            text: titleText,
+            location: { index: currentIndex }
+        }
+    });
 
+    // Style Title
     requests.push({
         updateParagraphStyle: {
             range: { startIndex: currentIndex, endIndex: currentIndex + titleText.length },
@@ -113,11 +119,16 @@ export async function exportToGoogleDoc(sheetTitle, sources) {
     });
     currentIndex += titleText.length;
 
-    // --- Sources ---
-    sources.forEach(source => {
-        // Citation (Heading)
+    // --- Sources Loop ---
+    for (const source of sources) {
+        // A. Citation Header
         const citation = stripHtml(source.citation) + "\n";
-        fullText += citation;
+        requests.push({
+            insertText: {
+                text: citation,
+                location: { index: currentIndex }
+            }
+        });
 
         requests.push({
             updateParagraphStyle: {
@@ -126,8 +137,6 @@ export async function exportToGoogleDoc(sheetTitle, sources) {
                 fields: 'namedStyleType,alignment'
             }
         });
-
-        // Color the citation blue (optional, but nice)
         requests.push({
             updateTextStyle: {
                 range: { startIndex: currentIndex, endIndex: currentIndex + citation.length },
@@ -138,66 +147,101 @@ export async function exportToGoogleDoc(sheetTitle, sources) {
 
         currentIndex += citation.length;
 
-        // Hebrew (RTL, Larger)
-        const hebrew = stripHtml(source.hebrew) + "\n";
-        fullText += hebrew;
-
+        // B. Table (1 Row, 2 Cols)
         requests.push({
-            updateParagraphStyle: {
-                range: { startIndex: currentIndex, endIndex: currentIndex + hebrew.length },
-                paragraphStyle: { namedStyleType: 'NORMAL_TEXT', alignment: 'END', direction: 'RIGHT_TO_LEFT' },
-                fields: 'namedStyleType,alignment,direction'
+            insertTable: {
+                rows: 1,
+                columns: 2,
+                location: { index: currentIndex }
             }
         });
 
-        // Make Hebrew larger (14pt)
+        // C. Calculate Cell Indices
+        // An empty 1x2 table insert adds roughly 10 characters (indices).
+        // Cell 1 Start is essentially at currentIndex + 4.
+
+        const tableStartIndex = currentIndex;
+
+        // English (Left Cell)
+        const english = stripHtml(source.english);
+        const engStartIndex = tableStartIndex + 4;
+
+        if (english) {
+            requests.push({
+                insertText: {
+                    text: english,
+                    location: { index: engStartIndex }
+                }
+            });
+
+            // Style English
+            requests.push({
+                updateParagraphStyle: {
+                    range: { startIndex: engStartIndex, endIndex: engStartIndex + english.length },
+                    paragraphStyle: { namedStyleType: 'NORMAL_TEXT', alignment: 'START', direction: 'LEFT_TO_RIGHT' },
+                    fields: 'namedStyleType,alignment,direction'
+                }
+            });
+        }
+
+        // Hebrew (Right Cell)
+        // Offset Logic: Start(4) + EnglishLen + 2 (Newline/CellSep)
+        const hebStartIndex = engStartIndex + english.length + 2;
+        const hebrew = stripHtml(source.hebrew);
+
+        if (hebrew) {
+            requests.push({
+                insertText: {
+                    text: hebrew,
+                    location: { index: hebStartIndex }
+                }
+            });
+
+            // Style Hebrew
+            requests.push({
+                updateParagraphStyle: {
+                    range: { startIndex: hebStartIndex, endIndex: hebStartIndex + hebrew.length },
+                    paragraphStyle: { namedStyleType: 'NORMAL_TEXT', alignment: 'END', direction: 'RIGHT_TO_LEFT' },
+                    fields: 'namedStyleType,alignment,direction'
+                }
+            });
+            requests.push({
+                updateTextStyle: {
+                    range: { startIndex: hebStartIndex, endIndex: hebStartIndex + hebrew.length },
+                    textStyle: { fontSize: { magnitude: 12, unit: 'PT' }, weightedFontFamily: { fontFamily: 'Times New Roman' } },
+                    fields: 'fontSize,weightedFontFamily'
+                }
+            });
+        }
+
+        // D. Advance Index
+        // Table Overhead (10) + English + Hebrew
+        currentIndex += 10 + english.length + hebrew.length;
+
+        // E. Add Spacing After Table
         requests.push({
-            updateTextStyle: {
-                range: { startIndex: currentIndex, endIndex: currentIndex + hebrew.length },
-                textStyle: { fontSize: { magnitude: 14, unit: 'PT' }, weightedFontFamily: { fontFamily: 'Times New Roman' } },
-                fields: 'fontSize,weightedFontFamily'
+            insertText: {
+                text: "\n",
+                location: { index: currentIndex }
             }
         });
+        currentIndex += 1;
+    }
 
-        currentIndex += hebrew.length;
-
-        // English (LTR)
-        const english = stripHtml(source.english) + "\n\n";
-        fullText += english;
-
-        requests.push({
-            updateParagraphStyle: {
-                range: { startIndex: currentIndex, endIndex: currentIndex + english.length },
-                paragraphStyle: { namedStyleType: 'NORMAL_TEXT', alignment: 'START', direction: 'LEFT_TO_RIGHT' },
-                fields: 'namedStyleType,alignment,direction'
-            }
-        });
-
-        currentIndex += english.length;
-
-        // Separator logic could go here if expected, but spacing is cleaner.
-    });
-
-    const footer = "Created with ChevrutaAI (chevrutai.org)";
-    fullText += footer;
-
+    // --- Footer ---
+    const footer = "\nCreated with ChevrutaAI (chevrutai.org)";
     requests.push({
-        updateParagraphStyle: {
-            range: { startIndex: currentIndex, endIndex: currentIndex + footer.length },
-            paragraphStyle: { alignment: 'CENTER', namedStyleType: 'SUBTITLE' },
-            fields: 'alignment,namedStyleType'
+        insertText: {
+            text: footer,
+            location: { index: currentIndex }
         }
     });
 
-    // 3. EXECUTE: Insert All Text FIRST (Index 1)
-    // Then apply styles to the ranges we calculated.
-    // The ranges are valid because the text will exist at those exact indices.
-
-    // Unshift the text insertion to be the very first request
-    requests.unshift({
-        insertText: {
-            text: fullText,
-            location: { index: 1 }
+    requests.push({
+        updateParagraphStyle: {
+            range: { startIndex: currentIndex + 1, endIndex: currentIndex + footer.length },
+            paragraphStyle: { alignment: 'CENTER', namedStyleType: 'SUBTITLE' },
+            fields: 'alignment,namedStyleType'
         }
     });
 
@@ -206,5 +250,5 @@ export async function exportToGoogleDoc(sheetTitle, sources) {
         resource: { requests: requests }
     });
 
-    return `https://docs.google.com/document/d/${documentId}/edit`;
+    return documentUrl;
 }

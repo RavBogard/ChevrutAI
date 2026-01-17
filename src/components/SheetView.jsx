@@ -162,16 +162,21 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder }) => {
     };
 
     const [isExportingGoogle, setIsExportingGoogle] = useState(false);
+    const [sheetTitle, setSheetTitle] = useState("New Source Sheet");
+    const [exportUrl, setExportUrl] = useState(null);
 
     const handleExportGoogle = async () => {
         setIsExportingGoogle(true);
+        setExportUrl(null); // Reset previous url
         try {
             const formattedSources = sources.map(s => ({
                 citation: s.ref,
                 hebrew: Array.isArray(s.he) ? s.he.join('\n') : s.he,
                 english: Array.isArray(s.en) ? s.en.join('\n') : s.en
             }));
-            const url = await exportToGoogleDoc("Chevruta Source Sheet", formattedSources);
+            const url = await exportToGoogleDoc(sheetTitle, formattedSources);
+            setExportUrl(url); // Show link
+            // Try to open also, but if blocked, user has link
             window.open(url, '_blank');
         } catch (error) {
             console.error("Discovered Error During Export:", error);
@@ -185,7 +190,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder }) => {
         const element = document.getElementById('sheet-export-area');
         const opt = {
             margin: [0.5, 0.5],
-            filename: 'source-sheet.pdf',
+            filename: `${sheetTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`,
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { scale: 2 },
             jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
@@ -196,14 +201,28 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder }) => {
     return (
         <div className="sheet-view">
             <div className="sheet-header">
-                <h1>New Source Sheet</h1>
+                <input
+                    type="text"
+                    className="title-input"
+                    value={sheetTitle}
+                    onChange={(e) => setSheetTitle(e.target.value)}
+                />
+
+                {exportUrl && (
+                    <div className="export-success-msg">
+                        <a href={exportUrl} target="_blank" rel="noopener noreferrer" className="open-doc-link">
+                            Open in Google Docs &rarr;
+                        </a>
+                    </div>
+                )}
+
                 <div className="header-actions">
                     <button className="export-btn google-btn" onClick={handleExportGoogle} disabled={isExportingGoogle}>
                         {isExportingGoogle ? 'Exporting...' : 'Export to Docs'}
                     </button>
                     <button className="export-btn" onClick={handleExportPDF}>Download PDF</button>
                 </div>
-                <p className="sheet-meta">Created with ChevrutAI</p>
+                <p className="sheet-meta">Created with ChevrutaAI</p>
             </div>
 
             <div className="sheet-paper" id="sheet-export-area">
@@ -242,7 +261,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder }) => {
                 </p>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
-                    <span className="version-tag"> • v1.2.6 (Styled Export)</span>
+                    <span className="version-tag"> • v1.2.7 (Tables + Editable Title)</span>
                 </div>
             </footer>
         </div>
