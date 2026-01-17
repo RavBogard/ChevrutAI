@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import ChatSidebar from './components/ChatSidebar';
