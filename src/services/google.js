@@ -85,169 +85,77 @@ export async function exportToGoogleDoc(sheetTitle, sources) {
 
     await getToken();
 
-    // 1. Create Doc
-    const createResponse = await window.gapi.client.docs.documents.create({
-        title: sheetTitle || 'Chevruta Source Sheet'
-    });
-    const documentId = createResponse.result.documentId;
-    const documentUrl = `https://docs.google.com/document/d/${documentId}/edit`;
+    // 1. Build The Beautiful HTML Content
+    let htmlContent = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: 'Arial', sans-serif; font-size: 11pt; color: #000; }
+          .title { text-align: center; color: #111827; font-size: 24pt; font-weight: bold; margin-bottom: 20px; }
+          .footer { text-align: center; font-size: 10pt; color: #666; margin-top: 30px; border-top: 1px solid #eee; padding-top: 10px; }
+          .citation { text-align: center; color: #1d4ed8; font-size: 14pt; font-weight: bold; margin-top: 25px; margin-bottom: 10px; text-decoration: none; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 20px; table-layout: fixed; }
+          td { vertical-align: top; padding: 12px; border: 1px solid #e5e7eb; }
+          .hebrew { font-family: 'Times New Roman', serif; font-size: 15pt; text-align: right; direction: rtl; line-height: 1.5; width: 50%; }
+          .english { font-family: 'Arial', sans-serif; font-size: 11pt; text-align: left; direction: ltr; line-height: 1.5; width: 50%; }
+        </style>
+      </head>
+      <body>
+        <div class="title">${sheetTitle || "Chevruta Sheet"}</div>
+    `;
 
-    // 2. Build Requests
-    // We maintain 'currentIndex' which represents the end of the document.
-    // Initial Doc (empty) has 2 chars: index 1 (start) to index 2 (end).
+    sources.forEach(source => {
+        // Use clean text for safety but wrap in our classes
+        htmlContent += `<div class="citation">${stripHtml(source.citation)}</div>`;
 
-    let currentIndex = 1;
-    const requests = [];
-
-    // --- Title ---
-    const titleText = (sheetTitle || "Chevruta Sheet") + "\n\n";
-    requests.push({
-        insertText: {
-            text: titleText,
-            location: { index: currentIndex }
-        }
-    });
-
-    // Style Title
-    requests.push({
-        updateParagraphStyle: {
-            range: { startIndex: currentIndex, endIndex: currentIndex + titleText.length },
-            paragraphStyle: { namedStyleType: 'TITLE', alignment: 'CENTER' },
-            fields: 'namedStyleType,alignment'
-        }
-    });
-    currentIndex += titleText.length;
-
-    // --- Sources Loop ---
-    for (const source of sources) {
-        // A. Citation Header
-        const citation = stripHtml(source.citation) + "\n";
-        requests.push({
-            insertText: {
-                text: citation,
-                location: { index: currentIndex }
-            }
-        });
-
-        requests.push({
-            updateParagraphStyle: {
-                range: { startIndex: currentIndex, endIndex: currentIndex + citation.length },
-                paragraphStyle: { namedStyleType: 'HEADING_2', alignment: 'CENTER' },
-                fields: 'namedStyleType,alignment'
-            }
-        });
-        requests.push({
-            updateTextStyle: {
-                range: { startIndex: currentIndex, endIndex: currentIndex + citation.length },
-                textStyle: { foregroundColor: { color: { rgbColor: { red: 0.23, green: 0.51, blue: 0.96 } } } },
-                fields: 'foregroundColor'
-            }
-        });
-
-        currentIndex += citation.length;
-
-        // B. Table (1 Row, 2 Cols)
-        requests.push({
-            insertTable: {
-                rows: 1,
-                columns: 2,
-                location: { index: currentIndex }
-            }
-        });
-
-        // C. Calculate Cell Indices
-        // Table Start = T
-        // Left Cell Start = T + 4
-
-        const tableStartIndex = currentIndex;
-
-        // English (Left Cell)
-        const english = stripHtml(source.english);
-        const engStartIndex = tableStartIndex + 4;
-
-        if (english) {
-            requests.push({
-                insertText: {
-                    text: english,
-                    location: { index: engStartIndex }
-                }
-            });
-
-            // Style English
-            requests.push({
-                updateParagraphStyle: {
-                    range: { startIndex: engStartIndex, endIndex: engStartIndex + english.length },
-                    paragraphStyle: { namedStyleType: 'NORMAL_TEXT', alignment: 'START', direction: 'LEFT_TO_RIGHT' },
-                    fields: 'namedStyleType,alignment,direction'
-                }
-            });
-        }
-
-        // Hebrew (Right Cell)
-        // Offset Logic: Start(4) + EnglishLen + 2
-        const hebStartIndex = engStartIndex + english.length + 2;
-        const hebrew = stripHtml(source.hebrew);
-
-        if (hebrew) {
-            requests.push({
-                insertText: {
-                    text: hebrew,
-                    location: { index: hebStartIndex }
-                }
-            });
-
-            // Style Hebrew
-            requests.push({
-                updateParagraphStyle: {
-                    range: { startIndex: hebStartIndex, endIndex: hebStartIndex + hebrew.length },
-                    paragraphStyle: { namedStyleType: 'NORMAL_TEXT', alignment: 'END', direction: 'RIGHT_TO_LEFT' },
-                    fields: 'namedStyleType,alignment,direction'
-                }
-            });
-            requests.push({
-                updateTextStyle: {
-                    range: { startIndex: hebStartIndex, endIndex: hebStartIndex + hebrew.length },
-                    textStyle: { fontSize: { magnitude: 12, unit: 'PT' }, weightedFontFamily: { fontFamily: 'Times New Roman' } },
-                    fields: 'fontSize,weightedFontFamily'
-                }
-            });
-        }
-
-        // D. Advance Index
-        // Table overhead ~10 chars + content
-        currentIndex += 10 + english.length + hebrew.length;
-
-        // E. Add Spacing After Table
-        requests.push({
-            insertText: {
-                text: "\n",
-                location: { index: currentIndex }
-            }
-        });
-        currentIndex += 1;
-    }
-
-    // --- Footer ---
-    const footer = "\nCreated with ChevrutaAI (chevrutai.org)";
-    requests.push({
-        insertText: {
-            text: footer,
-            location: { index: currentIndex }
-        }
+        htmlContent += `
+        <table>
+          <tr>
+            <td class="english">${stripHtml(source.english)}</td>
+            <td class="hebrew">${stripHtml(source.hebrew)}</td>
+          </tr>
+        </table>
+        `;
     });
 
-    requests.push({
-        updateParagraphStyle: {
-            range: { startIndex: currentIndex + 1, endIndex: currentIndex + footer.length },
-            paragraphStyle: { alignment: 'CENTER', namedStyleType: 'SUBTITLE' },
-            fields: 'alignment,namedStyleType'
-        }
+    htmlContent += `
+        <div class="footer">Created with ChevrutaAI (chevrutai.org)</div>
+      </body>
+    </html>
+    `;
+
+    // 2. Prepare Multipart Upload for Drive API
+    const boundary = '-------314159265358979323846';
+    const delimiter = "\r\n--" + boundary + "\r\n";
+    const close_delim = "\r\n--" + boundary + "--";
+
+    const metadata = {
+        name: sheetTitle || 'Chevruta Source Sheet',
+        mimeType: 'application/vnd.google-apps.document'
+    };
+
+    const multipartRequestBody =
+        delimiter +
+        'Content-Type: application/json\r\n\r\n' +
+        JSON.stringify(metadata) +
+        delimiter +
+        'Content-Type: text/html\r\n\r\n' +
+        htmlContent +
+        close_delim;
+
+    // 3. Send Request to Drive API (upload endpoint)
+    const response = await window.gapi.client.request({
+        path: '/upload/drive/v3/files',
+        method: 'POST',
+        params: { uploadType: 'multipart' },
+        headers: {
+            'Content-Type': 'multipart/related; boundary="' + boundary + '"'
+        },
+        body: multipartRequestBody
     });
 
-    await window.gapi.client.docs.documents.batchUpdate({
-        documentId: documentId,
-        resource: { requests: requests }
-    });
-
-    return documentUrl;
+    const documentId = response.result.id;
+    return `https://docs.google.com/document/d/${documentId}/edit`;
 }
