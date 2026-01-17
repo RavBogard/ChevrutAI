@@ -373,35 +373,137 @@ body {
 }
 
 /* Responsive */
+/* Mobile Layout (<768px) */
 @media (max-width: 768px) {
   .app-container {
     flex-direction: column;
-    height: auto;
-    overflow-y: auto;
+    height: 100vh;
+    overflow: hidden;
   }
 
-  .chat-sidebar {
-    width: 100%;
-    height: auto;
-    max-height: 40vh;
-    min-height: 300px;
-    border-right: none;
-    border-bottom: 1px solid var(--border-color);
-  }
-
+  /* Sheet View takes full screen */
   .sheet-view {
-    height: auto;
-    min-height: 60vh;
-    padding: 1.5rem;
-    overflow-y: visible;
+    height: 100%;
+    width: 100%;
+    padding: 1rem;
+    overflow-y: auto;
+    padding-bottom: 80px;
+    /* Space for FAB */
   }
 
-  .sheet-header h1 {
+  /* Compact Logo Header for Mobile (Optional: If you want a header on the sheet view on mobile)
+     Currently the sidebar is hidden, so we might want a small logo on the SheetView or just rely on the Chat header when opened.
+     The user requirement says "Compact header with small logo". 
+     Since the sidebar is now hidden, the logo is hidden too. 
+     We should probably ensure the Sheet View has some branding or the sidebar header acts as a persistent top bar?
+     
+     The user said: "Compact header with small logo + hamburger menu" (or similar).
+     However, the chat IS the sidebar.
+     
+     Let's implement the Bottom Sheet Chat approach logic.
+  */
+
+  /* Hide sidebar by default on mobile */
+  .chat-sidebar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 85vh;
+    /* Cover most of height */
+    max-height: 85vh;
+    background-color: var(--sidebar-bg);
+    z-index: 100;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+    transform: translateY(110%);
+    /* Hidden */
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    border-right: none;
+    display: flex;
+    /* Override previous styles if needed */
+  }
+
+  .chat-sidebar.mobile-open {
+    transform: translateY(0);
+  }
+
+  /* Chat Header Mobile Adjustments */
+  .chat-header {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-top-row {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Reduce Logo Size significantly */
+  .sidebar-logo {
+    max-height: 40px !important;
+    /* Force small size */
+    width: auto;
+    margin-bottom: 0;
+  }
+
+  /* Mobile Close Button */
+  .mobile-close-btn {
+    display: block;
+    background: none;
+    border: none;
+    color: #9ca3af;
     font-size: 2rem;
+    cursor: pointer;
+    padding: 0 0.5rem;
   }
 
-  .sheet-paper {
-    gap: 1.5rem;
+  .mobile-chat-fab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 90;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  .mobile-chat-fab:active {
+    transform: scale(0.95);
+  }
+
+  .mobile-chat-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 95;
+    backdrop-filter: blur(2px);
+    animation: fadeBackdrop 0.3s;
+  }
+
+  /* Adjust typography for mobile */
+  .sheet-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .title-input {
+    font-size: 1.8rem;
   }
 
   .source-content {
@@ -410,24 +512,32 @@ body {
   }
 
   .text-heb {
-    text-align: right;
     order: 1;
-    /* Hebrew first on mobile often preferred in religious contexts, or match user pref. Let's default to standard flow */
+    text-align: right;
   }
 
   .text-eng {
     order: 2;
   }
+}
 
-  .source-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
+/* Desktop styles for new elements */
+@media (min-width: 769px) {
+
+  .mobile-chat-fab,
+  .mobile-close-btn,
+  .mobile-chat-backdrop {
+    display: none !important;
+  }
+}
+
+@keyframes fadeBackdrop {
+  from {
+    opacity: 0;
   }
 
-  .source-controls {
-    width: 100%;
-    justify-content: space-between;
+  to {
+    opacity: 1;
   }
 }
 

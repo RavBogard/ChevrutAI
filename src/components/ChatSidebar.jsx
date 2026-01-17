@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-const ChatSidebar = ({ messages, onSendMessage, onAddSource, isLoading }) => {
+const ChatSidebar = ({ messages, onSendMessage, onAddSource, isLoading, isMobileOpen, onMobileClose }) => {
     const [inputObj, setInputObj] = useState('');
     const messagesEndRef = useRef(null);
 
@@ -20,9 +20,15 @@ const ChatSidebar = ({ messages, onSendMessage, onAddSource, isLoading }) => {
     };
 
     return (
-        <div className="chat-sidebar">
+        <div className={`chat-sidebar ${isMobileOpen ? 'mobile-open' : ''}`}>
             <div className="chat-header">
-                <img src="/logo.png" alt="ChevrutAI" className="sidebar-logo" />
+                <div className="header-top-row">
+                    <img src="/logo.png" alt="ChevrutAI" className="sidebar-logo" />
+                    {/* Mobile Close Button */}
+                    <button className="mobile-close-btn" onClick={onMobileClose}>
+                        &times;
+                    </button>
+                </div>
                 <span className="status-indicator">Online</span>
             </div>
 

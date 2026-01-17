@@ -137,6 +137,8 @@ function ChevrutaApp() {
     setSourcesList(prev => prev.map((s, i) => i === index ? { ...s, ...newSourceData } : s));
   };
 
+  const [mobileChatOpen, setMobileChatOpen] = useState(false);
+
   return (
     <div className="app-container">
       <ChatSidebar
@@ -144,13 +146,32 @@ function ChevrutaApp() {
         onSendMessage={handleSendMessage}
         onAddSource={handleAddSource}
         isLoading={isLoading}
+        isMobileOpen={mobileChatOpen}
+        onMobileClose={() => setMobileChatOpen(false)}
       />
+
       <SheetView
         sources={sourcesList}
         onRemoveSource={handleRemoveSource}
         onUpdateSource={handleUpdateSource}
         onReorder={setSourcesList}
       />
+
+      {/* Mobile Floating Action Button */}
+      <button
+        className="mobile-chat-fab"
+        onClick={() => setMobileChatOpen(true)}
+        aria-label="Open Chat"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+      </button>
+
+      {/* Backdrop for mobile chat */}
+      {mobileChatOpen && (
+        <div className="mobile-chat-backdrop" onClick={() => setMobileChatOpen(false)}></div>
+      )}
     </div>
   );
 }
