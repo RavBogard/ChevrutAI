@@ -1,8 +1,8 @@
 
 const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-const API_KEY = ""; // Not strictly needed if using access token, but good for discovery. We'll use Token model.
+const API_KEY = "";
 const DISCOVERY_DOC = 'https://docs.googleapis.com/$discovery/rest?version=v1';
-const SCOPES = 'https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive.file';
+const SCOPES = 'https://www.googleapis.com/auth/drive.file';
 
 let tokenClient;
 let gapiInited = false;
@@ -92,24 +92,15 @@ export async function exportToGoogleDoc(sheetTitle, sources) {
     const documentId = createResponse.result.documentId;
     const documentUrl = `https://docs.google.com/document/d/${documentId}/edit`;
 
-    // 2. Build Requests
-    // We maintain 'currentIndex' which represents the end of the document.
-    // Initial Doc (empty) has 2 chars: index 1 (start) to index 2 (end).
-
-    // We assume starting index is 1.
+    // 2. Build Content (Stacked Layout - SAFE)
+    let fullText = "";
     let currentIndex = 1;
     const requests = [];
 
     // --- Title ---
     const titleText = (sheetTitle || "Chevruta Sheet") + "\n\n";
-    requests.push({
-        insertText: {
-            text: titleText,
-            location: { index: currentIndex }
-        }
-    });
+    fullText += titleText;
 
-    // Style Title
     requests.push({
         updateParagraphStyle: {
             range: { startIndex: currentIndex, endIndex: currentIndex + titleText.length },
@@ -119,16 +110,11 @@ export async function exportToGoogleDoc(sheetTitle, sources) {
     });
     currentIndex += titleText.length;
 
-    // --- Sources Loop ---
-    for (const source of sources) {
-        // A. Citation Header
+    // --- Sources ---
+    sources.forEach(source => {
+        // Citation (Heading)
         const citation = stripHtml(source.citation) + "\n";
-        requests.push({
-            insertText: {
-                text: citation,
-                location: { index: currentIndex }
-            }
-        });
+        fullText += citation;
 
         requests.push({
             updateParagraphStyle: {
@@ -147,101 +133,58 @@ export async function exportToGoogleDoc(sheetTitle, sources) {
 
         currentIndex += citation.length;
 
-        // B. Table (1 Row, 2 Cols)
+        // Hebrew (RTL, Larger)
+        const hebrew = stripHtml(source.hebrew) + "\n";
+        fullText += hebrew;
+
         requests.push({
-            insertTable: {
-                rows: 1,
-                columns: 2,
-                location: { index: currentIndex }
+            updateParagraphStyle: {
+                range: { startIndex: currentIndex, endIndex: currentIndex + hebrew.length },
+                paragraphStyle: { namedStyleType: 'NORMAL_TEXT', alignment: 'END', direction: 'RIGHT_TO_LEFT' },
+                fields: 'namedStyleType,alignment,direction'
+            }
+        });
+        requests.push({
+            updateTextStyle: {
+                range: { startIndex: currentIndex, endIndex: currentIndex + hebrew.length },
+                textStyle: { fontSize: { magnitude: 14, unit: 'PT' }, weightedFontFamily: { fontFamily: 'Times New Roman' } },
+                fields: 'fontSize,weightedFontFamily'
             }
         });
 
-        // C. Calculate Cell Indices
-        // An empty 1x2 table insert adds roughly 10 characters (indices).
-        // Cell 1 Start is essentially at currentIndex + 4.
+        currentIndex += hebrew.length;
 
-        const tableStartIndex = currentIndex;
+        // English (LTR)
+        const english = stripHtml(source.english) + "\n\n";
+        fullText += english;
 
-        // English (Left Cell)
-        const english = stripHtml(source.english);
-        const engStartIndex = tableStartIndex + 4;
-
-        if (english) {
-            requests.push({
-                insertText: {
-                    text: english,
-                    location: { index: engStartIndex }
-                }
-            });
-
-            // Style English
-            requests.push({
-                updateParagraphStyle: {
-                    range: { startIndex: engStartIndex, endIndex: engStartIndex + english.length },
-                    paragraphStyle: { namedStyleType: 'NORMAL_TEXT', alignment: 'START', direction: 'LEFT_TO_RIGHT' },
-                    fields: 'namedStyleType,alignment,direction'
-                }
-            });
-        }
-
-        // Hebrew (Right Cell)
-        // Offset Logic: Start(4) + EnglishLen + 2 (Newline/CellSep)
-        const hebStartIndex = engStartIndex + english.length + 2;
-        const hebrew = stripHtml(source.hebrew);
-
-        if (hebrew) {
-            requests.push({
-                insertText: {
-                    text: hebrew,
-                    location: { index: hebStartIndex }
-                }
-            });
-
-            // Style Hebrew
-            requests.push({
-                updateParagraphStyle: {
-                    range: { startIndex: hebStartIndex, endIndex: hebStartIndex + hebrew.length },
-                    paragraphStyle: { namedStyleType: 'NORMAL_TEXT', alignment: 'END', direction: 'RIGHT_TO_LEFT' },
-                    fields: 'namedStyleType,alignment,direction'
-                }
-            });
-            requests.push({
-                updateTextStyle: {
-                    range: { startIndex: hebStartIndex, endIndex: hebStartIndex + hebrew.length },
-                    textStyle: { fontSize: { magnitude: 12, unit: 'PT' }, weightedFontFamily: { fontFamily: 'Times New Roman' } },
-                    fields: 'fontSize,weightedFontFamily'
-                }
-            });
-        }
-
-        // D. Advance Index
-        // Table Overhead (10) + English + Hebrew
-        currentIndex += 10 + english.length + hebrew.length;
-
-        // E. Add Spacing After Table
         requests.push({
-            insertText: {
-                text: "\n",
-                location: { index: currentIndex }
+            updateParagraphStyle: {
+                range: { startIndex: currentIndex, endIndex: currentIndex + english.length },
+                paragraphStyle: { namedStyleType: 'NORMAL_TEXT', alignment: 'START', direction: 'LEFT_TO_RIGHT' },
+                fields: 'namedStyleType,alignment,direction'
             }
         });
-        currentIndex += 1;
-    }
 
-    // --- Footer ---
-    const footer = "\nCreated with ChevrutaAI (chevrutai.org)";
-    requests.push({
-        insertText: {
-            text: footer,
-            location: { index: currentIndex }
-        }
+        currentIndex += english.length;
     });
+
+    const footer = "Created with ChevrutaAI (chevrutai.org)";
+    fullText += footer;
 
     requests.push({
         updateParagraphStyle: {
-            range: { startIndex: currentIndex + 1, endIndex: currentIndex + footer.length },
+            range: { startIndex: currentIndex, endIndex: currentIndex + footer.length },
             paragraphStyle: { alignment: 'CENTER', namedStyleType: 'SUBTITLE' },
             fields: 'alignment,namedStyleType'
+        }
+    });
+
+    // 3. EXECUTE: Insert All Text FIRST (Index 1)
+    requests.unshift({
+        insertText: {
+            text: fullText,
+            location: { index: 1 }
         }
     });
 
