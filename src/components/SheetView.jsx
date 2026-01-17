@@ -166,7 +166,12 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder }) => {
     const handleExportGoogle = async () => {
         setIsExportingGoogle(true);
         try {
-            const url = await exportToGoogleDoc("Chevruta Source Sheet", sources);
+            const formattedSources = sources.map(s => ({
+                citation: s.ref,
+                hebrew: Array.isArray(s.he) ? s.he.join('\n') : s.he,
+                english: Array.isArray(s.en) ? s.en.join('\n') : s.en
+            }));
+            const url = await exportToGoogleDoc("Chevruta Source Sheet", formattedSources);
             window.open(url, '_blank');
         } catch (error) {
             console.error("Discovered Error During Export:", error);
@@ -237,7 +242,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder }) => {
                 </p>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
-                    <span className="version-tag"> • v1.2.4 (Simpler Export)</span>
+                    <span className="version-tag"> • v1.2.5 (Fix Empty Export)</span>
                 </div>
             </footer>
         </div>
