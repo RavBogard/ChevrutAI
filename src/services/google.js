@@ -72,41 +72,134 @@ function getToken() {
     });
 }
 
+// Helper to strip HTML tags
+function stripHtml(html) {
+    if (!html) return "";
+    return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ');
+}
+
 export async function exportToGoogleDoc(sheetTitle, sources) {
     if (!gapiInited || !gisInited) {
         await initGoogleClient();
     }
 
-    // Request Access
     await getToken();
 
-    // 1. Create the Document
+    // 1. Create Doc
     const createResponse = await window.gapi.client.docs.documents.create({
         title: sheetTitle || 'Chevruta Source Sheet'
     });
     const documentId = createResponse.result.documentId;
 
-    // 2. Build the Content
-    let fullText = (sheetTitle || "Chevruta Sheet") + "\n\n";
+    // 2. Construct Content & Styling Ranges
+    // We will build one large text string and track the start/end indices for styling.
+    // NOTE: Google Docs uses a 1-based index where the doc starts with 1 character (a newline).
+    // So if we insert at index 1, our text starts at index 1.
 
+    let fullText = "";
+    let currentIndex = 1;
+    const requests = [];
+
+    // --- Title ---
+    const titleText = (sheetTitle || "Chevruta Sheet") + "\n\n";
+    fullText += titleText;
+
+    requests.push({
+        updateParagraphStyle: {
+            range: { startIndex: currentIndex, endIndex: currentIndex + titleText.length },
+            paragraphStyle: { namedStyleType: 'TITLE', alignment: 'CENTER' },
+            fields: 'namedStyleType,alignment'
+        }
+    });
+    currentIndex += titleText.length;
+
+    // --- Sources ---
     sources.forEach(source => {
-        fullText += source.citation + "\n";
-        fullText += source.hebrew + "\n";
-        fullText += source.english + "\n";
-        fullText += "------------------------------------------------\n\n";
+        // Citation (Heading)
+        const citation = stripHtml(source.citation) + "\n";
+        fullText += citation;
+
+        requests.push({
+            updateParagraphStyle: {
+                range: { startIndex: currentIndex, endIndex: currentIndex + citation.length },
+                paragraphStyle: { namedStyleType: 'HEADING_2', alignment: 'CENTER' },
+                fields: 'namedStyleType,alignment'
+            }
+        });
+
+        // Color the citation blue (optional, but nice)
+        requests.push({
+            updateTextStyle: {
+                range: { startIndex: currentIndex, endIndex: currentIndex + citation.length },
+                textStyle: { foregroundColor: { color: { rgbColor: { red: 0.23, green: 0.51, blue: 0.96 } } } },
+                fields: 'foregroundColor'
+            }
+        });
+
+        currentIndex += citation.length;
+
+        // Hebrew (RTL, Larger)
+        const hebrew = stripHtml(source.hebrew) + "\n";
+        fullText += hebrew;
+
+        requests.push({
+            updateParagraphStyle: {
+                range: { startIndex: currentIndex, endIndex: currentIndex + hebrew.length },
+                paragraphStyle: { namedStyleType: 'NORMAL_TEXT', alignment: 'END', direction: 'RIGHT_TO_LEFT' },
+                fields: 'namedStyleType,alignment,direction'
+            }
+        });
+
+        // Make Hebrew larger (14pt)
+        requests.push({
+            updateTextStyle: {
+                range: { startIndex: currentIndex, endIndex: currentIndex + hebrew.length },
+                textStyle: { fontSize: { magnitude: 14, unit: 'PT' }, weightedFontFamily: { fontFamily: 'Times New Roman' } },
+                fields: 'fontSize,weightedFontFamily'
+            }
+        });
+
+        currentIndex += hebrew.length;
+
+        // English (LTR)
+        const english = stripHtml(source.english) + "\n\n";
+        fullText += english;
+
+        requests.push({
+            updateParagraphStyle: {
+                range: { startIndex: currentIndex, endIndex: currentIndex + english.length },
+                paragraphStyle: { namedStyleType: 'NORMAL_TEXT', alignment: 'START', direction: 'LEFT_TO_RIGHT' },
+                fields: 'namedStyleType,alignment,direction'
+            }
+        });
+
+        currentIndex += english.length;
+
+        // Separator logic could go here if expected, but spacing is cleaner.
     });
 
-    fullText += "Created with ChevrutaAI (chevrutai.org)";
+    const footer = "Created with ChevrutaAI (chevrutai.org)";
+    fullText += footer;
 
-    // 3. Insert Text (Simple)
-    const requests = [
-        {
-            insertText: {
-                text: fullText,
-                location: { index: 1 }
-            }
+    requests.push({
+        updateParagraphStyle: {
+            range: { startIndex: currentIndex, endIndex: currentIndex + footer.length },
+            paragraphStyle: { alignment: 'CENTER', namedStyleType: 'SUBTITLE' },
+            fields: 'alignment,namedStyleType'
         }
-    ];
+    });
+
+    // 3. EXECUTE: Insert All Text FIRST (Index 1)
+    // Then apply styles to the ranges we calculated.
+    // The ranges are valid because the text will exist at those exact indices.
+
+    // Unshift the text insertion to be the very first request
+    requests.unshift({
+        insertText: {
+            text: fullText,
+            location: { index: 1 }
+        }
+    });
 
     await window.gapi.client.docs.documents.batchUpdate({
         documentId: documentId,

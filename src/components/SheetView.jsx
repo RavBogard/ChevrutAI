@@ -242,7 +242,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder }) => {
                 </p>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
-                    <span className="version-tag"> • v1.2.5 (Fix Empty Export)</span>
+                    <span className="version-tag"> • v1.2.6 (Styled Export)</span>
                 </div>
             </footer>
         </div>
