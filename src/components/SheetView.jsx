@@ -259,7 +259,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder }) => {
                 {sources.length === 0 ? (
                     <div className="empty-state">
                         <p>Your sheet is empty.</p>
-                        <p>Ask Chevruta Bot to find texts for you!</p>
+                        <p>Ask ChevrutAI to find texts for you!</p>
                     </div>
                 ) : (
                     <DndContext
