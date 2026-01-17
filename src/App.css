@@ -14,9 +14,22 @@
   --border-color: #374151;
 
   --font-ui: 'Inter', system-ui, sans-serif;
-  --font-hebrew: 'Frank Ruhl Libre', serif;
   /* Classic Hebrew feel */
   --font-english-serif: 'Merriweather', serif;
+
+  --source-bg: #ffffff;
+  --input-bg: #f9fafb;
+}
+
+body.dark-mode {
+  --sheet-bg: #111827;
+  /* Gray 900 */
+  --sheet-text: #f3f4f6;
+  /* Gray 100 */
+  --source-bg: #1f293b;
+  /* Gray 800-ish */
+  --border-color: #374151;
+  --input-bg: #374151;
 }
 
 body {
@@ -25,6 +38,7 @@ body {
   overflow: hidden;
   /* App container handles scroll */
   font-family: var(--font-ui);
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .app-container {
@@ -281,7 +295,8 @@ body {
 
 /* Source Block */
 .source-block {
-  background: white;
+  background: var(--source-bg);
+  color: var(--sheet-text);
   /* subtle visual separation if background is not white, but here bg is white. 
      Let's add a left border or subtle shadow for block distinction */
   border-left: 4px solid var(--primary-color);
@@ -320,10 +335,10 @@ body {
 .view-toggle {
   padding: 0.3rem;
   border-radius: 4px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-color);
   font-size: 0.8rem;
-  color: #374151;
-  background-color: white;
+  color: var(--sheet-text);
+  background-color: var(--source-bg);
 }
 
 .remove-btn {
@@ -677,7 +692,7 @@ body {
 .title-input {
   font-family: var(--font-english-serif);
   font-size: 2.5rem;
-  color: #111827;
+  color: var(--sheet-text);
   text-align: center;
   border: none;
   border-bottom: 2px solid transparent;

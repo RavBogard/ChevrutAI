@@ -141,7 +141,7 @@ const SortableSourceItem = ({ source, id, onRemove, onUpdate }) => {
     );
 };
 
-const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder }) => {
+const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMode, toggleDarkMode }) => {
     const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
@@ -251,6 +251,10 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder }) => {
                             </div>
                         )}
                     </div>
+
+                    <button className="theme-toggle-btn" onClick={toggleDarkMode} title="Toggle Dark Mode">
+                        {darkMode ? '☀️' : '🌙'}
+                    </button>
                 </div>
                 <p className="sheet-meta">Created with ChevrutaAI</p>
             </div>
@@ -291,7 +295,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder }) => {
                 </p>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
-                    <span className="version-tag"> • v1.5.0 (Mobile UX Overhaul)</span>
+                    <span className="version-tag"> • v1.6.0 (Night Mode & Branding)</span>
                 </div>
             </footer>
         </div>

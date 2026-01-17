@@ -138,6 +138,16 @@ function ChevrutaApp() {
   };
 
   const [mobileChatOpen, setMobileChatOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem('darkMode') === 'true';
+  });
+
+  useEffect(() => {
+    document.body.classList.toggle('dark-mode', darkMode);
+    localStorage.setItem('darkMode', darkMode);
+  }, [darkMode]);
+
+  const toggleDarkMode = () => setDarkMode(prev => !prev);
 
   return (
     <div className="app-container">
@@ -148,6 +158,7 @@ function ChevrutaApp() {
         isLoading={isLoading}
         isMobileOpen={mobileChatOpen}
         onMobileClose={() => setMobileChatOpen(false)}
+        darkMode={darkMode}
       />
 
       <SheetView
@@ -155,6 +166,8 @@ function ChevrutaApp() {
         onRemoveSource={handleRemoveSource}
         onUpdateSource={handleUpdateSource}
         onReorder={setSourcesList}
+        darkMode={darkMode}
+        toggleDarkMode={toggleDarkMode}
       />
 
       {/* Mobile Floating Action Button */}
