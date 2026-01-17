@@ -6,6 +6,7 @@ import { CSS } from '@dnd-kit/utilities';
 import html2pdf from 'html2pdf.js';
 import { exportToGoogleDoc } from '../services/google';
 import { getSefariaTextByVersion } from '../services/sefaria';
+import { exportToDocx } from '../services/docxExport';
 
 const SourceBlock = ({ source, onRemove, onUpdate, dragHandleProps }) => {
     const [viewMode, setViewMode] = useState('bilingual'); // bilingual, hebrew, english
@@ -164,6 +165,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder }) => {
     const [isExportingGoogle, setIsExportingGoogle] = useState(false);
     const [sheetTitle, setSheetTitle] = useState("New Source Sheet");
     const [exportUrl, setExportUrl] = useState(null);
+    const [showExportMenu, setShowExportMenu] = useState(false);
 
     const handleExportGoogle = async () => {
         setIsExportingGoogle(true);
@@ -198,6 +200,16 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder }) => {
         html2pdf().set(opt).from(element).save();
     };
 
+    const handleExportDocx = async () => {
+        try {
+            await exportToDocx(sheetTitle, sources);
+        } catch (error) {
+            console.error("DocX Export Error:", error);
+            alert("Failed to export DocX");
+        }
+        setShowExportMenu(false);
+    };
+
     return (
         <div className="sheet-view">
             <div className="sheet-header">
@@ -217,10 +229,28 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder }) => {
                 )}
 
                 <div className="header-actions">
-                    <button className="export-btn google-btn" onClick={handleExportGoogle} disabled={isExportingGoogle}>
-                        {isExportingGoogle ? 'Exporting...' : 'Export to Docs'}
-                    </button>
-                    <button className="export-btn" onClick={handleExportPDF}>Download PDF</button>
+                    <div className="export-menu-container">
+                        <button
+                            className="export-main-btn"
+                            onClick={() => setShowExportMenu(!showExportMenu)}
+                        >
+                            {isExportingGoogle ? 'Exporting...' : 'Export'} ▾
+                        </button>
+
+                        {showExportMenu && (
+                            <div className="export-dropdown">
+                                <button onClick={() => { handleExportPDF(); setShowExportMenu(false); }}>
+                                    Download PDF
+                                </button>
+                                <button onClick={() => { handleExportGoogle(); setShowExportMenu(false); }} disabled={isExportingGoogle}>
+                                    Export to Google Docs
+                                </button>
+                                <button onClick={handleExportDocx}>
+                                    Download Word (DocX)
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </div>
                 <p className="sheet-meta">Created with ChevrutaAI</p>
             </div>
@@ -261,7 +291,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder }) => {
                 </p>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
-                    <span className="version-tag"> • v1.3.0 (HTML Export Strategy)</span>
+                    <span className="version-tag"> • v1.4.0 (DocX Export Support)</span>
                 </div>
             </footer>
         </div>
