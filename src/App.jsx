@@ -159,6 +159,7 @@ function ChevrutaApp() {
         isMobileOpen={mobileChatOpen}
         onMobileClose={() => setMobileChatOpen(false)}
         darkMode={darkMode}
+        toggleDarkMode={toggleDarkMode}
       />
 
       <SheetView

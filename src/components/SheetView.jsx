@@ -251,10 +251,6 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                             </div>
                         )}
                     </div>
-
-                    <button className="theme-toggle-btn" onClick={toggleDarkMode} title="Toggle Dark Mode">
-                        {darkMode ? '☀️' : '🌙'}
-                    </button>
                 </div>
                 <p className="sheet-meta">Created with ChevrutaAI</p>
             </div>
@@ -295,10 +291,10 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                 </p>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
-                    <span className="version-tag"> • v1.6.0 (Night Mode & Branding)</span>
+                    <span className="version-tag"> • v1.7.0 (Logo Fix & UI Polish)</span>
                 </div>
             </footer>
-        </div>
+        </div >
     );
 };
 

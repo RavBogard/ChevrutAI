@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-const ChatSidebar = ({ messages, onSendMessage, onAddSource, isLoading, isMobileOpen, onMobileClose, darkMode }) => {
+const ChatSidebar = ({ messages, onSendMessage, onAddSource, isLoading, isMobileOpen, onMobileClose, darkMode, toggleDarkMode }) => {
     const [inputObj, setInputObj] = useState('');
     const messagesEndRef = useRef(null);
 
@@ -28,10 +28,15 @@ const ChatSidebar = ({ messages, onSendMessage, onAddSource, isLoading, isMobile
                         alt="ChevrutAI"
                         className="sidebar-logo"
                     />
-                    {/* Mobile Close Button */}
-                    <button className="mobile-close-btn" onClick={onMobileClose}>
-                        &times;
-                    </button>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <button className="theme-toggle-btn" onClick={toggleDarkMode} title="Toggle Dark Mode">
+                            {darkMode ? '☀️' : '🌙'}
+                        </button>
+                        {/* Mobile Close Button */}
+                        <button className="mobile-close-btn" onClick={onMobileClose}>
+                            &times;
+                        </button>
+                    </div>
                 </div>
                 <span className="status-indicator">Online</span>
             </div>
