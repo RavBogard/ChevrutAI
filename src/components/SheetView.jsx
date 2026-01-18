@@ -313,8 +313,8 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                     <div className="empty-state">
                         {!chatStarted ? (
                             <div className="central-hero">
-                                <h2>Your sheet is empty</h2>
-                                <p>Ask ChevrutAI to find texts for you, or try one of these:</p>
+                                <h2>Welcome to ChevrutAI</h2>
+                                <p>I am your AI study partner. I can help you find sources, translate texts, and build beautiful source sheets.</p>
 
                                 <div className="central-input-wrapper">
                                     <form onSubmit={handleCentralSubmit}>
@@ -389,7 +389,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                 </p>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
-                    <span className="version-tag"> • v1.8.9 (UI Fixes & Restorations)</span>
+                    <span className="version-tag"> • v1.8.10 (Welcome & Input)</span>
                 </div>
             </footer>
         </div >

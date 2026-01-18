@@ -245,8 +245,8 @@ body {
   box-sizing: border-box;
   /* Critical for padding */
   width: 100%;
-  min-height: 52px;
-  max-height: 200px;
+  min-height: 120px;
+  max-height: 300px;
   padding: 14px 44px 14px 16px;
   border-radius: 12px;
   border: 1px solid var(--border-color);
