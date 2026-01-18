@@ -758,6 +758,85 @@ body.dark-mode .prompt-card:hover {
   .text-eng {
     order: 2;
   }
+
+  /* Responsive prompt grid for mobile - single column */
+  .empty-prompts-grid {
+    grid-template-columns: 1fr !important;
+    max-width: 100% !important;
+    gap: 0.5rem !important;
+    margin-top: 1.5rem !important;
+  }
+
+  /* Smaller prompt cards on mobile */
+  .prompt-card {
+    padding: 0.75rem 1rem !important;
+    font-size: 0.9rem !important;
+    min-height: auto !important;
+    border-radius: 8px !important;
+  }
+
+  /* Central hero adjustments for mobile */
+  .central-hero {
+    padding: 0 0.5rem;
+    max-width: 100%;
+  }
+
+  .central-hero p {
+    font-size: 1rem;
+    padding: 0 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .central-logo-text {
+    font-size: 2.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .central-logo-text .logo-sparkle svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Central textarea mobile */
+  .central-textarea {
+    min-height: 70px;
+    padding: 14px 50px 14px 16px;
+    font-size: 1rem;
+    border-radius: 16px;
+  }
+
+  /* Hide initial toggles and let them appear inside sheet-view on mobile */
+  .initial-toggles {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 10;
+  }
+
+  .initial-theme-toggle {
+    width: 32px;
+    height: 32px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+  }
+
+  body.dark-mode .initial-theme-toggle {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  /* Footer mobile */
+  .sheet-footer {
+    padding: 1.5rem 1rem;
+  }
+
+  .sheet-footer p {
+    font-size: 0.85rem;
+  }
+
+  .footer-legal {
+    font-size: 0.75rem;
+  }
 }
 
 /* Desktop styles for new elements */
@@ -873,6 +952,7 @@ body.dark-mode .prompt-card:hover {
   font-weight: 700;
   background: linear-gradient(90deg, #4285F4, #9B72CB, #D96570);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-right: 4px;
 }
@@ -991,6 +1071,7 @@ body.dark-mode .prompt-card:hover {
   background: linear-gradient(90deg, #4285F4, #9B72CB, #D96570);
   /* Subtle gradient text? Optional, maybe keep simple */
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
   letter-spacing: -0.02em;
@@ -999,6 +1080,7 @@ body.dark-mode .prompt-card:hover {
 body.dark-mode .central-hero h2 {
   background: linear-gradient(90deg, #8AB4F8, #C58AF9, #F28B82);
   -webkit-background-clip: text;
+  background-clip: text;
 }
 
 .central-hero p {
@@ -1021,10 +1103,11 @@ body.dark-mode .central-hero p {
 
 .central-textarea {
   width: 100%;
-  min-height: 56px;
+  min-height: 90px;
+  /* Taller: ~3 lines visible */
   padding: 18px 56px 18px 24px;
-  border-radius: 28px;
-  /* Pill-ish but expandable */
+  border-radius: 20px;
+  /* Slightly less pill-shaped */
   border: 1px solid #e0e0e0;
   background-color: #f0f4f9;
   /* Gemini light gray input */
@@ -1135,11 +1218,12 @@ body.dark-mode .central-send-btn:not(:disabled):hover {
 /* Gemini-style Suggestion Cards (Grid Layout) */
 .empty-prompts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1rem;
-  margin: 3rem auto 0 auto;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin: 2rem auto 0 auto;
   width: 100%;
-  max-width: 800px;
+  max-width: 700px;
+  /* Narrower grid */
 }
 
 .prompt-card {
@@ -1147,20 +1231,20 @@ body.dark-mode .central-send-btn:not(:disabled):hover {
   /* Solid fill for better button affordance */
   border: 1px solid transparent;
   color: #1f1f1f;
-  padding: 1.5rem;
-  /* Larger padding */
-  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  /* Reduced padding */
+  border-radius: 10px;
   cursor: pointer;
   text-align: left;
   transition: all 0.2s cubic-bezier(0.2, 0.0, 0, 1.0);
-  font-size: 1.15rem;
-  /* Larger text */
+  font-size: 0.95rem;
+  /* Smaller text */
   font-weight: 500;
   line-height: 1.4;
   display: flex;
   align-items: center;
-  min-height: 100px;
-  /* Taller */
+  min-height: auto;
+  /* Remove fixed height */
   position: relative;
   overflow: hidden;
 }
@@ -1247,13 +1331,38 @@ body.dark-mode .prompt-card:hover {
   transition: background-color 0.1s;
 }
 
+/* Sheet Footer Styles */
+.sheet-footer {
+  text-align: center;
+  padding: 2rem 1rem;
+  margin-top: auto;
+  color: var(--sheet-text);
+}
+
+.sheet-footer p {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+}
+
 .footer-legal {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.5rem;
   font-size: 0.8rem;
   color: #9ca3af;
+}
+
+.footer-legal a {
+  color: #9ca3af;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-legal a:hover {
+  color: var(--primary-color);
+  text-decoration: underline;
 }
 
 .version-tag {
@@ -1308,13 +1417,6 @@ body.dark-mode .initial-theme-toggle {
 
 body.dark-mode .initial-theme-toggle:hover {
   background-color: rgba(255, 255, 255, 0.1);
-}
-
-html[dir="rtl"] .prompt-card,
-html[dir="rtl"] .sheet-header,
-html[dir="rtl"] .source-block {
-  /* Usually RTL default is fine, but check text alignment */
-  /* text-align: right; is default for RTL. */
 }
 
 html[dir="rtl"] .prompt-card {

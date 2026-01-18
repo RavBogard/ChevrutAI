@@ -172,6 +172,11 @@ function ChevrutaApp() {
     const userMsg = { id: Date.now().toString(), role: 'user', text };
     setMessages(prev => [...prev, userMsg]);
     sendMessageToGemini(text);
+
+    // Auto-open chat on mobile after first message
+    if (window.innerWidth <= 768) {
+      setMobileChatOpen(true);
+    }
   };
 
   const handleAddSource = async (sourceSuggestion) => {
@@ -287,16 +292,18 @@ function ChevrutaApp() {
         chatStarted={chatStarted}
       />
 
-      {/* Mobile Floating Action Button */}
-      <button
-        className="mobile-chat-fab"
-        onClick={() => setMobileChatOpen(true)}
-        aria-label="Open Chat"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-        </svg>
-      </button>
+      {/* Mobile Floating Action Button - only show after chat has started */}
+      {chatStarted && (
+        <button
+          className="mobile-chat-fab"
+          onClick={() => setMobileChatOpen(true)}
+          aria-label="Open Chat"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </button>
+      )}
 
       {/* Standalone Toggles (Initial View) */}
       {!chatStarted && (
