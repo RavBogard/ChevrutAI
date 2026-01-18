@@ -1356,7 +1356,7 @@ body.dark-mode .footer-attribution {
   justify-content: center;
   align-items: center;
   gap: 0.3rem;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: #9ca3af;
   margin-bottom: 0.3rem;
 }
@@ -1391,8 +1391,8 @@ body.dark-mode .version-tag {
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  font-size: 0.7rem;
+  gap: 0.4rem;
+  font-size: 0.65rem;
   color: #b0b5bc;
 }
 
