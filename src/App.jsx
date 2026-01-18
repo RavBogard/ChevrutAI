@@ -20,7 +20,7 @@ Protocol:
 3. ALWAYS output your response in valid JSON format with this structure:
 {
   "content": "Your conversational response here. Be helpful, scholarly, and efficient. If proposing sources, describe them briefly here too.",
-  "suggested_title": "A short, relevant title for the source sheet based on the user request (max 5-6 words). PROVIDE THIS ON THE FIRST TURN.",
+  "suggested_title": "A SMART, THEMATIC title (max 4-5 words). Extract the core topic (e.g. 'The Ethics of War', 'Shabbat Candle Lighting'). Do NOT use sentences or phrases like 'Texts about...' or 'Source sheet on...'. Just the topic.",
   "suggested_sources": [
     { "ref": "Citation Ref (e.g., Genesis 1:1 or Rashi on Genesis 1:1)", "summary": "One sentence summary of why this is relevant." }
   ]

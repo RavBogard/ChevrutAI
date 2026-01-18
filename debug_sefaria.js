@@ -31,6 +31,5 @@ const fetchText = async (ref) => {
 };
 
 (async () => {
-    await fetchText("Yevamot 64a");
-    // await fetchText("Even Bochan");
+    await fetchText("Yevamot 64b");
 })();

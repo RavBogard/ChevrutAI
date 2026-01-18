@@ -1,24 +1,26 @@
 /* Global Vars & Reset fixes */
 :root {
-  --primary-color: #3b82f6;
-  /* Modern Blue */
-  --accent-color: #6366f1;
-  /* Indigo */
+  --primary-color: #1e40af;
+  /* Deep Academic Blue (Slate/Blue 800) */
+  --accent-color: #d97706;
+  /* Amber/Gold Accent */
 
-  /* Light Mode Defaults (Claude-like) */
-  --sidebar-bg: #f9fafb;
-  /* Light Gray */
-  --sidebar-text: #1f2937;
-  /* Dark Gray */
+  /* Light Mode Defaults ("Modern Library") */
+  --sidebar-bg: #f8fafc;
+  /* Slate 50 */
+  --sidebar-text: #334155;
+  /* Slate 700 */
   --sheet-bg: #ffffff;
-  --sheet-text: #1f2937;
+  --sheet-text: #0f172a;
+  /* Slate 900 - High Contrast */
 
-  --message-user-bg: #e5e7eb;
-  /* Light gray bubble for user in light mode? Or blue */
-  --message-user-text: #1f2937;
+  --message-user-bg: #f1f5f9;
+  /* Slate 100 */
+  --message-user-text: #334155;
   --message-bot-bg: transparent;
 
-  --border-color: #e5e7eb;
+  --border-color: #e2e8f0;
+  /* Slate 200 */
   --input-bg: #ffffff;
 
   --font-ui: 'Inter', system-ui, -apple-system, sans-serif;
@@ -28,16 +30,24 @@
 }
 
 body.dark-mode {
-  --sidebar-bg: #111827;
-  --sidebar-text: #f3f4f6;
-  --sheet-bg: #0f1117;
-  --sheet-text: #e5e7eb;
-  --source-bg: #1f2937;
-  --border-color: #374151;
-  --input-bg: #1f2937;
+  --primary-color: #60a5fa;
+  /* Blue 400 for contrast on dark */
+  --sidebar-bg: #0f172a;
+  /* Slate 900 */
+  --sidebar-text: #e2e8f0;
+  /* Slate 200 */
+  --sheet-bg: #020617;
+  /* Slate 950 - Deep dark */
+  --sheet-text: #f8fafc;
+  /* Slate 50 */
+  --source-bg: #1e293b;
+  /* Slate 800 */
+  --border-color: #334155;
+  /* Slate 700 */
+  --input-bg: #1e293b;
 
-  --message-user-bg: #374151;
-  --message-user-text: #ffffff;
+  --message-user-bg: #1e293b;
+  --message-user-text: #f8fafc;
 }
 
 body {

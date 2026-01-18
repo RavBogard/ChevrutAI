@@ -24,13 +24,43 @@ export const getSefariaText = async (ref) => {
 
         let hebrewText = data.he;
         let englishText = data.text;
-
-        // Normalize arrays to strings if necessary (though styling might handle arrays better, let's keep array if it's multiple segments)
-        // Taking a segment usually returns a string. Taking a range returns an array.
-        // The requirements say "distinct blocks", but usually we add one "Source" which might be a verse or a comment.
+        let versionTitle = data.versionTitle;
 
         // Filter for English versions to populate dropdown
         const enVersions = data.versions ? data.versions.filter(v => v.language === 'en') : [];
+
+        // FALLBACK LOGIC: If default English text is empty/missing, try to fetch the first available English version
+        const isEnglishEmpty = !englishText || (Array.isArray(englishText) && englishText.every(s => !s || !s.trim())) || (typeof englishText === 'string' && !englishText.trim());
+
+        if (isEnglishEmpty && enVersions.length > 0) {
+            const fallbackVersion = enVersions[0].versionTitle;
+            console.log(`Default text empty for ${ref}. Fetching fallback version: ${fallbackVersion}`);
+            // Note: We need to import calls to getSefariaTextByVersion or define it before? 
+            // It is exported in same file. We can call it directly if we hoist it or just use the logic.
+            // But it's defined BELOW. Javascript functions are hoisted? `export const` are not hoisted in the same way as function declarations.
+            // I should move this logic or call it safely.
+            // Actually, since it's a module, I can call `getSefariaTextByVersion` if it's in scope.
+            // But `const getSefariaTextByVersion` is distinct.
+            // I will copy the fetch logic here to avoid reference error before initialization if problematic, 
+            // OR I will simply move `getSefariaTextByVersion` ABOVE `getSefariaText`.
+            // OR I will just call it and hope, but risk ReferenceError.
+            // SAFER: Use the fetch directly here.
+
+            try {
+                const encodedRefFallback = encodeURIComponent(data.ref);
+                const encodedTitleFallback = encodeURIComponent(fallbackVersion);
+                const resFallback = await fetch(`${BASE_URL}/${encodedRefFallback}?context=0&version=en|${encodedTitleFallback}`);
+                if (resFallback.ok) {
+                    const dataFallback = await resFallback.json();
+                    if (dataFallback.text) {
+                        englishText = dataFallback.text;
+                        versionTitle = fallbackVersion;
+                    }
+                }
+            } catch (err) {
+                console.error("Fallback fetch failed", err);
+            }
+        }
 
         return {
             ref: data.ref, // The canonical reference
@@ -38,7 +68,7 @@ export const getSefariaText = async (ref) => {
             en: englishText,
             categories: data.categories,
             type: data.type,
-            versionTitle: data.versionTitle, // The currently loaded English version title
+            versionTitle: versionTitle, // The currently loaded English version title
             heVersionTitle: data.heVersionTitle,
             versions: enVersions // List of available English versions
         };
