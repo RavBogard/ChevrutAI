@@ -489,7 +489,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                 </p>
                 <div className="footer-legal">
                     <a href="https://www.sefaria.org" target="_blank" rel="noopener noreferrer">Sefaria</a> • <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link> • <a href="https://github.com/RavBogard/ChevrutAI" target="_blank" rel="noopener noreferrer">GitHub</a>
-                    <span className="version-tag"> • v0.9.1</span>
+                    <span className="version-tag"> • v0.9.2</span>
                 </div>
             </footer>
         </div >
