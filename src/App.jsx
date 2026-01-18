@@ -20,11 +20,32 @@ Protocol:
 3. ALWAYS output your response in valid JSON format with this structure:
 {
   "content": "Your conversational response here. Be helpful, scholarly, and efficient. If proposing sources, describe them briefly here too.",
-  "suggested_title": "A SHORT THEMATIC TITLE (2-5 words). NOT THE USER'S QUESTION. Extract the core TOPIC. Examples: 'Transgender Identity in Halakha', 'Shabbat Candle Lighting', 'The Binding of Isaac', 'Teshuvah and Forgiveness'. NEVER use the user's raw prompt as the title.",
+  "suggested_title": "YOUR TITLE HERE - see rules below",
   "suggested_sources": [
     { "ref": "Citation Ref (e.g., Genesis 1:1 or Rashi on Genesis 1:1)", "summary": "One sentence summary of why this is relevant." }
   ]
 }
+
+TITLE GENERATION RULES (CRITICAL):
+- The "suggested_title" is the title an educator would give this text study sheet
+- It MUST be SHORT: 2-5 words maximum
+- It MUST be a THEMATIC TOPIC, not the user's question
+- NEVER copy the user's prompt as the title
+- NEVER include words like "Sources for", "Texts about", "Building a sheet on"
+- Extract the CORE TOPIC or THEME
+
+GOOD title examples:
+- User asks "Sources to share with someone navigating infertility" → Title: "Infertility & Hope"
+- User asks "I'm giving a drash on Parashat Vayera" → Title: "Vayera: Hospitality"
+- User asks "Texts for an interfaith wedding" → Title: "Interfaith Marriage"
+- User asks "What does the Talmud say about forgiveness?" → Title: "Teshuvah & Forgiveness"
+- User asks "Jewish sources on racial justice" → Title: "Racial Justice"
+
+BAD titles (NEVER do this):
+- "Sources to share with someone navigating infertility" (too long, just copied prompt)
+- "I'm giving a drash on Parashat Vayera" (copied prompt)
+- "Find texts about Shabbat" (copied prompt with command)
+
 4. If no sources are needed, "suggested_sources" should be an empty array.
 5. ONLY use VALID Sefaria citation formats that definitely exist. Examples of valid formats:
    - "Genesis 1:1" (Torah verses)
@@ -35,7 +56,7 @@ Protocol:
    - "Zohar 1:1a" (Kabbalah)
    DO NOT suggest obscure or uncertain references. If you're not 100% sure a text exists in Sefaria, DO NOT suggest it.
 6. Do NOT provide the full text in the "content" field, just the citation and likelihood of relevance. The user will click to add the full text to the sheet.
-7. IMPORTANT: On the very first interaction, you MUST provide a "suggested_title" in the JSON. The title should be the TOPIC, not a question or command.
+7. IMPORTANT: You MUST provide a "suggested_title" in EVERY response when the user is starting a new topic. The title should be the TOPIC, not a question or command.
 `;
 
 function ChevrutaApp() {
@@ -72,14 +93,23 @@ function ChevrutaApp() {
         parts: [{ text: m.text || " " }]
       }));
 
+      // Detect if this is the first user message (only welcome message exists)
+      const isFirstMessage = messages.length <= 1;
+
       // Call our secure backend endpoint instead of exposing the key here!
+      // For the first message, strongly emphasize title generation
+      let messageToSend = userText;
+      if (isFirstMessage) {
+        messageToSend = userText + "\n\n[CRITICAL: Generate a SHORT 2-5 word THEMATIC TITLE for this source sheet. Do NOT copy my prompt. Extract the core TOPIC only. Example: if I ask about 'sources for someone navigating infertility', title should be 'Infertility & Hope' NOT my prompt.]";
+      }
+
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          message: messages.length === 0 ? userText + " \n\n[SYSTEM: You MUST provide a 'suggested_title' for this source sheet in your JSON response.]" : userText,
+          message: messageToSend,
           history: history
         })
       });
@@ -109,48 +139,46 @@ function ChevrutaApp() {
 
       console.log("Parsed AI Response:", parsedResponse);
 
-      // Auto-update title if provided
-      if (parsedResponse.suggested_title) {
-        console.log("Setting title to:", parsedResponse.suggested_title);
-        setSheetTitle(parsedResponse.suggested_title);
-      } else if (history.length === 0) {
-        // Fallback: Smart Title Cleanup
-        let cleanTitle = userText;
-        // Common prefixes to strip
-        const prefixes = [
-          /^(find|get|show|give|list) (me )?(texts?|sources?|quotes?) (for|about|on|regarding) /i,
-          /^(create|make|build|generate) (a )?(source )?sheet (for|about|on|regarding) /i,
-          /^(what does) (.+) (say about) /i, // Extract middle part? No, usually "What does Torah say about X" -> "X"
-          /^(texts?|sources?) (about|on|for) /i,
-          /^(i want|i need|can you|please) /i
-        ];
+      // Auto-update title if provided AND it's a good title
+      let suggestedTitle = parsedResponse.suggested_title;
 
-        for (const p of prefixes) {
-          cleanTitle = cleanTitle.replace(p, '');
-        }
+      // Validate the suggested title - reject if it's just the prompt copied
+      const isBadTitle = suggestedTitle && (
+        suggestedTitle.length > 40 || // Too long
+        suggestedTitle.toLowerCase().startsWith("sources") ||
+        suggestedTitle.toLowerCase().startsWith("texts") ||
+        suggestedTitle.toLowerCase().startsWith("find") ||
+        suggestedTitle.toLowerCase().startsWith("build") ||
+        suggestedTitle.toLowerCase().startsWith("create") ||
+        suggestedTitle.toLowerCase().startsWith("i'm giving") ||
+        suggestedTitle.toLowerCase().startsWith("i need") ||
+        suggestedTitle.toLowerCase().includes("source sheet")
+      );
 
-        // Specific fix for "What does X say about Y" -> "Y according to X" or just "Y". 
-        // Let's just strip "What does ... say about" wrapper if possible, or leave it if complex.
-        // Simple Strip: remove "What does X say about" is hard without capturing groups.
-        // Let's try to remove "What does the Talmud say about forgiveness?" -> "Forgiveness"
-        const questionMatch = cleanTitle.match(/what does .* say about (.+)\??/i);
-        if (questionMatch && questionMatch[1]) {
-          cleanTitle = questionMatch[1];
-        }
+      if (suggestedTitle && !isBadTitle) {
+        console.log("Setting title to:", suggestedTitle);
+        setSheetTitle(suggestedTitle);
+      } else if (isFirstMessage) {
+        // Fallback: Extract topic words from the request
+        console.log("AI title was bad or missing, generating fallback...", suggestedTitle);
 
-        // Capitalize first letter
-        cleanTitle = cleanTitle.trim();
-        if (cleanTitle.length > 0) {
-          cleanTitle = cleanTitle.charAt(0).toUpperCase() + cleanTitle.slice(1);
-        } else {
-          cleanTitle = "New Source Sheet";
-        }
+        // Try to extract meaningful topic from user text
+        let topicWords = userText
+          .replace(/^(find|get|show|give|list|create|make|build|generate|i'm giving|i need|preparing|assembling|leading|designing|our congregation|speaking at|want to)/gi, '')
+          .replace(/\b(me|a|an|the|texts?|sources?|quotes?|sheet|for|about|on|regarding|with|to|that|of)\b/gi, '')
+          .replace(/drash|sermon|lesson|class|study|session/gi, '')
+          .replace(/[?.,!-]/g, '')
+          .trim()
+          .split(/\s+/)
+          .filter(w => w.length > 2)
+          .slice(0, 4)
+          .join(' ');
 
-        // Remove trailing question mark
-        cleanTitle = cleanTitle.replace(/\?$/, '');
+        // Capitalize each word
+        topicWords = topicWords.replace(/\b\w/g, l => l.toUpperCase());
 
-        const fallbackTitle = cleanTitle.length > 50 ? cleanTitle.substring(0, 50) + "..." : cleanTitle;
-        console.log("Using smart fallback title:", fallbackTitle);
+        const fallbackTitle = topicWords.length > 3 ? topicWords : "New Source Sheet";
+        console.log("Using fallback title:", fallbackTitle);
         setSheetTitle(fallbackTitle);
       }
 
