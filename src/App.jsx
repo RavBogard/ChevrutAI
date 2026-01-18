@@ -40,6 +40,7 @@ function ChevrutaApp() {
     }
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const [suggestedPrompt, setSuggestedPrompt] = useState('');
 
   const sendMessageToGemini = async (userText) => {
     try {
@@ -160,6 +161,7 @@ function ChevrutaApp() {
         onMobileClose={() => setMobileChatOpen(false)}
         darkMode={darkMode}
         toggleDarkMode={toggleDarkMode}
+        suggestedInput={suggestedPrompt}
       />
 
       <SheetView
@@ -169,6 +171,7 @@ function ChevrutaApp() {
         onReorder={setSourcesList}
         darkMode={darkMode}
         toggleDarkMode={toggleDarkMode}
+        onSuggestionClick={(text) => setSuggestedPrompt(text)}
       />
 
       {/* Mobile Floating Action Button */}

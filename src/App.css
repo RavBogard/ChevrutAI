@@ -95,129 +95,81 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  /* Option A: Bottom-anchored chat */
+  justify-content: flex-end;
 }
 
-.message {
-  max-width: 85%;
-  padding: 0.8em 1em;
+/* Empty State Prompts */
+.empty-prompts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+  width: 100%;
+  max-width: 800px;
+}
+
+.prompt-card {
+  background: white;
+  border: 1px solid var(--border-color);
+  padding: 1rem 1.5rem;
   border-radius: 12px;
-  font-size: 0.95rem;
-  line-height: 1.5;
-  animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.message.user {
-  align-self: flex-end;
-  background-color: var(--message-user-bg);
-  color: white;
-  border-bottom-right-radius: 2px;
-}
-
-.message.model {
-  align-self: flex-start;
-  background-color: var(--message-bot-bg);
-  color: #e5e7eb;
-  border-bottom-left-radius: 2px;
-  border: 1px solid var(--border-color);
-}
-
-.suggested-sources {
-  margin-top: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-}
-
-.source-suggestion-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-color);
-  padding: 0.8rem;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  transition: transform 0.2s;
-}
-
-.source-suggestion-card:hover {
-  transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.source-info strong {
-  display: block;
-  color: #60a5fa;
-  margin-bottom: 0.2rem;
-}
-
-.source-summary {
-  font-size: 0.85rem;
-  color: #9ca3af;
-}
-
-.add-source-btn {
-  align-self: flex-start;
-  background-color: rgba(16, 185, 129, 0.2);
-  color: #34d399;
-  border: 1px solid rgba(16, 185, 129, 0.4);
-  padding: 0.4rem 0.8rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
   cursor: pointer;
-  margin-top: 0.5rem;
-}
-
-.add-source-btn:hover {
-  background-color: rgba(16, 185, 129, 0.3);
-}
-
-.chat-input-form {
-  padding: 1rem;
-  border-top: 1px solid var(--border-color);
+  text-align: left;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
   display: flex;
-  gap: 0.5rem;
-  background-color: var(--sidebar-bg);
+  align-items: center;
+  gap: 0.8rem;
+  color: var(--sheet-text);
+  font-size: 0.95rem;
 }
 
-.chat-input-form input {
-  flex: 1;
-  padding: 0.8rem;
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
-  background-color: #374151;
-  color: white;
-  outline: none;
+.prompt-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
 }
 
-.chat-input-form input:focus {
+.prompt-icon {
+  font-size: 1.2rem;
+}
+
+body.dark-mode .prompt-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--border-color);
+  color: var(--sheet-text);
+}
+
+body.dark-mode .prompt-card:hover {
+  background: rgba(255, 255, 255, 0.08);
   border-color: var(--primary-color);
 }
 
-.chat-input-form button {
-  padding: 0 1.2rem;
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  font-weight: 600;
+/* Improved Loading Indicator */
+.loading-indicator {
+  padding: 1rem;
+  background-color: var(--message-bot-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  border-bottom-left-radius: 2px;
+  align-self: flex-start;
+  color: #9ca3af;
+  font-size: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  animation: fadeIn 0.3s ease;
 }
 
-.loading .typing-dot {
-  display: inline-block;
+.typing-dots {
+  display: flex;
+  gap: 4px;
+}
+
+.typing-dot {
   width: 6px;
   height: 6px;
-  margin-right: 3px;
   border-radius: 50%;
   background-color: #9ca3af;
   animation: typing 1.4s infinite ease-in-out both;
@@ -237,10 +189,12 @@ body {
   80%,
   100% {
     transform: scale(0);
+    opacity: 0.5;
   }
 
   40% {
     transform: scale(1);
+    opacity: 1;
   }
 }
 

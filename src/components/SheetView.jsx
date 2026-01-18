@@ -182,7 +182,7 @@ const SortableSourceItem = ({ source, id, onRemove, onUpdate }) => {
     );
 };
 
-const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMode, toggleDarkMode }) => {
+const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMode, toggleDarkMode, onSuggestionClick }) => {
     const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
@@ -299,8 +299,30 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
             <div className="sheet-paper" id="sheet-export-area">
                 {sources.length === 0 ? (
                     <div className="empty-state">
-                        <p>Your sheet is empty.</p>
-                        <p>Ask ChevrutAI to find texts for you!</p>
+                        <div style={{ marginBottom: '2rem' }}>
+                            <h2 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', color: 'var(--sheet-text)' }}>Your sheet is empty</h2>
+                            <p style={{ opacity: 0.7 }}>Ask ChevrutAI to find texts for you, or try one of these:</p>
+                        </div>
+
+                        <div className="empty-prompts-grid">
+                            {[
+                                "Find texts about Shabbat candle lighting",
+                                "Build a source sheet on teshuvah",
+                                "Sources for a wedding ceremony",
+                                "Texts about welcoming the stranger",
+                                "What does the Talmud say about forgiveness?",
+                                "Create a sheet on the binding of Isaac"
+                            ].map((prompt, i) => (
+                                <button
+                                    key={i}
+                                    className="prompt-card"
+                                    onClick={() => onSuggestionClick && onSuggestionClick(prompt)}
+                                >
+                                    <span className="prompt-icon">✨</span>
+                                    {prompt}
+                                </button>
+                            ))}
+                        </div>
                     </div>
                 ) : (
                     <DndContext
@@ -332,7 +354,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                 </p>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
-                    <span className="version-tag"> • v1.7.0 (Logo Fix & UI Polish)</span>
+                    <span className="version-tag"> • v1.8.0 (UX Improvements)</span>
                 </div>
             </footer>
         </div >

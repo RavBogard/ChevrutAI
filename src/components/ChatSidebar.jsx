@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-const ChatSidebar = ({ messages, onSendMessage, onAddSource, isLoading, isMobileOpen, onMobileClose, darkMode, toggleDarkMode }) => {
+const ChatSidebar = ({ messages, onSendMessage, onAddSource, isLoading, isMobileOpen, onMobileClose, darkMode, toggleDarkMode, suggestedInput }) => {
     const [inputObj, setInputObj] = useState('');
     const messagesEndRef = useRef(null);
 
@@ -11,6 +11,13 @@ const ChatSidebar = ({ messages, onSendMessage, onAddSource, isLoading, isMobile
     useEffect(() => {
         scrollToBottom();
     }, [messages, isLoading]);
+
+    // Update input when a suggestion is clicked from the empty state
+    useEffect(() => {
+        if (suggestedInput) {
+            setInputObj(suggestedInput);
+        }
+    }, [suggestedInput]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -38,7 +45,6 @@ const ChatSidebar = ({ messages, onSendMessage, onAddSource, isLoading, isMobile
                         </button>
                     </div>
                 </div>
-                <span className="status-indicator">Online</span>
             </div>
 
             <div className="messages-list">
@@ -70,10 +76,13 @@ const ChatSidebar = ({ messages, onSendMessage, onAddSource, isLoading, isMobile
                     </div>
                 ))}
                 {isLoading && (
-                    <div className="message model loading">
-                        <div className="typing-dot"></div>
-                        <div className="typing-dot"></div>
-                        <div className="typing-dot"></div>
+                    <div className="loading-indicator">
+                        <div className="typing-dots">
+                            <div className="typing-dot"></div>
+                            <div className="typing-dot"></div>
+                            <div className="typing-dot"></div>
+                        </div>
+                        <span>Searching Sefaria for relevant texts...</span>
                     </div>
                 )}
                 <div ref={messagesEndRef} />
