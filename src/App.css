@@ -242,6 +242,8 @@ body {
 }
 
 .chat-textarea {
+  box-sizing: border-box;
+  /* Critical for padding */
   width: 100%;
   min-height: 52px;
   max-height: 200px;
@@ -257,6 +259,13 @@ body {
   outline: none;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   transition: border-color 0.2s, box-shadow 0.2s;
+  overflow: hidden;
+  /* Hide scrollbars initially */
+}
+
+.chat-textarea:not([style*="height: auto"]) {
+  overflow-y: auto;
+  /* Show when exceeding max-height */
 }
 
 .chat-textarea:focus {
@@ -264,11 +273,67 @@ body {
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
 
+.chat-textarea::placeholder {
+  color: #9ca3af;
+  opacity: 0.8;
+}
+
 .send-button {
   right: 28px;
   /* Adjust for padding */
   bottom: 28px;
   /* Adjust for padding */
+}
+
+/* Empty State Prompts */
+.empty-prompts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin: 3rem auto 0 auto;
+  width: 100%;
+  max-width: 900px;
+}
+
+.prompt-card {
+  background-color: var(--sheet-bg);
+  /* Use sheet bg (white/dark) */
+  border: 1px solid var(--border-color);
+  color: var(--sheet-text);
+  padding: 1.5rem;
+  border-radius: 16px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  height: 100%;
+  /* Fill grid cell */
+  border-left: 4px solid transparent;
+  /* Prepare for hover */
+}
+
+.prompt-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border-color: var(--primary-color);
+  border-left-color: var(--primary-color);
+}
+
+.prompt-icon {
+  font-size: 1.5rem;
+  background: var(--input-bg);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 /* Dark Mode Specific Overrides for Sidebar items */
@@ -309,9 +374,14 @@ body.dark-mode .source-suggestion-card {
   color: #f3f4f6;
 }
 
+body.dark-mode .prompt-card {
+  background-color: #1f2937;
+  /* Lighter than sheet bg */
+  border-color: #374151;
+}
+
 body.dark-mode .prompt-card:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: var(--primary-color);
+  background-color: #374151;
 }
 
 /* Improved Loading Indicator */
