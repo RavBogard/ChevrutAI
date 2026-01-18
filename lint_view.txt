@@ -1,0 +1,8 @@
+﻿
+C:\Users\dsbog\ChevrutAI\src\components\SheetView.jsx
+  193:74   error  'darkMode' is defined but never used        no-unused-vars
+  193:84   error  'toggleDarkMode' is defined but never used  no-unused-vars
+  193:110  error  'toggleLanguage' is defined but never used  no-unused-vars
+
+Γ£û 3 problems (3 errors, 0 warnings)
+

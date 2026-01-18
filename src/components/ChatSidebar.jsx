@@ -14,6 +14,8 @@ const ChatSidebar = ({ messages, onSendMessage, onAddSource, isLoading, isMobile
     }, [messages, isLoading]);
 
     // Update input when a suggestion is clicked from the empty state
+    // Update input when a suggestion is clicked from the empty state
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         if (suggestedInput) {
             setInputObj(suggestedInput);
@@ -24,6 +26,7 @@ const ChatSidebar = ({ messages, onSendMessage, onAddSource, isLoading, isMobile
                 textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [suggestedInput]);
 
     const handleInputChange = (e) => {

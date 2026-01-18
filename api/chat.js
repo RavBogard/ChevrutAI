@@ -1,3 +1,4 @@
+/* eslint-env node */
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Using default Node.js runtime for maximum compatibility
@@ -66,13 +67,14 @@ export default async function handler(req, res) {
             try {
                 body = JSON.parse(body);
             } catch (e) {
-                console.error("Failed to parse body string:", body);
+                console.error("Failed to parse body string:", body, e);
                 return res.status(400).json({ error: 'Invalid JSON body' });
             }
         }
 
         const { message, history } = body || {};
         console.log("Received request with message:", message);
+        // eslint-disable-next-line no-undef
         const apiKey = process.env.GEMINI_API_KEY;
 
         if (!apiKey) {

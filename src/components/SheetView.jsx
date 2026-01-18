@@ -190,7 +190,7 @@ const SortableSourceItem = ({ source, id, onRemove, onUpdate }) => {
     );
 };
 
-const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMode, toggleDarkMode, language, toggleLanguage, onSuggestionClick, sheetTitle, onTitleChange, onSendMessage, chatStarted }) => {
+const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, language, onSuggestionClick, sheetTitle, onTitleChange, onSendMessage, chatStarted }) => {
     const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
@@ -489,7 +489,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                 </p>
                 <div className="footer-powered">
                     <a href="https://www.sefaria.org" target="_blank" rel="noopener noreferrer">Powered by Sefaria</a>
-                    <span className="version-tag"> • v0.9.14</span>
+                    <span className="version-tag"> • v0.9.15</span>
                 </div>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>

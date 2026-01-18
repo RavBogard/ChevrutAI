@@ -70,7 +70,7 @@ function ChevrutaApp() {
     }
   ]);
   const [isLoading, setIsLoading] = useState(false);
-  const [suggestedPrompt, setSuggestedPrompt] = useState('');
+  const [suggestedPrompt] = useState('');
   const [sheetTitle, setSheetTitle] = useState("New Source Sheet");
 
   const sendMessageToGemini = async (userText) => {
@@ -250,7 +250,7 @@ function ChevrutaApp() {
   const [sidebarWidth, setSidebarWidth] = useState(400); // Default width in px
   const [isResizing, setIsResizing] = useState(false);
 
-  const startResizing = (mouseDownEvent) => {
+  const startResizing = () => {
     setIsResizing(true);
   };
 
@@ -274,6 +274,7 @@ function ChevrutaApp() {
       window.removeEventListener("mousemove", resize);
       window.removeEventListener("mouseup", stopResizing);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isResizing]);
 
   const chatStarted = messages.length > 1;
