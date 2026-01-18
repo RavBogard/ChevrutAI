@@ -484,15 +484,15 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
             </div>
 
             <footer className="sheet-footer">
-                <p>
+                <p className="footer-attribution">
                     A Project of <strong>Rabbi Daniel Bogard</strong>
                 </p>
-                <div className="footer-legal">
-                    <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
-                </div>
                 <div className="footer-powered">
                     <a href="https://www.sefaria.org" target="_blank" rel="noopener noreferrer">Powered by Sefaria</a>
-                    <span className="version-tag"> • v0.9.3</span>
+                    <span className="version-tag"> • v0.9.4</span>
+                </div>
+                <div className="footer-legal">
+                    <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
                 </div>
             </footer>
         </div >

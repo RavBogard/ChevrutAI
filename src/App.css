@@ -1339,44 +1339,30 @@ body.dark-mode .prompt-card:hover {
   color: var(--sheet-text);
 }
 
-.sheet-footer p {
-  margin: 0 0 0.5rem 0;
+/* Line 1: Attribution - largest, most prominent */
+.footer-attribution {
+  margin: 0 0 0.4rem 0;
   font-size: 0.9rem;
+  color: #6b7280;
 }
 
-.footer-legal {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  font-size: 0.8rem;
+body.dark-mode .footer-attribution {
   color: #9ca3af;
 }
 
-.footer-legal a {
-  color: #9ca3af;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.footer-legal a:hover {
-  color: var(--primary-color);
-  text-decoration: underline;
-}
-
+/* Line 2: Powered by Sefaria - medium size */
 .footer-powered {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 0.3rem;
-  font-size: 0.75rem;
-  color: #6b7280;
-  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #9ca3af;
+  margin-bottom: 0.3rem;
 }
 
 .footer-powered a {
-  color: #6b7280;
+  color: #9ca3af;
   text-decoration: none;
   transition: color 0.2s;
 }
@@ -1386,8 +1372,44 @@ body.dark-mode .prompt-card:hover {
   text-decoration: underline;
 }
 
-.version-tag {
+body.dark-mode .footer-powered,
+body.dark-mode .footer-powered a {
   color: #6b7280;
+}
+
+.version-tag {
+  color: #9ca3af;
+}
+
+body.dark-mode .version-tag {
+  color: #6b7280;
+}
+
+/* Line 3: Legal links - smallest, most subtle */
+.footer-legal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.7rem;
+  color: #b0b5bc;
+}
+
+.footer-legal a {
+  color: #b0b5bc;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-legal a:hover {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+body.dark-mode .footer-legal,
+body.dark-mode .footer-legal a {
+  color: #4b5563;
 }
 
 .empty-content-msg {
