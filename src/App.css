@@ -942,7 +942,8 @@ body.dark-mode .prompt-card:hover {
   outline: none;
   padding: 0.5rem;
   transition: border-color 0.2s;
-  margin-bottom: 1rem;
+  margin-bottom: 0;
+  /* Reduced from 1rem */
 }
 
 .title-input:focus {

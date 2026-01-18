@@ -297,8 +297,6 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                         </div>
                     </div>
 
-                    <div className="sheet-divider-line"></div>
-
                     <input
                         type="text"
                         className="title-input"
@@ -428,11 +426,11 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
 
             <footer className="sheet-footer">
                 <p>
-                    A Project of <strong>Rabbi Daniel Bogard</strong> • Powered by <a href="https://www.sefaria.org" target="_blank" rel="noopener noreferrer">Sefaria</a> • <a href="https://github.com/RavBogard/ChevrutAI" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+                    A Project of <strong>Rabbi Daniel Bogard</strong> • Powered by <a href="https://www.sefaria.org" target="_blank" rel="noopener noreferrer">Sefaria</a>
                 </p>
                 <div className="footer-legal">
-                    <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
-                    <span className="version-tag"> • v1.8.23 (Hebrew Mode & Font)</span>
+                    <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link> • <a href="https://github.com/RavBogard/ChevrutAI" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    <span className="version-tag"> • v1.8.24</span>
                 </div>
             </footer>
         </div >
