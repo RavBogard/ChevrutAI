@@ -788,7 +788,7 @@ body.dark-mode .prompt-card:hover {
 
   /* Central hero adjustments for mobile */
   .central-hero {
-    padding: 0 1rem;
+    padding: 0 0.5rem;
     max-width: 100%;
     width: 100%;
     box-sizing: border-box;
@@ -805,7 +805,7 @@ body.dark-mode .prompt-card:hover {
   }
 
   .central-logo-text {
-    font-size: 2.2rem;
+    font-size: clamp(1.5rem, 9vw, 2.2rem);
     flex-wrap: nowrap;
     justify-content: center;
     width: 100%;
@@ -866,7 +866,7 @@ body.dark-mode .prompt-card:hover {
 /* Extra small screens (narrow phones) */
 @media (max-width: 400px) {
   .central-logo-text {
-    font-size: 1.8rem;
+    font-size: clamp(1.4rem, 8vw, 1.8rem);
   }
 
   .central-logo-text .logo-sparkle svg {
