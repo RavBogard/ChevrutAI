@@ -1077,30 +1077,34 @@ body.dark-mode .central-send-btn:not(:disabled):hover {
 }
 
 .prompt-card {
-  background-color: transparent;
-  border: 1px solid #e0e0e0;
-  /* Subtle border like Gemini empty state cards */
-  color: #444746;
-  padding: 1.25rem;
+  background-color: #f0f4f9;
+  /* Solid fill for better button affordance */
+  border: 1px solid transparent;
+  color: #1f1f1f;
+  padding: 1.5rem;
+  /* Larger padding */
   border-radius: 12px;
   cursor: pointer;
   text-align: left;
-  transition: background-color 0.2s, border-color 0.2s;
-  font-size: 1rem;
+  transition: all 0.2s cubic-bezier(0.2, 0.0, 0, 1.0);
+  font-size: 1.15rem;
+  /* Larger text */
   font-weight: 500;
-  line-height: 1.5;
+  line-height: 1.4;
   display: flex;
   align-items: center;
-  min-height: 80px;
-  /* Substantial click area */
+  min-height: 100px;
+  /* Taller */
   position: relative;
   overflow: hidden;
 }
 
 .prompt-card:hover {
-  background-color: #f0f4f9;
-  /* Light gray hover */
-  border-color: #d1d5db;
+  background-color: #e2e7eb;
+  /* Distinct hover state */
+  border-color: transparent;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
 
 /* Remove old Icon styles */

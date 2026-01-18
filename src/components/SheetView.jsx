@@ -388,7 +388,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                 </p>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
-                    <span className="version-tag"> • v1.8.13 (Clean Design)</span>
+                    <span className="version-tag"> • v1.8.14 (Large Prompt Cards)</span>
                 </div>
             </footer>
         </div >
