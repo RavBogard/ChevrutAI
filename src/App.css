@@ -596,6 +596,7 @@ body {
 }
 
 .drag-handle {
+  touch-action: none;
   cursor: grab;
   display: flex;
   align-items: center;
@@ -618,7 +619,8 @@ body {
 }
 
 .sortable-item {
-  touch-action: none;
+  /* Allow scrolling on the item itself */
+  touch-action: manipulation;
 }
 
 .sidebar-logo {

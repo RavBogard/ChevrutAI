@@ -8,18 +8,50 @@ import { exportToGoogleDoc } from '../services/google';
 import { getSefariaTextByVersion } from '../services/sefaria';
 import { exportToDocx } from '../services/docxExport';
 
+const EditableContent = ({ html, className, onChange, dir }) => {
+    const [displayHtml, setDisplayHtml] = useState("");
+
+    React.useEffect(() => {
+        if (!html) {
+            setDisplayHtml("");
+            return;
+        }
+        if (Array.isArray(html)) {
+            setDisplayHtml(html.map(c => `<p>${c}</p>`).join(""));
+        } else {
+            // If it looks like it already has block tags, leave it. Otherwise wrap in P.
+            const trimmed = html.trim();
+            if (trimmed.startsWith('<p') || trimmed.startsWith('<div') || trimmed.startsWith('<ul') || trimmed.startsWith('<ol')) {
+                setDisplayHtml(html);
+            } else {
+                setDisplayHtml(`<p>${html}</p>`);
+            }
+        }
+    }, [html]);
+
+    const handleBlur = (e) => {
+        const val = e.currentTarget.innerHTML;
+        if (val !== displayHtml) {
+            onChange(val);
+        }
+    };
+
+    return (
+        <div
+            className={className}
+            dir={dir}
+            contentEditable
+            suppressContentEditableWarning
+            onBlur={handleBlur}
+            dangerouslySetInnerHTML={{ __html: displayHtml }}
+            style={{ outline: 'none', minHeight: '1em' }}
+        />
+    );
+};
+
 const SourceBlock = ({ source, onRemove, onUpdate, dragHandleProps }) => {
     const [viewMode, setViewMode] = useState('bilingual'); // bilingual, hebrew, english
     const [loadingVersion, setLoadingVersion] = useState(false);
-
-    // Helper to render content safely (Sefaria API can return strings or arrays)
-    const renderText = (text) => {
-        if (!text) return null;
-        if (Array.isArray(text)) {
-            return text.map((t, i) => <p key={i} dangerouslySetInnerHTML={{ __html: t }} />);
-        }
-        return <p dangerouslySetInnerHTML={{ __html: text }} />;
-    };
 
     const handleVersionChange = async (e) => {
         const newTitle = e.target.value;
@@ -64,7 +96,6 @@ const SourceBlock = ({ source, onRemove, onUpdate, dragHandleProps }) => {
                             disabled={loadingVersion}
                             style={{ maxWidth: '150px', marginRight: '0.5rem' }}
                         >
-                            {/* Ensure current version is an option even if not in list for some reason */}
                             {!source.versions.find(v => v.versionTitle === source.versionTitle) && source.versionTitle && (
                                 <option value={source.versionTitle}>{source.versionTitle}</option>
                             )}
@@ -97,15 +128,25 @@ const SourceBlock = ({ source, onRemove, onUpdate, dragHandleProps }) => {
                 ) : (
                     <>
                         {(viewMode === 'bilingual' || viewMode === 'english') && (
-                            <div className="text-eng" dir="ltr">
-                                {renderText(source.en)}
+                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                                <EditableContent
+                                    className="text-eng"
+                                    dir="ltr"
+                                    html={source.en}
+                                    onChange={(val) => onUpdate({ en: val })}
+                                />
                                 <small className="version-label">{source.versionTitle}</small>
                             </div>
                         )}
 
                         {(viewMode === 'bilingual' || viewMode === 'hebrew') && (
-                            <div className="text-heb" dir="rtl">
-                                {renderText(source.he)}
+                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                                <EditableContent
+                                    className="text-heb"
+                                    dir="rtl"
+                                    html={source.he}
+                                    onChange={(val) => onUpdate({ he: val })}
+                                />
                             </div>
                         )}
                     </>
