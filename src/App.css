@@ -777,25 +777,38 @@ body.dark-mode .prompt-card:hover {
 
   /* Central hero adjustments for mobile */
   .central-hero {
-    padding: 0 0.5rem;
+    padding: 0 1rem;
     max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
   }
 
   .central-hero p {
-    font-size: 1rem;
-    padding: 0 0.5rem;
+    font-size: 0.95rem;
+    padding: 0;
     margin-bottom: 1.5rem;
+    line-height: 1.5;
+    max-width: 100%;
+    word-wrap: break-word;
   }
 
   .central-logo-text {
-    font-size: 2.5rem;
-    flex-wrap: wrap;
+    font-size: 2.2rem;
+    flex-wrap: nowrap;
     justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .central-logo-text .logo-sparkle {
+    margin-left: 4px;
   }
 
   .central-logo-text .logo-sparkle svg {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
   }
 
   /* Central textarea mobile */
@@ -836,6 +849,31 @@ body.dark-mode .prompt-card:hover {
 
   .footer-legal {
     font-size: 0.75rem;
+  }
+}
+
+/* Extra small screens (narrow phones) */
+@media (max-width: 400px) {
+  .central-logo-text {
+    font-size: 1.8rem;
+  }
+
+  .central-logo-text .logo-sparkle svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .central-hero p {
+    font-size: 0.9rem;
+  }
+
+  .empty-prompts-grid {
+    gap: 0.4rem !important;
+  }
+
+  .prompt-card {
+    padding: 0.6rem 0.8rem !important;
+    font-size: 0.85rem !important;
   }
 }
 
