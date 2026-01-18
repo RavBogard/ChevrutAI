@@ -70,22 +70,26 @@ body {
   border-bottom: 1px solid var(--border-color);
   background: rgba(17, 24, 39, 0.95);
   backdrop-filter: blur(10px);
+  position: relative;
+  /* For absolute positioning of controls */
 }
 
-.chat-header h2 {
-  margin: 0;
-  font-size: 1.25rem;
-  background: linear-gradient(90deg, #60a5fa, #a78bfa);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.status-indicator {
-  font-size: 0.75rem;
-  color: #10b981;
+/* Replaces old header-top-row logic */
+.header-top-row {
   display: block;
-  margin-top: 0.25rem;
+  width: 100%;
+}
+
+.header-controls {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(17, 24, 39, 0.5);
+  /* Slight bg to ensure visibility over logo if overlap */
+  border-radius: 20px;
 }
 
 .messages-list {
@@ -95,8 +99,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  /* Option A: Bottom-anchored chat */
-  justify-content: flex-end;
+  /* Removed justify-content: flex-end to allow top-flow */
 }
 
 /* Empty State Prompts */
@@ -415,9 +418,16 @@ body.dark-mode .prompt-card:hover {
   /* Reduce Logo Size significantly */
   .sidebar-logo {
     max-height: 40px !important;
-    /* Force small size */
+    min-height: 0;
     width: auto;
+    padding-right: 0;
     margin-bottom: 0;
+  }
+
+  .header-controls {
+    position: static;
+    background: transparent;
+    padding: 0;
   }
 
   /* Mobile Close Button */
@@ -578,14 +588,15 @@ body.dark-mode .prompt-card:hover {
 }
 
 .sidebar-logo {
-  width: auto;
-  max-width: 100%;
-  height: 60px;
-  /* Fixed height for consistency */
+  width: 100%;
+  height: auto;
+  min-height: 48px;
+  /* Prevent collapse */
   object-fit: contain;
   display: block;
-  margin-bottom: 0.5rem;
-  /* box-sizing: border-box; */
+  margin-bottom: 0px;
+  padding-right: 60px;
+  /* Reserve space for controls */
 }
 
 .version-select {

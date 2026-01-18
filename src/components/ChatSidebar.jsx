@@ -35,7 +35,7 @@ const ChatSidebar = ({ messages, onSendMessage, onAddSource, isLoading, isMobile
                         alt="ChevrutAI"
                         className="sidebar-logo"
                     />
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div className="header-controls">
                         <button className="theme-toggle-btn" onClick={toggleDarkMode} title="Toggle Dark Mode">
                             {darkMode ? '☀️' : '🌙'}
                         </button>
