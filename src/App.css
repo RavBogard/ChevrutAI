@@ -1226,3 +1226,27 @@ body.dark-mode .prompt-card:hover {
   cursor: pointer;
   transition: background-color 0.1s;
 }
+
+.footer-legal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+.version-tag {
+  color: #6b7280;
+}
+
+.empty-content-msg {
+  padding: 1rem;
+  background-color: #f9fafb;
+  border: 1px dashed #d1d5db;
+  border-radius: 6px;
+  color: #6b7280;
+  font-style: italic;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}

@@ -129,24 +129,32 @@ const SourceBlock = ({ source, onRemove, onUpdate, dragHandleProps }) => {
                     <>
                         {(viewMode === 'bilingual' || viewMode === 'english') && (
                             <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                                <EditableContent
-                                    className="text-eng"
-                                    dir="ltr"
-                                    html={source.en}
-                                    onChange={(val) => onUpdate({ en: val })}
-                                />
+                                {(!source.en || (Array.isArray(source.en) && source.en.every(s => !s || !s.trim())) || (!Array.isArray(source.en) && !source.en.trim())) ? (
+                                    <div className="empty-content-msg">No English text available</div>
+                                ) : (
+                                    <EditableContent
+                                        className="text-eng"
+                                        dir="ltr"
+                                        html={source.en}
+                                        onChange={(val) => onUpdate({ en: val })}
+                                    />
+                                )}
                                 <small className="version-label">{source.versionTitle}</small>
                             </div>
                         )}
 
                         {(viewMode === 'bilingual' || viewMode === 'hebrew') && (
                             <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                                <EditableContent
-                                    className="text-heb"
-                                    dir="rtl"
-                                    html={source.he}
-                                    onChange={(val) => onUpdate({ he: val })}
-                                />
+                                {(!source.he || (Array.isArray(source.he) && source.he.every(s => !s || !s.trim())) || (!Array.isArray(source.he) && !source.he.trim())) ? (
+                                    <div className="empty-content-msg">No Hebrew text available</div>
+                                ) : (
+                                    <EditableContent
+                                        className="text-heb"
+                                        dir="rtl"
+                                        html={source.he}
+                                        onChange={(val) => onUpdate({ he: val })}
+                                    />
+                                )}
                             </div>
                         )}
                     </>
@@ -404,7 +412,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                 </p>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
-                    <span className="version-tag"> • v1.8.19 (Refined Layout)</span>
+                    <span className="version-tag"> • v1.8.20 (Fixes)</span>
                 </div>
             </footer>
         </div >
