@@ -1365,6 +1365,27 @@ body.dark-mode .prompt-card:hover {
   text-decoration: underline;
 }
 
+.footer-powered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+}
+
+.footer-powered a {
+  color: #6b7280;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-powered a:hover {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
 .version-tag {
   color: #6b7280;
 }
