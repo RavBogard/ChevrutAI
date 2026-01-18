@@ -62,8 +62,8 @@ const ChatSidebar = ({ messages, onSendMessage, onAddSource, isLoading, isMobile
             <div className="chat-header">
                 <div className="header-top-row">
                     <div className="sidebar-logo-text">
-                        <span className="logo-serif">Chevrut</span>
-                        <span className="logo-sans">AI</span>
+                        <span className="logo-serif">Chevruta</span>
+                        <span className="logo-sans">.AI</span>
                         <span className="logo-sparkle">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="url(#sparkle-gradient)" stroke="none">
                                 <defs>

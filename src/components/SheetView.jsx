@@ -401,8 +401,8 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, languag
                                         </>
                                     ) : (
                                         <>
-                                            <span className="logo-serif">Chevrut</span>
-                                            <span className="logo-sans">AI</span>
+                                            <span className="logo-serif">Chevruta</span>
+                                            <span className="logo-sans">.AI</span>
                                         </>
                                     )}
                                     <span className="logo-sparkle">
@@ -489,7 +489,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, languag
                 </p>
                 <div className="footer-powered">
                     <a href="https://www.sefaria.org" target="_blank" rel="noopener noreferrer">Powered by Sefaria</a>
-                    <span className="version-tag"> • v0.9.19</span>
+                    <span className="version-tag"> • v0.9.20</span>
                 </div>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
