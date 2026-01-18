@@ -20,7 +20,7 @@ Protocol:
 3. ALWAYS output your response in valid JSON format with this structure:
 {
   "content": "Your conversational response here. Be helpful, scholarly, and efficient. If proposing sources, describe them briefly here too.",
-  "suggested_title": "A short, relevant title for the source sheet based on the user request (max 5-6 words).",
+  "suggested_title": "A short, relevant title for the source sheet based on the user request (max 5-6 words). PROVIDE THIS ON THE FIRST TURN.",
   "suggested_sources": [
     { "ref": "Citation Ref (e.g., Genesis 1:1 or Rashi on Genesis 1:1)", "summary": "One sentence summary of why this is relevant." }
   ]
@@ -28,6 +28,7 @@ Protocol:
 4. If no sources are needed, "suggested_sources" should be an empty array.
 5. Use standard Sefaria citation formats (e.g., "Mishnah Berakhot 1:1", "Rashi on Leviticus 19:18").
 6. Do NOT provide the full text in the "content" field, just the citation and likelihood of relevance. The user will click to add the full text to the sheet.
+7. IMPORTANT: On the very first interaction, you MUST provide a "suggested_title" in the JSON.
 `;
 
 function ChevrutaApp() {
@@ -157,22 +158,59 @@ function ChevrutaApp() {
 
   const toggleDarkMode = () => setDarkMode(prev => !prev);
 
+  const [sidebarWidth, setSidebarWidth] = useState(400); // Default width in px
+  const [isResizing, setIsResizing] = useState(false);
+
+  const startResizing = (mouseDownEvent) => {
+    setIsResizing(true);
+  };
+
+  const stopResizing = () => {
+    setIsResizing(false);
+  };
+
+  const resize = (mouseMoveEvent) => {
+    if (isResizing) {
+      const newWidth = mouseMoveEvent.clientX;
+      if (newWidth > 300 && newWidth < 800) { // Min/Max constraints
+        setSidebarWidth(newWidth);
+      }
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("mousemove", resize);
+    window.addEventListener("mouseup", stopResizing);
+    return () => {
+      window.removeEventListener("mousemove", resize);
+      window.removeEventListener("mouseup", stopResizing);
+    };
+  }, [isResizing]);
+
   const chatStarted = messages.length > 1;
 
   return (
     <div className={`app-container ${chatStarted ? 'chat-active' : 'chat-initial'}`}>
       {chatStarted && (
-        <ChatSidebar
-          messages={messages}
-          onSendMessage={handleSendMessage}
-          onAddSource={handleAddSource}
-          isLoading={isLoading}
-          isMobileOpen={mobileChatOpen}
-          onMobileClose={() => setMobileChatOpen(false)}
-          darkMode={darkMode}
-          toggleDarkMode={toggleDarkMode}
-          suggestedInput={suggestedPrompt}
-        />
+        <>
+          <div style={{ width: sidebarWidth, minWidth: '300px', flexShrink: 0, display: 'flex' }}>
+            <ChatSidebar
+              messages={messages}
+              onSendMessage={handleSendMessage}
+              onAddSource={handleAddSource}
+              isLoading={isLoading}
+              isMobileOpen={mobileChatOpen}
+              onMobileClose={() => setMobileChatOpen(false)}
+              darkMode={darkMode}
+              toggleDarkMode={toggleDarkMode}
+              suggestedInput={suggestedPrompt}
+            />
+          </div>
+          <div
+            className="resizer"
+            onMouseDown={startResizing}
+          ></div>
+        </>
       )}
 
       <SheetView
