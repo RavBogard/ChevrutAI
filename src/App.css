@@ -937,71 +937,108 @@ body.dark-mode .prompt-card:hover {
   text-align: center;
   margin-bottom: 2rem;
   width: 100%;
-  max-width: 700px;
+  max-width: 800px;
   margin: 0 auto 3rem auto;
 }
 
 .central-hero h2 {
-  font-size: 2rem;
+  font-family: var(--font-ui);
+  /* Use sans-serif like Gemini */
+  font-size: 3rem;
+  /* Larger greeting */
+  font-weight: 500;
   margin-bottom: 0.5rem;
-  color: var(--sheet-text);
+  color: #444746;
+  /* Gemini dark gray */
+  background: linear-gradient(90deg, #4285F4, #9B72CB, #D96570);
+  /* Subtle gradient text? Optional, maybe keep simple */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  letter-spacing: -0.02em;
+}
+
+body.dark-mode .central-hero h2 {
+  background: linear-gradient(90deg, #8AB4F8, #C58AF9, #F28B82);
+  -webkit-background-clip: text;
 }
 
 .central-hero p {
-  color: #6b7280;
-  margin-bottom: 2rem;
+  font-size: 1.25rem;
+  color: #5f6368;
+  margin-bottom: 2.5rem;
+  font-weight: 300;
+}
+
+body.dark-mode .central-hero p {
+  color: #9aa0a6;
 }
 
 .central-input-wrapper {
   position: relative;
   width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 .central-textarea {
   width: 100%;
   min-height: 56px;
-  padding: 16px 60px 16px 20px;
+  padding: 18px 56px 18px 24px;
   border-radius: 28px;
-  border: 1px solid var(--border-color);
-  background-color: var(--input-bg);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  /* Pill-ish but expandable */
+  border: 1px solid #e0e0e0;
+  background-color: #f0f4f9;
+  /* Gemini light gray input */
+  color: #1f1f1f;
   font-family: inherit;
   font-size: 1.1rem;
-  resize: none;
-  overflow-y: hidden;
-  outline: none;
-  transition: all 0.2s;
-  color: var(--sheet-text);
   line-height: 1.5;
-}
-
-body.dark-mode .central-textarea {
-  background-color: #374151;
-  border-color: #4b5563;
-  color: white;
+  resize: none;
+  outline: none;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  overflow: hidden;
+  box-shadow: none;
 }
 
 .central-textarea:focus {
-  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.15);
-  border-color: var(--primary-color);
+  background-color: white;
+  box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+  border-color: transparent;
+}
+
+.central-textarea::placeholder {
+  color: #5f6368;
+  opacity: 0.8;
+}
+
+body.dark-mode .central-textarea {
+  background-color: #1e1f20;
+  border-color: #444746;
+  color: #e3e3e3;
+}
+
+body.dark-mode .central-textarea:focus {
+  background-color: #282a2c;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
 }
 
 .central-send-btn {
   position: absolute;
   right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
+  bottom: 8px;
+  /* Anchor to bottom for multi-line support */
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: var(--primary-color);
-  color: white;
+  background-color: transparent;
+  color: #5f6368;
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 0.2s, background-color 0.2s;
+  transition: background 0.2s;
 }
 
 .central-send-btn:disabled {
@@ -1011,14 +1048,94 @@ body.dark-mode .central-textarea {
 }
 
 .central-send-btn:not(:disabled):hover {
-  transform: translateY(-50%) scale(1.05);
-  background-color: #2563eb;
+  background-color: rgba(31, 31, 31, 0.08);
+  color: #1f1f1f;
+}
+
+body.dark-mode .central-send-btn {
+  color: #e3e3e3;
+}
+
+body.dark-mode .central-send-btn:not(:disabled):hover {
+  background-color: rgba(227, 227, 227, 0.08);
 }
 
 /* Ensure padding doesn't break width */
 .chat-textarea,
 .central-textarea {
   box-sizing: border-box;
+}
+
+/* Gemini-style Suggestion Chips */
+.empty-prompts-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.8rem;
+  margin: 2rem auto 0 auto;
+  width: 100%;
+  max-width: 900px;
+}
+
+.prompt-card {
+  background-color: #f0f4f9;
+  border: none;
+  /* No border for chips usually */
+  color: #1f1f1f;
+  padding: 0.8rem 1.2rem;
+  border-radius: 12px;
+  /* Soft rounding, not full rounded-circle necessarily, but Gemini uses 'chips' */
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.95rem;
+  width: auto;
+  /* Allow auto width */
+  flex: 0 0 auto;
+  /* Don't stretch */
+  height: auto;
+  border-left: none;
+  /* Remove previous style */
+}
+
+/* For longer prompts, maybe limit width or use grid? User wants "chips". */
+.prompt-card:hover {
+  background-color: #e2e7eb;
+  transform: none;
+  box-shadow: none;
+}
+
+.prompt-icon {
+  font-size: 1.1rem;
+  background: white;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+body.dark-mode .prompt-card {
+  background-color: #1e1f20;
+  color: #e3e3e3;
+}
+
+body.dark-mode .prompt-icon {
+  background-color: #282a2c;
+}
+
+body.dark-mode .prompt-card:hover {
+  background-color: #282a2c;
+}
+
+.prompt-card span:nth-child(2) {
+  /* Text */
+  font-weight: 500;
 }
 
 /* Export Dropdown */

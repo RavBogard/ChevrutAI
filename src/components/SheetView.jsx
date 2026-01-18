@@ -314,7 +314,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                         {!chatStarted ? (
                             <div className="central-hero">
                                 <h2>Welcome to ChevrutAI</h2>
-                                <p>I am your AI study partner. I can help you find sources, translate texts, and build beautiful source sheets.</p>
+                                <p>I am your AI partner in creating a Jewish text sheet. I can help you find sources, translate texts, and build beautiful source sheets.</p>
 
                                 <div className="central-input-wrapper">
                                     <form onSubmit={handleCentralSubmit}>
@@ -389,7 +389,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                 </p>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
-                    <span className="version-tag"> • v1.8.11 (Input Layout)</span>
+                    <span className="version-tag"> • v1.8.12 (Gemini Style)</span>
                 </div>
             </footer>
         </div >
