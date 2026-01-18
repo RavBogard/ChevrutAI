@@ -152,9 +152,8 @@ const ChatSidebar = ({ messages, onSendMessage, onAddSource, isLoading, isMobile
                     />
                     <button type="submit" className="send-button" disabled={isLoading || !inputObj.trim()}>
                         {/* Send / Arrow Icon */}
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <line x1="22" y1="2" x2="11" y2="13"></line>
-                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor">
+                            <path d="M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z" />
                         </svg>
                     </button>
                 </form>

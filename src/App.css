@@ -1066,76 +1066,62 @@ body.dark-mode .central-send-btn:not(:disabled):hover {
   box-sizing: border-box;
 }
 
-/* Gemini-style Suggestion Chips */
+/* Gemini-style Suggestion Cards (Grid Layout) */
 .empty-prompts-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.8rem;
-  margin: 2rem auto 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin: 3rem auto 0 auto;
   width: 100%;
   max-width: 900px;
 }
 
 .prompt-card {
-  background-color: #f0f4f9;
-  border: none;
-  /* No border for chips usually */
-  color: #1f1f1f;
-  padding: 0.8rem 1.2rem;
+  background-color: transparent;
+  border: 1px solid #e0e0e0;
+  /* Subtle border like Gemini empty state cards */
+  color: #444746;
+  padding: 1.25rem;
   border-radius: 12px;
-  /* Soft rounding, not full rounded-circle necessarily, but Gemini uses 'chips' */
   cursor: pointer;
   text-align: left;
-  transition: background 0.2s;
-  box-shadow: none;
+  transition: background-color 0.2s, border-color 0.2s;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  font-size: 0.95rem;
-  width: auto;
-  /* Allow auto width */
-  flex: 0 0 auto;
-  /* Don't stretch */
-  height: auto;
-  border-left: none;
-  /* Remove previous style */
+  min-height: 80px;
+  /* Substantial click area */
+  position: relative;
+  overflow: hidden;
 }
 
-/* For longer prompts, maybe limit width or use grid? User wants "chips". */
 .prompt-card:hover {
-  background-color: #e2e7eb;
-  transform: none;
-  box-shadow: none;
+  background-color: #f0f4f9;
+  /* Light gray hover */
+  border-color: #d1d5db;
 }
 
+/* Remove old Icon styles */
 .prompt-icon {
-  font-size: 1.1rem;
-  background: white;
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
+  display: none;
 }
 
 body.dark-mode .prompt-card {
   background-color: #1e1f20;
+  border-color: #444746;
   color: #e3e3e3;
-}
-
-body.dark-mode .prompt-icon {
-  background-color: #282a2c;
 }
 
 body.dark-mode .prompt-card:hover {
   background-color: #282a2c;
+  border-color: #5f6368;
 }
 
 .prompt-card span:nth-child(2) {
-  /* Text */
-  font-weight: 500;
+  font-weight: normal;
+  /* Reset if needed */
 }
 
 /* Export Dropdown */
