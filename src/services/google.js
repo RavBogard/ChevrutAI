@@ -4,6 +4,9 @@ const API_KEY = "";
 const DISCOVERY_DOC = 'https://docs.googleapis.com/$discovery/rest?version=v1';
 const SCOPES = 'https://www.googleapis.com/auth/drive.file';
 
+// Verify scope in console for debugging deployment issues
+console.log('Initializing Google Client with scope:', SCOPES);
+
 let tokenClient;
 let gapiInited = false;
 let gisInited = false;
@@ -121,7 +124,7 @@ export async function exportToGoogleDoc(sheetTitle, sources) {
     });
 
     htmlContent += `
-        <div class="footer">Created with ChevrutaAI (chevrutai.org)</div>
+        <div class="footer">Created with Chevruta.AI (chevruta.ai)</div>
       </body>
     </html>
     `;

@@ -7,7 +7,7 @@ const Privacy = () => {
             <p>Last Updated: {new Date().toLocaleDateString()}</p>
 
             <h2>1. Information We Collect</h2>
-            <p>ChevrutAI ("we", "us") does not collect, store, or share any personal user data on our servers. All data processing happens locally on your device or via direct calls to third-party APIs (Google, Sefaria).</p>
+            <p>Chevruta.AI ("we", "us") does not collect, store, or share any personal user data on our servers. All data processing happens locally on your device or via direct calls to third-party APIs (Google, Sefaria).</p>
 
             <h2>2. Google User Data</h2>
             <p>Our application uses Google OAuth to allow you to export your source sheets directly to your personal Google Drive.</p>
