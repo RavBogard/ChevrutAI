@@ -316,10 +316,34 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
             <div className="sheet-paper" id="sheet-export-area">
                 {sources.length === 0 ? (
                     <div className="empty-state">
-                        <div style={{ marginBottom: '2rem' }}>
-                            <h2 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', color: 'var(--sheet-text)' }}>Your sheet is empty</h2>
-                            <p style={{ opacity: 0.7 }}>Ask ChevrutAI to find texts for you, or try one of these:</p>
-                        </div>
+                        {!chatStarted ? (
+                            <div className="central-hero">
+                                <h2>Your sheet is empty</h2>
+                                <p>Ask ChevrutAI to find texts for you, or try one of these:</p>
+
+                                <div className="central-input-wrapper">
+                                    <form onSubmit={handleCentralSubmit}>
+                                        <textarea
+                                            className="central-textarea"
+                                            placeholder="What would you like to learn about today?"
+                                            value={inputVal}
+                                            onChange={(e) => setInputVal(e.target.value)}
+                                            onKeyDown={handleKeyDown}
+                                            rows={1}
+                                            autoFocus
+                                        />
+                                        <button type="submit" className="central-send-btn" disabled={!inputVal.trim()}>
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="central-hero">
+                                <h2>Build your sheet</h2>
+                                <p>Use the chat on the left to find and add sources.</p>
+                            </div>
+                        )}
 
                         <div className="empty-prompts-grid">
                             {[
