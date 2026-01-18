@@ -607,19 +607,30 @@ body.dark-mode .prompt-card:hover {
 /* Responsive */
 /* Mobile Layout (<768px) */
 @media (max-width: 768px) {
+
+  html,
+  body {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
   .app-container {
     flex-direction: column;
     height: 100vh;
     overflow: hidden;
+    max-width: 100vw;
   }
 
   /* Sheet View takes full screen */
   .sheet-view {
     height: 100%;
     width: 100%;
+    max-width: 100vw;
     padding: 1rem;
+    overflow-x: hidden;
     overflow-y: auto;
     padding-bottom: 80px;
+    box-sizing: border-box;
     /* Space for FAB */
   }
 
