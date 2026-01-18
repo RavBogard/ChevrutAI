@@ -834,18 +834,42 @@ body.dark-mode .prompt-card:hover {
   touch-action: manipulation;
 }
 
-.sidebar-logo {
-  width: 100%;
-  height: auto;
-  min-height: 48px;
-  /* Prevent collapse */
-  object-fit: contain;
-  display: block;
-  margin-bottom: 0px;
-  padding-right: 60px;
-  /* Reserve space for controls */
+/* Text Logo */
+.sidebar-logo-text {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  line-height: 1;
+  gap: 1px;
+  user-select: none;
+  cursor: pointer;
 }
 
+.logo-serif {
+  font-family: var(--font-english-serif);
+  font-weight: 700;
+  color: var(--sidebar-text);
+  letter-spacing: -0.03em;
+}
+
+.logo-sans {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  /* Use Gemini Gradient for the 'AI' part */
+  background: linear-gradient(90deg, #4285F4, #9B72CB, #D96570);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-right: 4px;
+}
+
+.logo-sparkle {
+  display: flex;
+  align-items: center;
+  margin-top: -4px;
+  /* Lift star slightly */
+}
+
+/* Version Select (previously styling .sidebar-logo img) */
 .version-select {
   padding: 0.3rem;
   border-radius: 4px;

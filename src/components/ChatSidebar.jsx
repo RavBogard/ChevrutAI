@@ -58,11 +58,22 @@ const ChatSidebar = ({ messages, onSendMessage, onAddSource, isLoading, isMobile
         <div className={`chat-sidebar ${isMobileOpen ? 'mobile-open' : ''}`}>
             <div className="chat-header">
                 <div className="header-top-row">
-                    <img
-                        src={darkMode ? "/logo-dark.png" : "/logo.png"}
-                        alt="ChevrutAI"
-                        className="sidebar-logo"
-                    />
+                    <div className="sidebar-logo-text">
+                        <span className="logo-serif">Chevrut</span>
+                        <span className="logo-sans">AI</span>
+                        <span className="logo-sparkle">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="url(#sparkle-gradient)" stroke="none">
+                                <defs>
+                                    <linearGradient id="sparkle-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stopColor="#4285F4" />
+                                        <stop offset="50%" stopColor="#9B72CB" />
+                                        <stop offset="100%" stopColor="#D96570" />
+                                    </linearGradient>
+                                </defs>
+                                <path d="M12 2L15.09 9.26L22 12L15.09 14.74L12 22L8.91 14.74L2 12L8.91 9.26L12 2Z" />
+                            </svg>
+                        </span>
+                    </div>
                     <div className="header-controls">
                         <button
                             className="theme-toggle-btn"

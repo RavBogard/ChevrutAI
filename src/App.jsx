@@ -72,7 +72,7 @@ function ChevrutaApp() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          message: userText,
+          message: messages.length === 0 ? userText + " \n\n[SYSTEM: You MUST provide a 'suggested_title' for this source sheet in your JSON response.]" : userText,
           history: history
         })
       });
@@ -107,9 +107,43 @@ function ChevrutaApp() {
         console.log("Setting title to:", parsedResponse.suggested_title);
         setSheetTitle(parsedResponse.suggested_title);
       } else if (history.length === 0) {
-        // Fallback: Use user prompt if AI fails to suggest title on first turn
-        const fallbackTitle = userText.length > 40 ? userText.substring(0, 40) + "..." : userText;
-        console.log("Using fallback title:", fallbackTitle);
+        // Fallback: Smart Title Cleanup
+        let cleanTitle = userText;
+        // Common prefixes to strip
+        const prefixes = [
+          /^(find|get|show|give|list) (me )?(texts?|sources?|quotes?) (for|about|on|regarding) /i,
+          /^(create|make|build|generate) (a )?(source )?sheet (for|about|on|regarding) /i,
+          /^(what does) (.+) (say about) /i, // Extract middle part? No, usually "What does Torah say about X" -> "X"
+          /^(texts?|sources?) (about|on|for) /i,
+          /^(i want|i need|can you|please) /i
+        ];
+
+        for (const p of prefixes) {
+          cleanTitle = cleanTitle.replace(p, '');
+        }
+
+        // Specific fix for "What does X say about Y" -> "Y according to X" or just "Y". 
+        // Let's just strip "What does ... say about" wrapper if possible, or leave it if complex.
+        // Simple Strip: remove "What does X say about" is hard without capturing groups.
+        // Let's try to remove "What does the Talmud say about forgiveness?" -> "Forgiveness"
+        const questionMatch = cleanTitle.match(/what does .* say about (.+)\??/i);
+        if (questionMatch && questionMatch[1]) {
+          cleanTitle = questionMatch[1];
+        }
+
+        // Capitalize first letter
+        cleanTitle = cleanTitle.trim();
+        if (cleanTitle.length > 0) {
+          cleanTitle = cleanTitle.charAt(0).toUpperCase() + cleanTitle.slice(1);
+        } else {
+          cleanTitle = "New Source Sheet";
+        }
+
+        // Remove trailing question mark
+        cleanTitle = cleanTitle.replace(/\?$/, '');
+
+        const fallbackTitle = cleanTitle.length > 50 ? cleanTitle.substring(0, 50) + "..." : cleanTitle;
+        console.log("Using smart fallback title:", fallbackTitle);
         setSheetTitle(fallbackTitle);
       }
 
