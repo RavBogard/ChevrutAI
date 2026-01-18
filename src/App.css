@@ -145,33 +145,38 @@ body.dark-mode .prompt-card {
 }
 
 /* Modern Chat Input */
+/* Modern Chat Input */
 .chat-input-container {
-  padding: 1rem;
+  padding: 0.5rem 1rem 1.5rem 1rem;
+  /* Buffer at bottom, padding on sides */
   background-color: var(--sidebar-bg);
-  border-top: 1px solid var(--border-color);
+  /* border-top: 1px solid var(--border-color); Remove border for cleaner look */
   flex-shrink: 0;
+  position: relative;
+  z-index: 20;
 }
 
 .chat-textarea {
   width: 100%;
-  min-height: 52px;
-  max-height: 150px;
-  padding: 14px 50px 14px 1rem;
-  /* Right padding for button */
-  border-radius: 12px;
+  min-height: 60px;
+  /* Taller */
+  max-height: 200px;
+  padding: 16px 54px 16px 20px;
+  /* More padding */
+  border-radius: 24px;
+  /* More rounded/modern */
   border: 1px solid var(--border-color);
   background-color: #374151;
-  /* Dark input bg */
   color: white;
   font-family: inherit;
-  font-size: 0.95rem;
+  font-size: 1rem;
   line-height: 1.5;
   resize: none;
   display: block;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
   overflow-y: hidden;
-  /* JavaScript handles height, but overflow hidden prevents scrollbar flash */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 /* Show scrollbar if max height reached */
@@ -181,11 +186,14 @@ body.dark-mode .prompt-card {
 
 .chat-textarea:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  background-color: #4b5563;
+  /* Slightly lighter on focus? or keep same */
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 .chat-textarea::placeholder {
   color: #9ca3af;
+  opacity: 0.8;
 }
 
 .send-button {

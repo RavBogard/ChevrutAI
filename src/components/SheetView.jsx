@@ -354,7 +354,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                 </p>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
-                    <span className="version-tag"> • v1.8.3 (Chat Input Redesign)</span>
+                    <span className="version-tag"> • v1.8.4 (Input Polish)</span>
                 </div>
             </footer>
         </div >
