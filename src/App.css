@@ -838,24 +838,27 @@ body.dark-mode .prompt-card:hover {
 .sidebar-logo-text {
   display: flex;
   align-items: center;
-  font-size: 1.5rem;
+  font-size: 2rem;
+  /* Larger as requested */
   line-height: 1;
-  gap: 1px;
+  gap: 2px;
   user-select: none;
   cursor: pointer;
+  padding-right: 1rem;
+  /* breathing room */
 }
 
 .logo-serif {
   font-family: var(--font-english-serif);
   font-weight: 700;
   color: var(--sidebar-text);
-  letter-spacing: -0.03em;
+  letter-spacing: 0.02em;
+  /* Spread out slightly */
 }
 
 .logo-sans {
   font-family: var(--font-ui);
   font-weight: 700;
-  /* Use Gemini Gradient for the 'AI' part */
   background: linear-gradient(90deg, #4285F4, #9B72CB, #D96570);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -865,72 +868,50 @@ body.dark-mode .prompt-card:hover {
 .logo-sparkle {
   display: flex;
   align-items: center;
-  margin-top: -4px;
-  /* Lift star slightly */
+  margin-top: -6px;
+  /* Lift star */
 }
 
-/* Version Select (previously styling .sidebar-logo img) */
-.version-select {
-  padding: 0.3rem;
-  border-radius: 4px;
-  border: 1px solid #d1d5db;
-  font-size: 0.8rem;
-  color: #374151;
-  background-color: white;
-  text-overflow: ellipsis;
+/* Central Big Logo */
+.central-logo-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 4.5rem;
+  margin-bottom: 1rem;
+  user-select: none;
 }
 
-.version-label {
-  display: block;
-  margin-top: 0.5rem;
-  font-size: 0.75rem;
-  color: #9ca3af;
-  font-style: italic;
-  font-family: var(--font-ui);
+.central-logo-text .logo-serif {
+  color: var(--sheet-text);
+  /* Adapt to theme */
 }
 
-.loading-text {
-  color: #6b7280;
-  font-style: italic;
-  text-align: center;
-  width: 100%;
+.central-logo-text .logo-sparkle svg {
+  width: 48px;
+  height: 48px;
 }
 
-.sheet-footer {
-  margin-top: 3rem;
-  padding: 2rem;
-  text-align: center;
-  color: #9ca3af;
-  font-size: 0.9rem;
-  border-top: 1px solid #e5e7eb;
-  width: 100%;
-  max-width: 900px;
-}
-
-.sheet-footer a {
-  color: var(--primary-color);
-  text-decoration: none;
-}
-
-.sheet-footer a:hover {
-  text-decoration: underline;
-}
-
-.footer-legal {
-  margin-top: 0.5rem;
-  font-size: 0.8rem;
-}
-
-.version-tag {
-  color: #6b7280;
-  font-size: 0.75rem;
-  opacity: 0.8;
-}
 
 /* Title Input & Export Links */
+.sheet-controls-row {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.sheet-divider-line {
+  border-bottom: 1px solid var(--border-color);
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto 2rem auto;
+}
+
 .title-input {
   font-family: var(--font-english-serif);
-  font-size: 2.5rem;
+  font-size: 3rem;
+  /* Even larger title */
   color: var(--sheet-text);
   text-align: center;
   border: none;
@@ -941,6 +922,7 @@ body.dark-mode .prompt-card:hover {
   outline: none;
   padding: 0.5rem;
   transition: border-color 0.2s;
+  margin-bottom: 1rem;
 }
 
 .title-input:focus {

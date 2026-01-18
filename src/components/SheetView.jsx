@@ -272,22 +272,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
         <div className="sheet-view">
             {chatStarted && (
                 <header className="sheet-header">
-                    <input
-                        type="text"
-                        className="title-input"
-                        value={sheetTitle}
-                        onChange={(e) => onTitleChange(e.target.value)}
-                    />
-
-                    {exportUrl && (
-                        <div className="export-success-msg">
-                            <a href={exportUrl} target="_blank" rel="noopener noreferrer" className="open-doc-link">
-                                Open in Google Docs ↗
-                            </a>
-                        </div>
-                    )}
-
-                    <div className="header-actions">
+                    <div className="sheet-controls-row">
                         <div className="export-menu-container">
                             <button className="export-main-btn" onClick={() => setShowExportMenu(!showExportMenu)}>
                                 Export ▾
@@ -298,13 +283,29 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                                         Google Docs
                                     </button>
                                     <button onClick={handleExportDocx}>Word (.docx)</button>
-                                    <button onClick={() => { handleExportPDF(); setShowExportMenu(false); }}>
-                                        PDF
-                                    </button>
+                                    <button onClick={() => { handleExportPDF(); setShowExportMenu(false); }}>PDF</button>
                                 </div>
                             )}
                         </div>
                     </div>
+
+                    <div className="sheet-divider-line"></div>
+
+                    <input
+                        type="text"
+                        className="title-input"
+                        value={sheetTitle}
+                        onChange={(e) => onTitleChange(e.target.value)}
+                        placeholder="Untitled Source Sheet"
+                    />
+
+                    {exportUrl && (
+                        <div className="export-success-msg">
+                            <a href={exportUrl} target="_blank" rel="noopener noreferrer" className="open-doc-link">
+                                Open in Google Docs ↗
+                            </a>
+                        </div>
+                    )}
                 </header>
             )}
 
@@ -313,7 +314,22 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                     <div className="empty-state">
                         {!chatStarted ? (
                             <div className="central-hero">
-                                <h2>Welcome to ChevrutAI</h2>
+                                <div className="central-logo-text">
+                                    <span className="logo-serif">Chevrut</span>
+                                    <span className="logo-sans">AI</span>
+                                    <span className="logo-sparkle">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="url(#sparkle-gradient-central)" stroke="none">
+                                            <defs>
+                                                <linearGradient id="sparkle-gradient-central" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                    <stop offset="0%" stopColor="#4285F4" />
+                                                    <stop offset="50%" stopColor="#9B72CB" />
+                                                    <stop offset="100%" stopColor="#D96570" />
+                                                </linearGradient>
+                                            </defs>
+                                            <path d="M12 2L15.09 9.26L22 12L15.09 14.74L12 22L8.91 14.74L2 12L8.91 9.26L12 2Z" />
+                                        </svg>
+                                    </span>
+                                </div>
                                 <p>I am your AI partner in creating a Jewish text sheet. I can help you find sources, translate texts, and build beautiful source sheets.</p>
 
                                 <div className="central-input-wrapper">
@@ -388,7 +404,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                 </p>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
-                    <span className="version-tag"> • v1.8.16 (New Logo & Title Fix)</span>
+                    <span className="version-tag"> • v1.8.17 (Polished UI)</span>
                 </div>
             </footer>
         </div >
