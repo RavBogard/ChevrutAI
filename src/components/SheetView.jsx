@@ -182,7 +182,7 @@ const SortableSourceItem = ({ source, id, onRemove, onUpdate }) => {
     );
 };
 
-const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMode, toggleDarkMode, onSuggestionClick }) => {
+const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMode, toggleDarkMode, onSuggestionClick, sheetTitle, onTitleChange }) => {
     const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
@@ -204,7 +204,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
     };
 
     const [isExportingGoogle, setIsExportingGoogle] = useState(false);
-    const [sheetTitle, setSheetTitle] = useState("New Source Sheet");
+    // const [sheetTitle, setSheetTitle] = useState("New Source Sheet"); // Lifted to App.jsx
     const [exportUrl, setExportUrl] = useState(null);
     const [showExportMenu, setShowExportMenu] = useState(false);
 
@@ -258,7 +258,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                     type="text"
                     className="title-input"
                     value={sheetTitle}
-                    onChange={(e) => setSheetTitle(e.target.value)}
+                    onChange={(e) => onTitleChange(e.target.value)}
                 />
 
                 {exportUrl && (
@@ -354,7 +354,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                 </p>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
-                    <span className="version-tag"> • v1.8.1 (Layout Fixes)</span>
+                    <span className="version-tag"> • v1.8.2 (Auto-Titling)</span>
                 </div>
             </footer>
         </div >

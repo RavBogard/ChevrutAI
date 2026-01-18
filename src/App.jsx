@@ -20,6 +20,7 @@ Protocol:
 3. ALWAYS output your response in valid JSON format with this structure:
 {
   "content": "Your conversational response here. Be helpful, scholarly, and efficient. If proposing sources, describe them briefly here too.",
+  "suggested_title": "A short, relevant title for the source sheet based on the user request (max 5-6 words).",
   "suggested_sources": [
     { "ref": "Citation Ref (e.g., Genesis 1:1 or Rashi on Genesis 1:1)", "summary": "One sentence summary of why this is relevant." }
   ]
@@ -41,6 +42,7 @@ function ChevrutaApp() {
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const [suggestedPrompt, setSuggestedPrompt] = useState('');
+  const [sheetTitle, setSheetTitle] = useState("New Source Sheet");
 
   const sendMessageToGemini = async (userText) => {
     try {
@@ -96,6 +98,11 @@ function ChevrutaApp() {
         text: parsedResponse.content,
         suggestedSources: parsedResponse.suggested_sources || []
       };
+
+      // Auto-update title if provided and we are still on the default
+      if (parsedResponse.suggested_title) {
+        setSheetTitle(parsedResponse.suggested_title);
+      }
 
       setMessages(prev => [...prev, botMessage]);
 
@@ -169,6 +176,8 @@ function ChevrutaApp() {
         onRemoveSource={handleRemoveSource}
         onUpdateSource={handleUpdateSource}
         onReorder={setSourcesList}
+        sheetTitle={sheetTitle}
+        onTitleChange={setSheetTitle}
         darkMode={darkMode}
         toggleDarkMode={toggleDarkMode}
         onSuggestionClick={(text) => setSuggestedPrompt(text)}
