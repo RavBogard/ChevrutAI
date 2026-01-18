@@ -404,7 +404,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                 </p>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
-                    <span className="version-tag"> • v1.8.17 (Polished UI)</span>
+                    <span className="version-tag"> • v1.8.18 (Frank Ruhl Logo)</span>
                 </div>
             </footer>
         </div >
