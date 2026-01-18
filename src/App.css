@@ -147,13 +147,14 @@ body.dark-mode .prompt-card {
 /* Modern Chat Input */
 /* Modern Chat Input */
 .chat-input-container {
-  padding: 0.5rem 1rem 1.5rem 1rem;
-  /* Buffer at bottom, padding on sides */
+  padding: 0 1.5rem 2rem 1.5rem;
+  /* More bottom buffer */
   background-color: var(--sidebar-bg);
-  /* border-top: 1px solid var(--border-color); Remove border for cleaner look */
   flex-shrink: 0;
   position: relative;
   z-index: 20;
+  margin-top: 1rem;
+  /* Separation from messages */
 }
 
 .chat-textarea {
@@ -795,6 +796,88 @@ body.dark-mode .prompt-card:hover {
 
 .open-doc-link:hover {
   text-decoration: underline;
+}
+
+/* Central Input (SheetView Empty State) */
+.central-hero {
+  text-align: center;
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto 3rem auto;
+}
+
+.central-hero h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: var(--sheet-text);
+}
+
+.central-hero p {
+  color: #6b7280;
+  margin-bottom: 2rem;
+}
+
+.central-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.central-textarea {
+  width: 100%;
+  min-height: 56px;
+  padding: 16px 60px 16px 20px;
+  border-radius: 28px;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-bg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: inherit;
+  font-size: 1.1rem;
+  resize: none;
+  overflow-y: hidden;
+  outline: none;
+  transition: all 0.2s;
+  color: var(--sheet-text);
+  line-height: 1.5;
+}
+
+body.dark-mode .central-textarea {
+  background-color: #374151;
+  border-color: #4b5563;
+  color: white;
+}
+
+.central-textarea:focus {
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.15);
+  border-color: var(--primary-color);
+}
+
+.central-send-btn {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.central-send-btn:disabled {
+  background-color: #9ca3af;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.central-send-btn:not(:disabled):hover {
+  transform: scale(1.05);
+  background-color: #2563eb;
 }
 
 /* Export Dropdown */

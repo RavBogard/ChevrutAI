@@ -182,13 +182,30 @@ const SortableSourceItem = ({ source, id, onRemove, onUpdate }) => {
     );
 };
 
-const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMode, toggleDarkMode, onSuggestionClick, sheetTitle, onTitleChange }) => {
+const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMode, toggleDarkMode, onSuggestionClick, sheetTitle, onTitleChange, onSendMessage, chatStarted }) => {
     const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
             coordinateGetter: sortableKeyboardCoordinates,
         })
     );
+
+    const [inputVal, setInputVal] = useState('');
+
+    const handleCentralSubmit = (e) => {
+        e.preventDefault();
+        if (inputVal.trim()) {
+            onSendMessage(inputVal);
+            setInputVal('');
+        }
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleCentralSubmit(e);
+        }
+    };
 
     const handleDragEnd = (event) => {
         const { active, over } = event;
@@ -354,7 +371,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                 </p>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
-                    <span className="version-tag"> • v1.8.4 (Input Polish)</span>
+                    <span className="version-tag"> • v1.8.5 (Central Start)</span>
                 </div>
             </footer>
         </div >

@@ -181,6 +181,8 @@ function ChevrutaApp() {
         darkMode={darkMode}
         toggleDarkMode={toggleDarkMode}
         onSuggestionClick={(text) => setSuggestedPrompt(text)}
+        onSendMessage={handleSendMessage}
+        chatStarted={messages.length > 1}
       />
 
       {/* Mobile Floating Action Button */}
