@@ -25,6 +25,8 @@
 
   --font-ui: 'Inter', system-ui, -apple-system, sans-serif;
   --font-english-serif: 'Merriweather', 'Georgia', serif;
+  --font-hebrew: 'Frank Ruhl Libre', serif;
+  /* Classic, readable Hebrew */
 
   --source-bg: #ffffff;
 }
@@ -588,8 +590,9 @@ body.dark-mode .prompt-card:hover {
 .text-heb {
   font-family: var(--font-hebrew);
   text-align: right;
-  font-size: 1.3rem;
-  /* Hebrew often needs to be slightly larger */
+  font-size: 1.45rem;
+  /* Larger for Siddur-like readability */
+  line-height: 1.6;
 }
 
 /* View Modes */
