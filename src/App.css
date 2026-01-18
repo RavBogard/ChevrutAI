@@ -792,7 +792,7 @@ body.dark-mode .prompt-card:hover {
     max-width: 100%;
     width: 100%;
     box-sizing: border-box;
-    overflow: hidden;
+    /* overflow: hidden; Removed to allow logo to touch edges if needed */
   }
 
   .central-hero p {
@@ -805,7 +805,7 @@ body.dark-mode .prompt-card:hover {
   }
 
   .central-logo-text {
-    font-size: clamp(1.5rem, 9vw, 2.2rem);
+    font-size: min(11vw, 2.5rem);
     flex-wrap: nowrap;
     justify-content: center;
     width: 100%;
@@ -866,7 +866,7 @@ body.dark-mode .prompt-card:hover {
 /* Extra small screens (narrow phones) */
 @media (max-width: 400px) {
   .central-logo-text {
-    font-size: clamp(1.4rem, 8vw, 1.8rem);
+    font-size: min(10vw, 1.8rem);
   }
 
   .central-logo-text .logo-sparkle svg {
