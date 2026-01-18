@@ -103,11 +103,13 @@ body {
 }
 
 /* Empty State Prompts */
+/* Empty State Prompts */
 .empty-prompts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1rem;
-  margin-top: 2rem;
+  margin: 2rem auto 0 auto;
+  /* Center grid */
   width: 100%;
   max-width: 800px;
 }
@@ -126,6 +128,30 @@ body {
   gap: 0.8rem;
   color: var(--sheet-text);
   font-size: 0.95rem;
+}
+
+.initial-theme-toggle {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  /* Subtle bg */
+  border: 1px solid var(--border-color);
+  color: var(--sheet-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 50;
+  transition: all 0.2s;
+}
+
+.initial-theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
 }
 
 .prompt-card:hover {
