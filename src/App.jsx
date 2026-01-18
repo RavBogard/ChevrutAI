@@ -20,15 +20,22 @@ Protocol:
 3. ALWAYS output your response in valid JSON format with this structure:
 {
   "content": "Your conversational response here. Be helpful, scholarly, and efficient. If proposing sources, describe them briefly here too.",
-  "suggested_title": "A SMART, THEMATIC title (max 4-5 words). Extract the core topic (e.g. 'The Ethics of War', 'Shabbat Candle Lighting'). Do NOT use sentences or phrases like 'Texts about...' or 'Source sheet on...'. Just the topic.",
+  "suggested_title": "A SHORT THEMATIC TITLE (2-5 words). NOT THE USER'S QUESTION. Extract the core TOPIC. Examples: 'Transgender Identity in Halakha', 'Shabbat Candle Lighting', 'The Binding of Isaac', 'Teshuvah and Forgiveness'. NEVER use the user's raw prompt as the title.",
   "suggested_sources": [
     { "ref": "Citation Ref (e.g., Genesis 1:1 or Rashi on Genesis 1:1)", "summary": "One sentence summary of why this is relevant." }
   ]
 }
 4. If no sources are needed, "suggested_sources" should be an empty array.
-5. Use standard Sefaria citation formats (e.g., "Mishnah Berakhot 1:1", "Rashi on Leviticus 19:18").
+5. ONLY use VALID Sefaria citation formats that definitely exist. Examples of valid formats:
+   - "Genesis 1:1" (Torah verses)
+   - "Mishnah Berakhot 1:1" (Mishnah)
+   - "Yevamot 64b" (Talmud Bavli - use "a" or "b" for amud)
+   - "Rashi on Genesis 1:1" (Commentary)
+   - "Shulchan Arukh, Even HaEzer 61:1" (Halakhic codes)
+   - "Zohar 1:1a" (Kabbalah)
+   DO NOT suggest obscure or uncertain references. If you're not 100% sure a text exists in Sefaria, DO NOT suggest it.
 6. Do NOT provide the full text in the "content" field, just the citation and likelihood of relevance. The user will click to add the full text to the sheet.
-7. IMPORTANT: On the very first interaction, you MUST provide a "suggested_title" in the JSON.
+7. IMPORTANT: On the very first interaction, you MUST provide a "suggested_title" in the JSON. The title should be the TOPIC, not a question or command.
 `;
 
 function ChevrutaApp() {
@@ -192,13 +199,20 @@ function ChevrutaApp() {
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem('darkMode') === 'true';
   });
+  const [language, setLanguage] = useState('en'); // 'en' or 'he'
 
   useEffect(() => {
     document.body.classList.toggle('dark-mode', darkMode);
     localStorage.setItem('darkMode', darkMode);
   }, [darkMode]);
 
+  useEffect(() => {
+    document.documentElement.lang = language;
+    document.documentElement.dir = language === 'he' ? 'rtl' : 'ltr';
+  }, [language]);
+
   const toggleDarkMode = () => setDarkMode(prev => !prev);
+  const toggleLanguage = () => setLanguage(prev => prev === 'en' ? 'he' : 'en');
 
   const [sidebarWidth, setSidebarWidth] = useState(400); // Default width in px
   const [isResizing, setIsResizing] = useState(false);
@@ -245,6 +259,8 @@ function ChevrutaApp() {
               onMobileClose={() => setMobileChatOpen(false)}
               darkMode={darkMode}
               toggleDarkMode={toggleDarkMode}
+              language={language}
+              toggleLanguage={toggleLanguage}
               suggestedInput={suggestedPrompt}
             />
           </div>
@@ -264,6 +280,8 @@ function ChevrutaApp() {
         onTitleChange={setSheetTitle}
         darkMode={darkMode}
         toggleDarkMode={toggleDarkMode}
+        language={language}
+        toggleLanguage={toggleLanguage}
         onSuggestionClick={handleSendMessage}
         onSendMessage={handleSendMessage}
         chatStarted={chatStarted}
@@ -280,19 +298,33 @@ function ChevrutaApp() {
         </svg>
       </button>
 
-      {/* Standalone Theme Toggle (Initial View) */}
+      {/* Standalone Toggles (Initial View) */}
       {!chatStarted && (
-        <button
-          className="initial-theme-toggle"
-          onClick={toggleDarkMode}
-          title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-        >
-          {darkMode ? (
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-          ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-          )}
-        </button>
+        <div className="initial-toggles">
+          <button
+            className="initial-theme-toggle"
+            onClick={toggleLanguage}
+            title={language === 'en' ? "Switch to Hebrew" : "Switch to English"}
+          >
+            {language === 'en' ? (
+              <span style={{ fontWeight: 'bold', fontSize: '1.1rem', fontFamily: 'var(--font-hebrew)' }}>עב</span>
+            ) : (
+              <span style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>EN</span>
+            )}
+          </button>
+
+          <button
+            className="initial-theme-toggle"
+            onClick={toggleDarkMode}
+            title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            {darkMode ? (
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            )}
+          </button>
+        </div>
       )}
 
       {/* Backdrop for mobile chat */}

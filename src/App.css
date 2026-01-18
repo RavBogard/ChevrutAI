@@ -25,8 +25,8 @@
 
   --font-ui: 'Inter', system-ui, -apple-system, sans-serif;
   --font-english-serif: 'Merriweather', 'Georgia', serif;
-  --font-hebrew: 'Frank Ruhl Libre', serif;
-  /* Classic, readable Hebrew */
+  --font-hebrew: 'Heebo', 'Arial Hebrew', sans-serif;
+  /* Modern, highly readable Israeli Hebrew font */
 
   --source-bg: #ffffff;
 }
@@ -906,6 +906,12 @@ body.dark-mode .prompt-card:hover {
   height: 48px;
 }
 
+.central-logo-text .logo-hebrew {
+  font-family: var(--font-hebrew);
+  font-weight: 700;
+  direction: rtl;
+}
+
 
 /* Title Input & Export Links */
 .sheet-controls-row {
@@ -1262,4 +1268,52 @@ body.dark-mode .prompt-card:hover {
   font-style: italic;
   text-align: center;
   margin-bottom: 0.5rem;
+}
+
+/* Initial Toggles Container */
+.initial-toggles {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+  z-index: 100;
+}
+
+.initial-theme-toggle {
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #5f6368;
+  transition: background-color 0.2s;
+  position: static;
+}
+
+body.dark-mode .initial-theme-toggle {
+  color: #e3e3e3;
+}
+
+.initial-theme-toggle:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+body.dark-mode .initial-theme-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+html[dir="rtl"] .prompt-card,
+html[dir="rtl"] .sheet-header,
+html[dir="rtl"] .source-block {
+  /* Usually RTL default is fine, but check text alignment */
+  /* text-align: right; is default for RTL. */
+}
+
+html[dir="rtl"] .prompt-card {
+  text-align: right;
 }

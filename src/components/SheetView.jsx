@@ -190,7 +190,7 @@ const SortableSourceItem = ({ source, id, onRemove, onUpdate }) => {
     );
 };
 
-const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMode, toggleDarkMode, onSuggestionClick, sheetTitle, onTitleChange, onSendMessage, chatStarted }) => {
+const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMode, toggleDarkMode, language, toggleLanguage, onSuggestionClick, sheetTitle, onTitleChange, onSendMessage, chatStarted }) => {
     const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
@@ -323,8 +323,17 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                         {!chatStarted ? (
                             <div className="central-hero">
                                 <div className="central-logo-text">
-                                    <span className="logo-serif">Chevrut</span>
-                                    <span className="logo-sans">AI</span>
+                                    {language === 'he' ? (
+                                        <>
+                                            <span className="logo-serif logo-hebrew">חברותא</span>
+                                            <span className="logo-sans">AI</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <span className="logo-serif">Chevrut</span>
+                                            <span className="logo-sans">AI</span>
+                                        </>
+                                    )}
                                     <span className="logo-sparkle">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="url(#sparkle-gradient-central)" stroke="none">
                                             <defs>
@@ -338,18 +347,22 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                                         </svg>
                                     </span>
                                 </div>
-                                <p>I am your AI partner in creating a Jewish text sheet. I can help you find sources, translate texts, and build beautiful source sheets.</p>
+                                <p>{language === 'he'
+                                    ? 'אני שותף הלמידה שלך ליצירת דפי מקורות יהודיים. אני יכול לעזור לך למצוא מקורות, לתרגם טקסטים ולבנות דפים יפהפיים.'
+                                    : 'I am your AI partner in creating a Jewish text sheet. I can help you find sources, translate texts, and build beautiful source sheets.'}
+                                </p>
 
                                 <div className="central-input-wrapper">
                                     <form onSubmit={handleCentralSubmit}>
                                         <textarea
                                             className="central-textarea"
-                                            placeholder="What would you like to learn about today?"
+                                            placeholder={language === 'he' ? 'מה תרצה ללמוד היום?' : 'What would you like to learn about today?'}
                                             value={inputVal}
                                             onChange={(e) => setInputVal(e.target.value)}
                                             onKeyDown={handleKeyDown}
                                             rows={1}
                                             autoFocus
+                                            dir={language === 'he' ? 'rtl' : 'ltr'}
                                         />
                                         <button type="submit" className="central-send-btn" disabled={!inputVal.trim()}>
                                             <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="currentColor"><path d="M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z" /></svg>
@@ -357,14 +370,21 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                                     </form>
                                 </div>
                                 <div className="empty-prompts-grid">
-                                    {[
+                                    {(language === 'he' ? [
+                                        "מצא מקורות על הדלקת נרות שבת",
+                                        "בנה דף מקורות על תשובה",
+                                        "מקורות לטקס חתונה",
+                                        "טקסטים על הכנסת אורחים",
+                                        "מה התלמוד אומר על סליחה?",
+                                        "צור דף מקורות על עקדת יצחק"
+                                    ] : [
                                         "Find texts about Shabbat candle lighting",
                                         "Build a source sheet on teshuvah",
                                         "Sources for a wedding ceremony",
                                         "Texts about welcoming the stranger",
                                         "What does the Talmud say about forgiveness?",
                                         "Create a sheet on the binding of Isaac"
-                                    ].map((prompt, i) => (
+                                    ]).map((prompt, i) => (
                                         <button
                                             key={i}
                                             className="prompt-card"
@@ -412,7 +432,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                 </p>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
-                    <span className="version-tag"> • v1.8.22 (Refined Hebrew)</span>
+                    <span className="version-tag"> • v1.8.23 (Hebrew Mode & Font)</span>
                 </div>
             </footer>
         </div >
