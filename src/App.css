@@ -880,8 +880,9 @@ body.dark-mode .central-textarea {
 
 .central-send-btn {
   position: absolute;
-  right: 8px;
-  top: 8px;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -892,7 +893,7 @@ body.dark-mode .central-textarea {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform 0.2s, background-color 0.2s;
 }
 
 .central-send-btn:disabled {
@@ -902,8 +903,14 @@ body.dark-mode .central-textarea {
 }
 
 .central-send-btn:not(:disabled):hover {
-  transform: scale(1.05);
+  transform: translateY(-50%) scale(1.05);
   background-color: #2563eb;
+}
+
+/* Ensure padding doesn't break width */
+.chat-textarea,
+.central-textarea {
+  box-sizing: border-box;
 }
 
 /* Export Dropdown */

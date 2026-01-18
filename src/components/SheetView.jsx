@@ -270,48 +270,43 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
 
     return (
         <div className="sheet-view">
-            <div className="sheet-header">
-                <input
-                    type="text"
-                    className="title-input"
-                    value={sheetTitle}
-                    onChange={(e) => onTitleChange(e.target.value)}
-                />
+            {chatStarted && (
+                <header className="sheet-header">
+                    <input
+                        type="text"
+                        className="title-input"
+                        value={sheetTitle}
+                        onChange={(e) => onTitleChange(e.target.value)}
+                    />
 
-                {exportUrl && (
-                    <div className="export-success-msg">
-                        <a href={exportUrl} target="_blank" rel="noopener noreferrer" className="open-doc-link">
-                            Open in Google Docs &rarr;
-                        </a>
+                    {exportUrl && (
+                        <div className="export-success-msg">
+                            <a href={exportUrl} target="_blank" rel="noopener noreferrer" className="open-doc-link">
+                                Open in Google Docs ↗
+                            </a>
+                        </div>
+                    )}
+
+                    <div className="header-actions">
+                        <div className="export-menu-container">
+                            <button className="export-main-btn" onClick={() => setShowExportMenu(!showExportMenu)}>
+                                Export ▾
+                            </button>
+                            {showExportMenu && (
+                                <div className="export-dropdown">
+                                    <button onClick={() => { handleExportGoogle(); setShowExportMenu(false); }} disabled={isExportingGoogle}>
+                                        Google Docs
+                                    </button>
+                                    <button onClick={handleExportDocx}>Word (.docx)</button>
+                                    <button onClick={() => { handleExportPDF(); setShowExportMenu(false); }}>
+                                        PDF
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
-                )}
-
-                <div className="header-actions">
-                    <div className="export-menu-container">
-                        <button
-                            className="export-main-btn"
-                            onClick={() => setShowExportMenu(!showExportMenu)}
-                        >
-                            {isExportingGoogle ? 'Exporting...' : 'Export'} ▾
-                        </button>
-
-                        {showExportMenu && (
-                            <div className="export-dropdown">
-                                <button onClick={() => { handleExportPDF(); setShowExportMenu(false); }}>
-                                    Download PDF
-                                </button>
-                                <button onClick={() => { handleExportGoogle(); setShowExportMenu(false); }} disabled={isExportingGoogle}>
-                                    Export to Google Docs
-                                </button>
-                                <button onClick={handleExportDocx}>
-                                    Download Word (DocX)
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                </div>
-                <p className="sheet-meta">Created with ChevrutaAI</p>
-            </div>
+                </header>
+            )}
 
             <div className="sheet-paper" id="sheet-export-area">
                 {sources.length === 0 ? (
@@ -337,6 +332,25 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                                         </button>
                                     </form>
                                 </div>
+                                <div className="empty-prompts-grid">
+                                    {[
+                                        "Find texts about Shabbat candle lighting",
+                                        "Build a source sheet on teshuvah",
+                                        "Sources for a wedding ceremony",
+                                        "Texts about welcoming the stranger",
+                                        "What does the Talmud say about forgiveness?",
+                                        "Create a sheet on the binding of Isaac"
+                                    ].map((prompt, i) => (
+                                        <button
+                                            key={i}
+                                            className="prompt-card"
+                                            onClick={() => onSuggestionClick && onSuggestionClick(prompt)}
+                                        >
+                                            <span className="prompt-icon">✨</span>
+                                            {prompt}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
                         ) : (
                             <div className="central-hero">
@@ -344,26 +358,6 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                                 <p>Use the chat on the left to find and add sources.</p>
                             </div>
                         )}
-
-                        <div className="empty-prompts-grid">
-                            {[
-                                "Find texts about Shabbat candle lighting",
-                                "Build a source sheet on teshuvah",
-                                "Sources for a wedding ceremony",
-                                "Texts about welcoming the stranger",
-                                "What does the Talmud say about forgiveness?",
-                                "Create a sheet on the binding of Isaac"
-                            ].map((prompt, i) => (
-                                <button
-                                    key={i}
-                                    className="prompt-card"
-                                    onClick={() => onSuggestionClick && onSuggestionClick(prompt)}
-                                >
-                                    <span className="prompt-icon">✨</span>
-                                    {prompt}
-                                </button>
-                            ))}
-                        </div>
                     </div>
                 ) : (
                     <DndContext
@@ -395,7 +389,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, darkMod
                 </p>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
-                    <span className="version-tag"> • v1.8.6 (Hidden Sidebar Start)</span>
+                    <span className="version-tag"> • v1.8.7 (Polish & Hide)</span>
                 </div>
             </footer>
         </div >
