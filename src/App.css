@@ -849,11 +849,10 @@ body.dark-mode .prompt-card:hover {
 }
 
 .logo-serif {
-  font-family: 'Frank Ruhl Libre', serif;
+  font-family: var(--font-english-serif);
   font-weight: 700;
   color: var(--sidebar-text);
-  letter-spacing: 0.02em;
-  /* Spread out slightly */
+  letter-spacing: -0.01em;
 }
 
 .logo-sans {
@@ -883,7 +882,7 @@ body.dark-mode .prompt-card:hover {
 }
 
 .central-logo-text .logo-serif {
-  font-family: 'Frank Ruhl Libre', serif;
+  font-family: var(--font-english-serif);
   /* Consistent brand font */
   color: var(--sheet-text);
   /* Adapt to theme */
@@ -996,7 +995,7 @@ body.dark-mode .central-hero p {
 .central-input-wrapper {
   position: relative;
   width: 100%;
-  max-width: 700px;
+  max-width: 900px;
   margin: 0 auto;
 }
 
@@ -1116,11 +1115,11 @@ body.dark-mode .central-send-btn:not(:disabled):hover {
 /* Gemini-style Suggestion Cards (Grid Layout) */
 .empty-prompts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 1rem;
   margin: 3rem auto 0 auto;
   width: 100%;
-  max-width: 900px;
+  max-width: 800px;
 }
 
 .prompt-card {
@@ -1226,12 +1225,4 @@ body.dark-mode .prompt-card:hover {
   font-size: 0.9rem;
   cursor: pointer;
   transition: background-color 0.1s;
-}
-
-
-/* Force Footer Centering Override */
-.sheet-footer {
-  margin: 3rem auto 0 auto !important;
-  width: 100%;
-  max-width: 900px;
 }
