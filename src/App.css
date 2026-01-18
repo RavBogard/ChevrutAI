@@ -247,7 +247,7 @@ body {
   width: 100%;
   min-height: 120px;
   max-height: 300px;
-  padding: 14px 44px 14px 16px;
+  padding: 14px 16px 44px 16px;
   border-radius: 12px;
   border: 1px solid var(--border-color);
   background-color: var(--input-bg);
@@ -279,7 +279,8 @@ body {
 }
 
 .send-button {
-  right: 28px;
+  position: absolute;
+  left: 28px;
   /* Adjust for padding */
   bottom: 28px;
   /* Adjust for padding */

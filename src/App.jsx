@@ -100,8 +100,11 @@ function ChevrutaApp() {
         suggestedSources: parsedResponse.suggested_sources || []
       };
 
-      // Auto-update title if provided and we are still on the default
+      console.log("Parsed AI Response:", parsedResponse);
+
+      // Auto-update title if provided
       if (parsedResponse.suggested_title) {
+        console.log("Setting title to:", parsedResponse.suggested_title);
         setSheetTitle(parsedResponse.suggested_title);
       }
 
