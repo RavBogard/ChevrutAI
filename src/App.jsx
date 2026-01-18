@@ -106,6 +106,11 @@ function ChevrutaApp() {
       if (parsedResponse.suggested_title) {
         console.log("Setting title to:", parsedResponse.suggested_title);
         setSheetTitle(parsedResponse.suggested_title);
+      } else if (history.length === 0) {
+        // Fallback: Use user prompt if AI fails to suggest title on first turn
+        const fallbackTitle = userText.length > 40 ? userText.substring(0, 40) + "..." : userText;
+        console.log("Using fallback title:", fallbackTitle);
+        setSheetTitle(fallbackTitle);
       }
 
       setMessages(prev => [...prev, botMessage]);
