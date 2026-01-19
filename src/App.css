@@ -805,23 +805,31 @@ body.dark-mode .prompt-card:hover {
   }
 
   .central-logo-text {
-    font-size: min(11vw, 1.8rem);
-    flex-wrap: nowrap;
+    display: flex;
     justify-content: center;
     width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .central-logo-img {
+    height: auto;
+    width: auto;
     max-width: 100%;
-    box-sizing: border-box;
-    text-align: center;
+    /* Ensure it never overflows */
+    max-height: 80px;
+    /* Desktop height constraint */
+    object-fit: contain;
   }
 
-  .central-logo-text .logo-sparkle {
-    margin-left: 4px;
+  body.dark-mode .central-logo-img.light-mode-only {
+    display: none;
   }
 
-  .central-logo-text .logo-sparkle svg {
-    width: 28px;
-    height: 28px;
+  body:not(.dark-mode) .central-logo-img.dark-mode-only {
+    display: none;
   }
+
+  /* Hide the old SVG sparkle logic essentially by ignoring it if we remove the DOM elements */
 
   /* Central textarea mobile */
   .central-textarea {

@@ -232,7 +232,25 @@ function ChevrutaApp() {
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem('darkMode') === 'true';
   });
-  const [language, setLanguage] = useState('en'); // 'en' or 'he'
+  // Smart Language Detection: Persisted > Browser > Timezone
+  const [language, setLanguage] = useState(() => {
+    // 1. Check saved preference
+    const saved = localStorage.getItem('appLanguage');
+    if (saved) return saved;
+
+    // 2. Check Browser Language
+    if (navigator.language.startsWith('he')) return 'he';
+
+    // 3. Check Timezone (Israel Proxy)
+    try {
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      if (timeZone === 'Asia/Jerusalem') return 'he';
+    } catch (e) {
+      console.log('Timezone check failed', e);
+    }
+
+    return 'en';
+  });
 
   useEffect(() => {
     document.body.classList.toggle('dark-mode', darkMode);
@@ -245,7 +263,13 @@ function ChevrutaApp() {
   }, [language]);
 
   const toggleDarkMode = () => setDarkMode(prev => !prev);
-  const toggleLanguage = () => setLanguage(prev => prev === 'en' ? 'he' : 'en');
+  const toggleLanguage = () => {
+    setLanguage(prev => {
+      const newLang = prev === 'en' ? 'he' : 'en';
+      localStorage.setItem('appLanguage', newLang);
+      return newLang;
+    });
+  };
 
   const [sidebarWidth, setSidebarWidth] = useState(400); // Default width in px
   const [isResizing, setIsResizing] = useState(false);
