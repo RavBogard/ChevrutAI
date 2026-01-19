@@ -61,18 +61,70 @@ BAD titles (NEVER do this):
 
 function ChevrutaApp() {
   const { showToast } = useToast();
-  const [sourcesList, setSourcesList] = useState([]);
-  const [messages, setMessages] = useState([
-    {
+
+  // Persisted state with localStorage
+  const [sourcesList, setSourcesList] = useState(() => {
+    try {
+      const saved = localStorage.getItem('chevruta_sources');
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
+
+  const [messages, setMessages] = useState(() => {
+    try {
+      const saved = localStorage.getItem('chevruta_messages');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return parsed.length > 0 ? parsed : [{
+          id: 'welcome',
+          role: 'model',
+          text: 'Shalom! What kind of text sheet do you want to create together?',
+          suggestedSources: []
+        }];
+      }
+    } catch { }
+    return [{
       id: 'welcome',
       role: 'model',
       text: 'Shalom! What kind of text sheet do you want to create together?',
       suggestedSources: []
-    }
-  ]);
+    }];
+  });
+
   const [isLoading, setIsLoading] = useState(false);
   const [suggestedPrompt] = useState('');
-  const [sheetTitle, setSheetTitle] = useState("New Source Sheet");
+
+  const [sheetTitle, setSheetTitle] = useState(() => {
+    return localStorage.getItem('chevruta_title') || "New Source Sheet";
+  });
+
+  // Persist state changes to localStorage
+  useEffect(() => {
+    localStorage.setItem('chevruta_sources', JSON.stringify(sourcesList));
+  }, [sourcesList]);
+
+  useEffect(() => {
+    localStorage.setItem('chevruta_messages', JSON.stringify(messages));
+  }, [messages]);
+
+  useEffect(() => {
+    localStorage.setItem('chevruta_title', sheetTitle);
+  }, [sheetTitle]);
+
+  // Clear sheet function
+  const handleClearSheet = () => {
+    if (confirm('Are you sure you want to clear your current sheet? This cannot be undone.')) {
+      setSourcesList([]);
+      setMessages([{
+        id: 'welcome',
+        role: 'model',
+        text: 'Shalom! What kind of text sheet do you want to create together?',
+        suggestedSources: []
+      }]);
+      setSheetTitle("New Source Sheet");
+      showToast('Sheet cleared!', 'info');
+    }
+  };
 
   const sendMessageToGemini = async (userText) => {
     try {
@@ -336,6 +388,7 @@ function ChevrutaApp() {
         onRemoveSource={handleRemoveSource}
         onUpdateSource={handleUpdateSource}
         onReorder={setSourcesList}
+        onClearSheet={handleClearSheet}
         sheetTitle={sheetTitle}
         onTitleChange={setSheetTitle}
         darkMode={darkMode}

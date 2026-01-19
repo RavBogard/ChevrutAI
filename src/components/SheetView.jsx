@@ -190,7 +190,7 @@ const SortableSourceItem = ({ source, id, onRemove, onUpdate }) => {
     );
 };
 
-const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, language, onSuggestionClick, sheetTitle, onTitleChange, onSendMessage, chatStarted }) => {
+const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClearSheet, language, onSuggestionClick, sheetTitle, onTitleChange, onSendMessage, chatStarted }) => {
     const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
@@ -365,6 +365,13 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, languag
                                     </button>
                                     <button onClick={handleExportDocx}>Word (.docx)</button>
                                     <button onClick={() => { handleExportPDF(); setShowExportMenu(false); }}>PDF</button>
+                                    <hr style={{ margin: '4px 0', border: 'none', borderTop: '1px solid #e5e7eb' }} />
+                                    <button
+                                        onClick={() => { onClearSheet(); setShowExportMenu(false); }}
+                                        style={{ color: '#ef4444' }}
+                                    >
+                                        Clear Sheet
+                                    </button>
                                 </div>
                             )}
                         </div>
@@ -489,7 +496,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, languag
                 </p>
                 <div className="footer-powered">
                     <a href="https://www.sefaria.org" target="_blank" rel="noopener noreferrer">Powered by Sefaria</a>
-                    <span className="version-tag"> • v1.0.0</span>
+                    <span className="version-tag"> • v1.1.0</span>
                 </div>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
