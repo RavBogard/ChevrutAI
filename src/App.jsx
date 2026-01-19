@@ -1,6 +1,7 @@
-import { AuthProvider } from './contexts/AuthContext';
-import { useState, useEffect } from 'react';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { useState, useEffect, useRef } from 'react';
+import { HashRouter as Router, Routes, Route, useParams, useNavigate, Navigate } from 'react-router-dom';
+import HomeView from './components/home/HomeView';
 import ChatSidebar from './components/ChatSidebar';
 import SheetView from './components/SheetView';
 import Privacy from './components/Privacy';
@@ -14,7 +15,13 @@ import './App.css';
 // System instruction for the persona and JSON output
 // System instruction is now handled server-side in api/chat.js
 
-function ChevrutaApp() {
+// Wrapper to pass params to logic
+function EditorContainer() {
+  const { sheetId } = useParams();
+  const navigate = useNavigate();
+  const { currentUser } = useAuth();
+
+  // -- Copied from ChevrutaApp, need to adapt --
   const { showToast } = useToast();
 
   // Undo/Redo enabled sourcesList with localStorage persistence
@@ -80,16 +87,39 @@ function ChevrutaApp() {
     userSheets,
     loadSheet,
     createNewSheet,
-    currentSheetId
+    currentSheetId,
+    setCurrentSheetId // Helper exposed from hook
   } = useFirestore(sheetTitle, sourcesList, messages);
 
-  const handleLoadSheet = async (id) => {
-    await loadSheet(id, setSourcesList, setMessages, setSheetTitle);
-    if (window.innerWidth <= 768) {
-      setMobileChatOpen(true); // Open chat/sidebar to see it loaded? Or maybe close it?
-      // Actually if they click it in sidebar, they want to see the sheet probably.
-      setMobileChatOpen(false); // Close sidebar so they see the sheet
+  // Sync URL ID with System
+  useEffect(() => {
+    if (!sheetId) return;
+
+    if (sheetId !== currentSheetId) {
+      // It's a new ID for the system.
+      // Try to load it.
+      loadSheet(sheetId, setSourcesList, setMessages, setSheetTitle).then((loaded) => {
+        if (!loaded) {
+          // If not found, assume it's a NEW sheet with this ID.
+          // We manually set the ID so next save uses it.
+          console.log("Sheet not found, starting new with ID:", sheetId);
+          resetHistory([]);
+          setMessages([{
+            id: 'welcome',
+            role: 'model',
+            text: 'Shalom! What kind of text sheet do you want to create together?',
+            suggestedSources: []
+          }]);
+          setSheetTitle("New Source Sheet");
+          setCurrentSheetId(sheetId);
+        }
+      });
     }
+  }, [sheetId]); // Only run when URL changes
+
+  const handleLoadSheet = async (id) => {
+    // Navigation is now handled by URL change
+    navigate(`/sheet/${id}`);
   };
 
   // Clear sheet function
@@ -436,7 +466,9 @@ function App() {
       <ToastProvider>
         <Router>
           <Routes>
-            <Route path="/" element={<ChevrutaApp />} />
+            <Route path="/" element={<HomeView />} />
+            <Route path="/sheet/new" element={<Navigate to={`/sheet/${Date.now().toString()}`} replace />} />
+            <Route path="/sheet/:sheetId" element={<EditorContainer />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
           </Routes>
