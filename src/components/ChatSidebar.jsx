@@ -70,7 +70,7 @@ const ChatSidebar = ({
     };
 
     return (
-        <div className={`chat - sidebar ${isMobileOpen ? 'mobile-open' : ''} `}>
+        <div className={`chat-sidebar ${isMobileOpen ? 'mobile-open' : ''}`}>
             <div className="chat-header">
                 <div className="header-top-row">
                     <div className="sidebar-logo-text">

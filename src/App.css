@@ -145,7 +145,8 @@ h6 {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  /* More breathing room */
+  min-height: 0;
+  /* Critical for flex overflow scrolling */
 }
 
 /* Message Bubbles */
