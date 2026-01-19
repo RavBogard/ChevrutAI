@@ -138,21 +138,30 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                 })
             });
 
-            if (!response.ok) throw new Error("API Request Failed");
+            if (!response.ok) {
+                const errorData = await response.text();
+                console.error("API Error:", response.status, errorData);
+                throw new Error(`API Request Failed: ${response.status}`);
+            }
 
             const data = await response.json();
+
+            // Handle suggested_title if provided
+            if (data.suggested_title && sheetTitle === 'New Source Sheet') {
+                setSheetTitle(data.suggested_title);
+            }
 
             const botMessage = {
                 id: Date.now().toString(),
                 role: 'model',
-                text: data.text,
+                text: data.content || data.text || '', // Support both field names
                 suggestedSources: data.suggested_sources || []
             };
 
             setMessages(prev => [...prev, botMessage]);
 
         } catch (error) {
-            console.error(error);
+            console.error("Chat error:", error);
             setMessages(prev => [...prev, {
                 id: Date.now().toString(),
                 role: 'model',
