@@ -117,7 +117,13 @@ const ChatSidebar = ({
 
                     <div
                         style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-start', fontFamily: 'var(--font-english-serif)', gap: '1px', cursor: 'pointer' }}
-                        onClick={() => { setActiveTab('chat'); window.location.hash = '#/'; window.location.reload(); }}
+                        onClick={() => {
+                            localStorage.removeItem('chevruta_sources');
+                            localStorage.removeItem('chevruta_messages');
+                            localStorage.removeItem('chevruta_title');
+                            window.location.hash = '#/';
+                            window.location.reload();
+                        }}
                         title="Go to home"
                     >
                         <span style={{ fontSize: '2rem', fontWeight: '700', color: 'var(--sheet-text)', letterSpacing: '-0.02em' }}>Chevruta</span>
@@ -127,7 +133,13 @@ const ChatSidebar = ({
 
                     <button
                         className="new-chat-btn-sidebar"
-                        onClick={() => { setActiveTab('chat'); window.location.hash = '#/'; window.location.reload(); }}
+                        onClick={() => {
+                            localStorage.removeItem('chevruta_sources');
+                            localStorage.removeItem('chevruta_messages');
+                            localStorage.removeItem('chevruta_title');
+                            window.location.hash = '#/';
+                            window.location.reload();
+                        }}
                         style={{
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             width: '36px', height: '36px', borderRadius: '50%',
