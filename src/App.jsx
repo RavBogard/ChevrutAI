@@ -64,8 +64,16 @@ BAD titles (NEVER do this):
 function ChevrutaApp() {
   const { showToast } = useToast();
 
-  // Persisted state with localStorage
-  const [sourcesList, setSourcesList] = useState(() => {
+  // Undo/Redo enabled sourcesList with localStorage persistence
+  const {
+    state: sourcesList,
+    setState: setSourcesList,
+    undo: undoSources,
+    redo: redoSources,
+    canUndo,
+    canRedo,
+    resetHistory
+  } = useUndoRedo(() => {
     try {
       const saved = localStorage.getItem('chevruta_sources');
       return saved ? JSON.parse(saved) : [];
@@ -116,7 +124,7 @@ function ChevrutaApp() {
   // Clear sheet function
   const handleClearSheet = () => {
     if (confirm('Are you sure you want to clear your current sheet? This cannot be undone.')) {
-      setSourcesList([]);
+      resetHistory([]);
       setMessages([{
         id: 'welcome',
         role: 'model',
@@ -127,6 +135,7 @@ function ChevrutaApp() {
       showToast('Sheet cleared!', 'info');
     }
   };
+
 
   const sendMessageToGemini = async (userText) => {
     try {
@@ -391,6 +400,10 @@ function ChevrutaApp() {
         onUpdateSource={handleUpdateSource}
         onReorder={setSourcesList}
         onClearSheet={handleClearSheet}
+        onUndo={undoSources}
+        onRedo={redoSources}
+        canUndo={canUndo}
+        canRedo={canRedo}
         sheetTitle={sheetTitle}
         onTitleChange={setSheetTitle}
         darkMode={darkMode}

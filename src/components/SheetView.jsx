@@ -190,7 +190,7 @@ const SortableSourceItem = ({ source, id, onRemove, onUpdate }) => {
     );
 };
 
-const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClearSheet, language, onSuggestionClick, sheetTitle, onTitleChange, onSendMessage, chatStarted }) => {
+const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClearSheet, onUndo, onRedo, canUndo, canRedo, language, onSuggestionClick, sheetTitle, onTitleChange, onSendMessage, chatStarted }) => {
     const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
@@ -375,6 +375,34 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                                 </div>
                             )}
                         </div>
+
+                        {/* Undo/Redo Buttons */}
+                        <div className="undo-redo-container">
+                            <button
+                                className="undo-redo-btn"
+                                onClick={onUndo}
+                                disabled={!canUndo}
+                                aria-label="Undo"
+                                title="Undo last change"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M3 7v6h6"></path>
+                                    <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"></path>
+                                </svg>
+                            </button>
+                            <button
+                                className="undo-redo-btn"
+                                onClick={onRedo}
+                                disabled={!canRedo}
+                                aria-label="Redo"
+                                title="Redo last change"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M21 7v6h-6"></path>
+                                    <path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"></path>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
 
                     <input
@@ -496,7 +524,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                 </p>
                 <div className="footer-powered">
                     <a href="https://www.sefaria.org" target="_blank" rel="noopener noreferrer">Powered by Sefaria</a>
-                    <span className="version-tag"> • v1.2.0</span>
+                    <span className="version-tag"> • v1.2.1</span>
                 </div>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>

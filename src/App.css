@@ -1616,3 +1616,40 @@ html[dir="rtl"] .prompt-card {
     max-width: 100%;
   }
 }
+
+/* Undo/Redo Controls */
+.undo-redo-container {
+  display: flex;
+  gap: 4px;
+  margin-left: 8px;
+}
+
+.undo-redo-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--sheet-bg);
+  color: var(--sheet-text);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.undo-redo-btn:hover:not(:disabled) {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.undo-redo-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.undo-redo-btn svg {
+  width: 18px;
+  height: 18px;
+}
