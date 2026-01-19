@@ -1,6 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-const ChatSidebar = ({ messages, onSendMessage, onAddSource, isLoading, isMobileOpen, onMobileClose, darkMode, toggleDarkMode, suggestedInput }) => {
+const ChatSidebar = ({
+    messages,
+    onSendMessage,
+    onAddSource,
+    sheetSources,
+    isLoading,
+    isMobileOpen,
+    onMobileClose,
+    darkMode,
+    toggleDarkMode,
+    language
+}) => {
     const [inputObj, setInputObj] = useState('');
     const messagesEndRef = useRef(null);
     const textareaRef = useRef(null);
@@ -58,7 +69,7 @@ const ChatSidebar = ({ messages, onSendMessage, onAddSource, isLoading, isMobile
     };
 
     return (
-        <div className={`chat-sidebar ${isMobileOpen ? 'mobile-open' : ''}`}>
+        <div className={`chat - sidebar ${isMobileOpen ? 'mobile-open' : ''} `}>
             <div className="chat-header">
                 <div className="header-top-row">
                     <div className="sidebar-logo-text">
@@ -113,27 +124,43 @@ const ChatSidebar = ({ messages, onSendMessage, onAddSource, isLoading, isMobile
 
             <div className="messages-list">
                 {messages.map((msg) => (
-                    <div key={msg.id} className={`message ${msg.role}`}>
+                    <div key={msg.id} className={`message ${msg.role} `}>
                         <div className="message-content">
                             {msg.text && <p>{msg.text}</p>}
 
                             {msg.suggestedSources && msg.suggestedSources.length > 0 && (
                                 <div className="suggested-sources">
                                     <h4>Suggest Sources:</h4>
-                                    {msg.suggestedSources.map((source, idx) => (
-                                        <div key={idx} className="source-suggestion-card">
-                                            <div className="source-info">
-                                                <strong>{source.ref}</strong>
-                                                <span className="source-summary">{source.summary}</span>
+                                    {msg.suggestedSources.map((source, idx) => {
+                                        // Check if source is already in the sheet
+                                        // We check if any source in the sheet has the same ref
+                                        const isAdded = sheetSources && sheetSources.some(s => s.ref === source.ref);
+
+                                        return (
+                                            <div key={idx} className="source-suggestion-card">
+                                                <div className="source-info">
+                                                    <strong>{source.ref}</strong>
+                                                    <span className="source-summary">{source.summary}</span>
+                                                </div>
+                                                <button
+                                                    className={`add - source - btn ${isAdded ? 'added' : ''} `}
+                                                    onClick={() => !isAdded && onAddSource(source)}
+                                                    disabled={isAdded}
+                                                >
+                                                    {isAdded ? (
+                                                        <>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                                            </svg>
+                                                            Added
+                                                        </>
+                                                    ) : (
+                                                        '+ Add to Sheet'
+                                                    )}
+                                                </button>
                                             </div>
-                                            <button
-                                                className="add-source-btn"
-                                                onClick={() => onAddSource(source)}
-                                            >
-                                                + Add to Sheet
-                                            </button>
-                                        </div>
-                                    ))}
+                                        )
+                                    })}
                                 </div>
                             )}
                         </div>

@@ -312,6 +312,7 @@ function ChevrutaApp() {
               messages={messages}
               onSendMessage={handleSendMessage}
               onAddSource={handleAddSource}
+              sheetSources={sourcesList}
               isLoading={isLoading}
               isMobileOpen={mobileChatOpen}
               onMobileClose={() => setMobileChatOpen(false)}
