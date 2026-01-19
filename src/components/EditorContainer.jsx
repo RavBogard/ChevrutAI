@@ -8,11 +8,12 @@ import { getSefariaText } from '../services/sefaria';
 import SheetView from './SheetView';
 
 // Wrapper to pass params to logic
-const EditorContainer = () => {
+const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage }) => {
     const { sheetId } = useParams();
     const navigate = useNavigate();
     const { currentUser } = useAuth();
     const { showToast } = useToast();
+    const [mobileChatOpen, setMobileChatOpen] = useState(false);
 
     // Undo/Redo enabled sourcesList with localStorage persistence
     const {
@@ -247,33 +248,9 @@ const EditorContainer = () => {
     };
 
     return (
-        <SheetView
-            sources={sourcesList}
-            onRemoveSource={handleRemoveSource}
-            onUpdateSource={handleUpdateSource}
-            onReorder={handleReorder}
-            onClearSheet={() => {
-                if (window.confirm("Are you sure you want to clear the sheet?")) {
-                    setSourcesList([]);
-                }
-            }}
-            onUndo={undoSources}
-            onRedo={redoSources}
-            canUndo={canUndo}
-            canRedo={canRedo}
-            // language={language} // Global language handled in App/Context? App.jsx handles it.
-            // We need to pass language prop? SheetView expects it.
-            language="en" // Hardcoded for now, or pass from prop/context
-            onSuggestionClick={sendMessageToGemini}
-            sheetTitle={sheetTitle}
-            onTitleChange={setSheetTitle}
-            onSendMessage={handleSendMessage}
-            chatStarted={true} // Always started in editor
-            messages={messages || []}
-            isChatLoading={isLoading}
-            onAddSource={handleAddSource}
-            userSheets={userSheets}
-            onLoadSheet={handleLoadSheet}
+        onAddSource = { handleAddSource }
+            userSheets = { userSheets }
+    onLoadSheet = { handleLoadSheet }
         />
     );
 };
