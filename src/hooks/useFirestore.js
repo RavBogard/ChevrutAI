@@ -14,6 +14,7 @@ export const useFirestore = (currentSheetTitle, currentSources, currentMessages)
 
     // Autosave timer
     const saveTimeoutRef = useRef(null);
+    const isLoadingRef = useRef(false);
     const isFirstLoad = useRef(true);
 
     // Subscribe to History List
@@ -33,6 +34,7 @@ export const useFirestore = (currentSheetTitle, currentSources, currentMessages)
     // Autosave Logic
     useEffect(() => {
         if (!currentUser) return;
+        if (isLoadingRef.current) return; // Skip saving if we are in the middle of loading
 
         // Skip saving on initial mount/empty state to avoid overwriting accidentally
         // or creating empty sheets immediately on login.
@@ -45,6 +47,9 @@ export const useFirestore = (currentSheetTitle, currentSources, currentMessages)
 
         saveTimeoutRef.current = setTimeout(async () => {
             try {
+                // Double check loading state inside timeout
+                if (isLoadingRef.current) return;
+
                 const sheetData = {
                     title: currentSheetTitle,
                     sources: currentSources,
@@ -79,24 +84,35 @@ export const useFirestore = (currentSheetTitle, currentSources, currentMessages)
     // Function to manually load a sheet
     const loadSheet = async (id, setSources, setMessages, setTitle) => {
         try {
+            isLoadingRef.current = true;
             const sheet = await getSheetFromFirestore(id);
             if (sheet) {
                 setSources(sheet.sources || []);
                 setMessages(sheet.messages || []);
                 setTitle(sheet.title || "Untitled Source Sheet");
                 setCurrentSheetId(id);
+
+                // Allow state to settle before re-enabling autosave
+                setTimeout(() => {
+                    isLoadingRef.current = false;
+                }, 500);
                 return true;
             }
         } catch (error) {
             showToast("Failed to load sheet", "error");
             console.error(error);
+            isLoadingRef.current = false;
         }
         return false;
     };
 
     const createNewSheet = () => {
+        isLoadingRef.current = true;
         setCurrentSheetId(null);
         window.history.replaceState(null, '', '#/');
+        setTimeout(() => {
+            isLoadingRef.current = false;
+        }, 300);
     };
 
     return {
