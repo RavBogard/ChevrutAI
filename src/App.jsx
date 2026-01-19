@@ -7,6 +7,7 @@ import Privacy from './components/Privacy';
 import Terms from './components/Terms';
 import { ToastProvider, useToast } from './components/Toast';
 import { useUndoRedo } from './hooks/useUndoRedo';
+import { useFirestore } from './hooks/useFirestore';
 import { getSefariaText } from './services/sefaria';
 import './App.css';
 
@@ -74,6 +75,23 @@ function ChevrutaApp() {
     localStorage.setItem('chevruta_title', sheetTitle);
   }, [sheetTitle]);
 
+  // Cloud Persistence & Autosave
+  const {
+    userSheets,
+    loadSheet,
+    createNewSheet,
+    currentSheetId
+  } = useFirestore(sheetTitle, sourcesList, messages);
+
+  const handleLoadSheet = async (id) => {
+    await loadSheet(id, setSourcesList, setMessages, setSheetTitle);
+    if (window.innerWidth <= 768) {
+      setMobileChatOpen(true); // Open chat/sidebar to see it loaded? Or maybe close it?
+      // Actually if they click it in sidebar, they want to see the sheet probably.
+      setMobileChatOpen(false); // Close sidebar so they see the sheet
+    }
+  };
+
   // Clear sheet function
   const handleClearSheet = () => {
     if (confirm('Are you sure you want to clear your current sheet? This cannot be undone.')) {
@@ -85,6 +103,7 @@ function ChevrutaApp() {
         suggestedSources: []
       }]);
       setSheetTitle("New Source Sheet");
+      createNewSheet(); // Reset cloud ID
       showToast('Sheet cleared!', 'info');
     }
   };
@@ -326,6 +345,9 @@ function ChevrutaApp() {
               language={language}
               toggleLanguage={toggleLanguage}
               suggestedInput={suggestedPrompt}
+              userSheets={userSheets}
+              onLoadSheet={handleLoadSheet}
+              currentSheetId={currentSheetId}
             />
           </div>
           <div
