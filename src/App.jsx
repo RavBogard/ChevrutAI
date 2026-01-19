@@ -11,21 +11,6 @@ function App() {
     return localStorage.getItem('theme') === 'dark';
   });
 
-  // We can manage global theme here if needed, but EditorContainer has its own toggles?
-  // Actually EditorContainer currently manages its own darkMode state in the extracted file?
-  // No, I see I copy-pasted logic to EditorContainer, but App also has logic?
-  // Let's check EditorContainer.jsx I wrote.
-  // It has <ChatSidebar darkMode={false} ... />. It lost the state!
-  // I need to fix EditorContainer to handle theme or pass it from App.
-
-  // For now, let's keep App simple and let's check EditorContainer imports.
-  // EditorContainer DOES NOT have darkMode state. It has "false".
-  // This is a regression if I use it.
-
-  // Refactoring plan:
-  // 1. App handles Theme and Language (Global state).
-  // 2. App passes these props to EditorContainer.
-
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
     localStorage.setItem('theme', darkMode ? 'dark' : 'light');
