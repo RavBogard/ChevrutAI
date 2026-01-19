@@ -819,8 +819,10 @@ body.dark-mode .prompt-card:hover {
   /* Make selects flex to fill available space comfortably */
   .version-select,
   .view-toggle {
-    flex: 1;
-    min-width: 120px;
+    flex: 0 0 100%;
+    /* Force full width to stack them */
+    width: 100%;
+    margin-bottom: 0.25rem;
     max-width: none !important;
   }
 }
