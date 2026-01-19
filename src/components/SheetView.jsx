@@ -318,7 +318,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
             const url = await exportToGoogleDoc(sheetTitle, formattedSources);
             setExportUrl(url); // Show link
             // Try to open also, but if blocked, user has link
-            window.open(url, '_blank');
+            window.open(url, '_blank', 'noopener,noreferrer');
         } catch (error) {
             console.error("Discovered Error During Export:", error);
             alert("Export failed. Please check if you enabled pop-ups and configured the Google Cloud Console correctly.");
@@ -539,7 +539,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                 </p>
                 <div className="footer-powered">
                     <a href="https://www.sefaria.org" target="_blank" rel="noopener noreferrer">Powered by Sefaria</a>
-                    <span className="version-tag"> • v1.2.6</span>
+                    <span className="version-tag"> • v1.2.7</span>
                 </div>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
