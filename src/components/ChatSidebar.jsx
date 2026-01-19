@@ -115,10 +115,10 @@ const ChatSidebar = ({
                         </svg>
                     </button>
 
-                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-start', fontFamily: 'Times New Roman, serif', gap: '2px' }}>
-                        <span style={{ fontSize: '1.8rem', fontWeight: '700', color: 'var(--sheet-text)', letterSpacing: '-0.03em' }}>Chevruta</span>
-                        <span style={{ fontSize: '1.8rem', fontWeight: '700', background: 'linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>.AI</span>
-                        <span style={{ fontSize: '1.4rem', background: 'linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginLeft: '2px', transform: 'translateY(-2px)' }}>✦</span>
+                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-start', fontFamily: 'var(--font-english-serif)', gap: '1px' }}>
+                        <span style={{ fontSize: '1.8rem', fontWeight: '800', color: 'var(--sheet-text)', letterSpacing: '-0.04em' }}>Chevruta</span>
+                        <span style={{ fontSize: '1.8rem', fontWeight: '800', background: 'linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-0.02em' }}>.AI</span>
+                        <span style={{ fontSize: '1.4rem', background: 'linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginLeft: '2px', transform: 'translateY(-3px) rotate(15deg)' }}>✦</span>
                     </div>
 
                     <button

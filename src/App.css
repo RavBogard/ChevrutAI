@@ -2372,34 +2372,42 @@ body.dark-mode .sidebar-toggle-btn:hover {
 }
 
 /* Polished Suggestion Pills */
+/* Polished Suggestion Cards */
 .gemini-pill {
-  /* Reset from previous override */
-  border-radius: 20px !important;
-  /* Not 100px. Slightly squared corners as requested for "pop" vs old school pills? Or keep rounded but distinct. User said "bubbles need to pop more". */
-  padding: 16px 24px !important;
+  /* Reset */
+  border-radius: 12px !important;
+  padding: 20px 24px !important;
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: 1.05rem !important;
+  font-size: 0.95rem !important;
   font-weight: 500 !important;
-  line-height: 1.4;
+  line-height: 1.5;
   color: var(--sheet-text);
-  background: var(--bg-paper);
-  border: 1px solid var(--border-color);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.06);
-  /* "Pop" effect */
-  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-  /* Bouncy transition */
+  background: #f0f4f8;
+  /* Cool light gray/blue */
+  border: 1px solid transparent;
+  /* No border for clean look */
+  box-shadow: none;
+  /* Flatter look */
+  transition: all 0.2s ease-out;
   text-align: left;
-  /* Bubbles need to pop more: gradient border? */
-  position: relative;
-  overflow: hidden;
+  display: flex !important;
+  justify-content: flex-start;
+  align-items: center;
+  min-height: 80px;
 }
 
 .gemini-pill:hover {
-  transform: scale(1.03) translateY(-4px) !important;
-  box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.15), 0 0 0 2px var(--primary-color) inset;
-  /* Inset border */
-  border-color: transparent;
-  z-index: 10;
+  background: #e0e7ff;
+  /* Indigo-100 tint on hover */
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  /* Subtle lift */
+  border-color: rgba(99, 102, 241, 0.2);
+  /* Subtle indigo border */
+}
+
+border-color: transparent;
+z-index: 10;
 }
 
 .gemini-pill:active {
