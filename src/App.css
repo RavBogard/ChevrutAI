@@ -114,15 +114,13 @@ h6 {
 }
 
 .chat-header {
-  padding: 0.75rem 1.5rem;
-  /* Reduced vertical padding */
+  padding: 1rem 1rem 0.5rem 1rem;
   border-bottom: 1px solid var(--border-color);
   background: var(--sidebar-bg);
-  /* Solid bg */
   position: relative;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 /* Removed old header styles for cleaner look */
@@ -2011,34 +2009,37 @@ html[dir="rtl"] .prompt-card {
   margin: 0 0.5rem;
 }
 
-/* Sidebar Tabs */
+/* Sidebar Tabs - Segmented Control Style */
 .sidebar-tabs {
   display: flex;
-  border-bottom: 1px solid var(--border-color);
-  margin-top: 0.5rem;
-  padding: 0 1rem;
-  gap: 1rem;
+  background: var(--border-color);
+  border-radius: 8px;
+  padding: 4px;
+  margin: 1rem 1rem 0 1rem;
+  gap: 4px;
 }
 
 .sidebar-tab {
-  background: none;
+  flex: 1;
+  background: transparent;
   border: none;
-  padding: 0.5rem 0;
-  font-size: 0.9rem;
-  color: var(--text-secondary);
+  padding: 0.6rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--sidebar-text);
   cursor: pointer;
-  border-bottom: 2px solid transparent;
-  transition: all 0.2s;
+  border-radius: 6px;
+  transition: all 0.15s ease;
 }
 
 .sidebar-tab.active {
-  color: var(--primary-color);
-  border-bottom-color: var(--primary-color);
-  font-weight: 500;
+  background: var(--sheet-bg);
+  color: var(--sheet-text);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-tab:hover:not(.active) {
-  color: var(--text-primary);
+  background: rgba(0, 0, 0, 0.05);
 }
 
 /* History List */
