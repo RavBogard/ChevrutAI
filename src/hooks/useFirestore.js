@@ -25,7 +25,14 @@ export const useFirestore = (currentSheetTitle, currentSources, currentMessages)
         }
 
         const unsubscribe = subscribeToUserSheets(currentUser.uid, (sheets) => {
-            setUserSheets(sheets);
+            // Filter out empty sheets (no sources and no real conversation)
+            const nonEmptySheets = sheets.filter(sheet => {
+                const hasSources = sheet.sources && sheet.sources.length > 0;
+                const hasRealMessages = sheet.messages &&
+                    sheet.messages.some(m => m.role === 'user' || (m.role === 'model' && m.id !== 'welcome'));
+                return hasSources || hasRealMessages;
+            });
+            setUserSheets(nonEmptySheets);
         });
 
         return () => unsubscribe();
@@ -38,8 +45,12 @@ export const useFirestore = (currentSheetTitle, currentSources, currentMessages)
 
         // Skip saving on initial mount/empty state to avoid overwriting accidentally
         // or creating empty sheets immediately on login.
-        // But we do want to save if user STARTS adding things.
-        if (currentSources.length === 0 && currentMessages.length <= 1 && !currentSheetId) {
+        // Also skip saving if sheet is effectively empty (no sources and only welcome message)
+        const hasRealContent = currentSources.length > 0 ||
+            currentMessages.some(m => m.role === 'user' || (m.role === 'model' && m.id !== 'welcome'));
+
+        if (!hasRealContent) {
+            // Don't save empty sheets
             return;
         }
 
