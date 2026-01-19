@@ -6,6 +6,7 @@ import { useUndoRedo } from '../hooks/useUndoRedo';
 import { useFirestore } from '../hooks/useFirestore';
 import { getSefariaText } from '../services/sefaria';
 import SheetView from './SheetView';
+import ChatSidebar from './ChatSidebar';
 
 // Wrapper to pass params to logic
 const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage }) => {
@@ -87,28 +88,13 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
         if (!sheetId) return;
 
         if (sheetId !== currentSheetId) {
-            // It's a new ID for the system.
-            // Try to load it.
-            // If it's a numeric timestamp (approx), we treat as new/temp unless found
-            // Check if it exists in userSheets? No, userSheets is partial.
-            // We just try to load, if fails/not found, we assume it's a new draft key?
-            // Actually, if we just navigated, we should try to load.
             const isTimestamp = /^\d+$/.test(sheetId);
 
             if (isTimestamp && !currentSheetId) {
-                // It's a timestamp ID, likely new sheet.
-                // We don't overwrite local storage if we already have content?
-                // Logic: Logic should typically depend on useFirestore loading.
-                // For now: we trust useFirestore or manual load.
-                // If it IS a timestamp, and we have blank state, we are good.
                 setCurrentSheetId(sheetId);
             } else if (currentSheetId && sheetId !== currentSheetId) {
-                // User navigated from one sheet to another?
-                // We should load.
                 loadSheet(sheetId, setSourcesList, setMessages, setSheetTitle).then((loaded) => {
                     if (!loaded && isTimestamp) {
-                        // Failed to load, maybe just new?
-                        // Reset everything for new sheet
                         setSourcesList([]);
                         setMessages([{
                             id: 'welcome',
@@ -121,25 +107,20 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                     }
                 });
             } else if (!currentSheetId) {
-                // App init with ID
                 loadSheet(sheetId, setSourcesList, setMessages, setSheetTitle).then((loaded) => {
                     if (!loaded) {
-                        // Assuming new if failed to load
                         setCurrentSheetId(sheetId);
                     }
                 });
             }
         }
-    }, [sheetId]); // Removed recursive deps, focus on ID change
+    }, [sheetId]);
 
     const sendMessageToGemini = async (userText) => {
         setIsLoading(true);
         try {
-            // Context Construction
             let historyMessages = messages.slice(-10);
-            // removing error/empty messages from context
             historyMessages = historyMessages.filter(m => m.text && m.text.trim() !== '');
-            // System instruction now on server
             if (historyMessages.length > 0 && historyMessages[0].role === 'model') {
                 historyMessages = historyMessages.slice(1);
             }
@@ -147,10 +128,6 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                 role: m.role,
                 parts: [{ text: m.text }]
             }));
-
-            // Identify Mode: "planning" vs "editing" vs "sourcing"
-            // For now, we trust the system prompt.
-            const isFirstMessage = messages.length <= 1;
 
             const response = await fetch('/api/chat', {
                 method: 'POST',
@@ -164,7 +141,6 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
             if (!response.ok) throw new Error("API Request Failed");
 
             const data = await response.json();
-            // data should be { text, suggested_sources }
 
             const botMessage = {
                 id: Date.now().toString(),
@@ -178,7 +154,7 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
         } catch (error) {
             console.error(error);
             setMessages(prev => [...prev, {
-                id: Date.now().toString(), // Fixed syntax
+                id: Date.now().toString(),
                 role: 'model',
                 text: "I'm having trouble connecting to the Beit Midrash right now. Please try again.",
                 suggestedSources: []
@@ -189,7 +165,6 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
     };
 
     const handleAddSource = async (source) => {
-        // Fetch text content if not present
         if (!source.he || !source.en) {
             const data = await getSefariaText(source.ref);
             if (data) {
@@ -206,9 +181,6 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
     };
 
     const handleRemoveSource = (indexOrId) => {
-        // We use index for sortable usually, or ID if we add IDs
-        // Here assuming index for simplicity with DnD, but DnD uses IDs.
-        // Let's assume onRemove passes the ID.
         setSourcesList(items => items.filter(item => item.id !== indexOrId));
     };
 
@@ -220,20 +192,6 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
 
     const handleReorder = (newSources) => {
         setSourcesList(newSources);
-    };
-
-    const handleCreateNew = () => {
-        createNewSheet(); // Hook resets state
-        // We also need to reset local state here because hook only resets ID
-        setSourcesList([]);
-        setMessages([{
-            id: 'welcome',
-            role: 'model',
-            text: 'Shalom! What kind of text sheet do you want to create together?',
-            suggestedSources: []
-        }]);
-        setSheetTitle("New Source Sheet");
-        navigate(`/sheet/${Date.now().toString()}`);
     };
 
     const handleLoadSheet = async (id) => {
@@ -248,10 +206,95 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
     };
 
     return (
-        onAddSource = { handleAddSource }
-            userSheets = { userSheets }
-    onLoadSheet = { handleLoadSheet }
-        />
+        <div className="app-container">
+            <ChatSidebar
+                messages={messages}
+                onSendMessage={handleSendMessage}
+                onAddSource={handleAddSource}
+                sheetSources={sourcesList}
+                isLoading={isLoading}
+                isMobileOpen={mobileChatOpen}
+                onMobileClose={() => setMobileChatOpen(false)}
+                darkMode={darkMode}
+                toggleDarkMode={toggleDarkMode}
+                language={language}
+                userSheets={userSheets}
+                onLoadSheet={handleLoadSheet}
+                currentSheetId={currentSheetId}
+            />
+
+            <SheetView
+                sources={sourcesList}
+                onRemoveSource={handleRemoveSource}
+                onUpdateSource={handleUpdateSource}
+                onReorder={handleReorder}
+                onClearSheet={() => {
+                    if (window.confirm("Are you sure you want to clear the sheet?")) {
+                        setSourcesList([]);
+                    }
+                }}
+                onUndo={undoSources}
+                onRedo={redoSources}
+                canUndo={canUndo}
+                canRedo={canRedo}
+                language={language}
+                onSuggestionClick={sendMessageToGemini}
+                sheetTitle={sheetTitle}
+                onTitleChange={setSheetTitle}
+                onSendMessage={handleSendMessage}
+                chatStarted={messages.length > 1}
+                onAddSource={handleAddSource}
+                userSheets={userSheets}
+                onLoadSheet={handleLoadSheet}
+                darkMode={darkMode}
+                toggleDarkMode={toggleDarkMode}
+                toggleLanguage={toggleLanguage}
+            />
+
+            {messages.length > 1 && (
+                <button
+                    className="mobile-chat-fab"
+                    onClick={() => setMobileChatOpen(true)}
+                    aria-label="Open Chat"
+                >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </button>
+            )}
+
+            {!isLoading && messages.length <= 1 && (
+                <div className="initial-toggles">
+                    <button
+                        className="initial-theme-toggle"
+                        onClick={toggleLanguage}
+                        title={language === 'en' ? "Switch to Hebrew" : "Switch to English"}
+                    >
+                        {language === 'en' ? (
+                            <span style={{ fontWeight: 'bold', fontSize: '1.1rem', fontFamily: 'var(--font-hebrew)' }}>עב</span>
+                        ) : (
+                            <span style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>EN</span>
+                        )}
+                    </button>
+
+                    <button
+                        className="initial-theme-toggle"
+                        onClick={toggleDarkMode}
+                        title="Toggle Theme"
+                    >
+                        {darkMode ? (
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        ) : (
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                        )}
+                    </button>
+                </div>
+            )}
+
+            {mobileChatOpen && (
+                <div className="mobile-chat-backdrop" onClick={() => setMobileChatOpen(false)}></div>
+            )}
+        </div>
     );
 };
 
