@@ -70,7 +70,7 @@ const ChatSidebar = ({
         // Auto-resize
         if (textareaRef.current) {
             textareaRef.current.style.height = 'auto'; // Reset to calculate new shrinkage
-            textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 150) + 'px'; // Cap at 150px
+            textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 400) + 'px'; // Dynamic resize up to 400px
         }
     };
 

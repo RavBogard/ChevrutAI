@@ -281,12 +281,11 @@ h6 {
 .chat-textarea {
   box-sizing: border-box;
   width: 100%;
-  min-height: 150px;
-  /* Larger minimum */
-  max-height: 400px;
-  /* More room to grow */
-  padding: 16px 18px 48px 18px;
-  border-radius: 12px;
+  min-height: 225px;
+  /* 50% larger */
+  max-height: 500px;
+  padding: 18px 20px 52px 20px;
+  border-radius: 14px;
   border: 1px solid var(--border-color);
   background-color: var(--input-bg);
   color: var(--sidebar-text);
@@ -294,10 +293,9 @@ h6 {
   font-size: 1rem;
   line-height: 1.6;
   resize: vertical;
-  /* Allow user to resize */
   outline: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-  transition: border-color 0.2s, box-shadow 0.2s, height 0.15s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.2s, box-shadow 0.2s, min-height 0.2s ease;
   overflow-y: auto;
 }
 
