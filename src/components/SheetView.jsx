@@ -394,8 +394,29 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, languag
                         {!chatStarted ? (
                             <div className="central-hero">
                                 <div className="central-logo-text">
-                                    <img src="/logo.png" alt="Chevruta.AI" className="central-logo-img light-mode-only" />
-                                    <img src="/logo-dark.png" alt="Chevruta.AI" className="central-logo-img dark-mode-only" />
+                                    {language === 'he' ? (
+                                        <>
+                                            <span className="logo-serif logo-hebrew">חברותא</span>
+                                            <span className="logo-sans">AI</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <span className="logo-serif">Chevruta</span>
+                                            <span className="logo-sans">.AI</span>
+                                        </>
+                                    )}
+                                    <span className="logo-sparkle">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="url(#sparkle-gradient-central)" stroke="none">
+                                            <defs>
+                                                <linearGradient id="sparkle-gradient-central" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                    <stop offset="0%" stopColor="#4285F4" />
+                                                    <stop offset="50%" stopColor="#9B72CB" />
+                                                    <stop offset="100%" stopColor="#D96570" />
+                                                </linearGradient>
+                                            </defs>
+                                            <path d="M12 2L15.09 9.26L22 12L15.09 14.74L12 22L8.91 14.74L2 12L8.91 9.26L12 2Z" />
+                                        </svg>
+                                    </span>
                                 </div>
                                 <p>{language === 'he'
                                     ? 'אני שותף הלמידה שלך ליצירת דפי מקורות יהודיים. אני יכול לעזור לך למצוא מקורות, לתרגם טקסטים ולבנות דפים יפהפיים.'
@@ -468,7 +489,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, languag
                 </p>
                 <div className="footer-powered">
                     <a href="https://www.sefaria.org" target="_blank" rel="noopener noreferrer">Powered by Sefaria</a>
-                    <span className="version-tag"> • v0.9.23</span>
+                    <span className="version-tag"> • v0.9.25</span>
                 </div>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
