@@ -280,34 +280,30 @@ h6 {
 
 .chat-textarea {
   box-sizing: border-box;
-  /* Critical for padding */
   width: 100%;
-  min-height: 120px;
-  max-height: 300px;
-  padding: 14px 16px 44px 16px;
+  min-height: 150px;
+  /* Larger minimum */
+  max-height: 400px;
+  /* More room to grow */
+  padding: 16px 18px 48px 18px;
   border-radius: 12px;
   border: 1px solid var(--border-color);
   background-color: var(--input-bg);
   color: var(--sidebar-text);
   font-family: var(--font-ui);
-  font-size: 0.95rem;
-  line-height: 1.5;
-  resize: none;
+  font-size: 1rem;
+  line-height: 1.6;
+  resize: vertical;
+  /* Allow user to resize */
   outline: none;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  transition: border-color 0.2s, box-shadow 0.2s;
-  overflow: hidden;
-  /* Hide scrollbars initially */
-}
-
-.chat-textarea:not([style*="height: auto"]) {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  transition: border-color 0.2s, box-shadow 0.2s, height 0.15s;
   overflow-y: auto;
-  /* Show when exceeding max-height */
 }
 
 .chat-textarea:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
 }
 
 .chat-textarea::placeholder {
