@@ -1522,14 +1522,17 @@ body.dark-mode .initial-theme-toggle:hover {
 html[dir="rtl"] .prompt-card {
   text-align: right;
 }
+
 /* Mobile Logo Fix Override */
 @media (max-width: 768px) {
   .central-logo-text {
-    font-size: 10vw !important;
+    font-size: 13vw !important;
     flex-wrap: nowrap !important;
     white-space: nowrap !important;
   }
-  .central-logo-text .logo-serif, .central-logo-text .logo-sans {
+
+  .central-logo-text .logo-serif,
+  .central-logo-text .logo-sans {
     font-size: inherit !important;
   }
 }
