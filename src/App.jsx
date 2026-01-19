@@ -1,4 +1,4 @@
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { useAuth } from './contexts/AuthContext';
 import { useState, useEffect, useRef } from 'react';
 import { HashRouter as Router, Routes, Route, useParams, useNavigate, Navigate } from 'react-router-dom';
 import HomeView from './components/home/HomeView';
@@ -6,7 +6,7 @@ import ChatSidebar from './components/ChatSidebar';
 import SheetView from './components/SheetView';
 import Privacy from './components/Privacy';
 import Terms from './components/Terms';
-import { ToastProvider, useToast } from './components/Toast';
+import { useToast } from './components/Toast';
 import { useUndoRedo } from './hooks/useUndoRedo';
 import { useFirestore } from './hooks/useFirestore';
 import { getSefariaText } from './services/sefaria';
@@ -500,20 +500,18 @@ function EditorContainer() {
 
 function App() {
   return (
-    <AuthProvider>
-      <ToastProvider>
-        <Router>
-          <Routes>
-            <Route path="/" element={<Navigate to={`/sheet/${Date.now().toString()}`} replace />} />
-            <Route path="/dashboard" element={<HomeView />} />
-            <Route path="/sheet/new" element={<Navigate to={`/sheet/${Date.now().toString()}`} replace />} />
-            <Route path="/sheet/:sheetId" element={<EditorContainer />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/terms" element={<Terms />} />
-          </Routes>
-        </Router>
-      </ToastProvider>
-    </AuthProvider>
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Navigate to={`/sheet/${Date.now().toString()}`} replace />} />
+        <Route path="/dashboard" element={<HomeView />} />
+        <Route path="/sheet/new" element={<Navigate to={`/sheet/${Date.now().toString()}`} replace />} />
+        <Route path="/sheet/:sheetId" element={<EditorContainer />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
+      </Routes>
+    </Router>
+  );
   );
 }
 
