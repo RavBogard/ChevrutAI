@@ -243,19 +243,21 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                         {!chatStarted ? (
                             <div className="central-hero">
                                 <img
-                                    src="/branding-logo-blue.png"
+                                    src={darkMode ? "/logo-dark.png" : "/logo.png"}
                                     alt="ChevrutAI"
                                     className="hero-logo-img"
                                 />
-                                <h2 className="gemini-headline">
-                                    {language === 'he' ? 'איפה נתחיל?' : 'Where should we start?'}
-                                </h2>
+                                <p className="gemini-subtitle" style={{ maxWidth: '600px', margin: '0 auto 2rem auto', fontSize: '1.1rem', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+                                    {language === 'he'
+                                        ? 'אני השותף שלך ליצירת דף מקורות יהודי. אני יכול לעזור לך למצוא מקורות, לתרגם טקסטים ולבנות דפי מקורות יפים.'
+                                        : 'I am your AI partner in creating a Jewish text sheet. I can help you find sources, translate texts, and build beautiful source sheets.'}
+                                </p>
 
                                 <div className="central-input-wrapper">
                                     <form onSubmit={handleCentralSubmit} className="gemini-input-box">
                                         <textarea
                                             className="central-textarea"
-                                            placeholder={language === 'he' ? 'כתוב נושא או שאלה...' : 'Enter a prompt for Chevruta...'}
+                                            placeholder={language === 'he' ? 'על מה תרצה ללמוד היום?' : 'What would you like to learn about today?'}
                                             value={inputVal}
                                             onChange={(e) => setInputVal(e.target.value)}
                                             onKeyDown={handleKeyDown}
