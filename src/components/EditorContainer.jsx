@@ -24,7 +24,8 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
         redo: redoSources,
         canUndo,
         canRedo,
-        resetHistory
+
+        resetHistory: _resetHistory
     } = useUndoRedo(() => {
         try {
             const saved = localStorage.getItem('chevruta_sources');
@@ -45,7 +46,7 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                     suggestedSources: []
                 }];
             }
-        } catch { }
+        } catch { /* Ignore parse errors */ }
         return [{
             id: 'welcome',
             role: 'model',
@@ -55,7 +56,6 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
     });
 
     const [isLoading, setIsLoading] = useState(false);
-    const [suggestedPrompt] = useState('');
 
     const [sheetTitle, setSheetTitle] = useState(() => {
         return localStorage.getItem('chevruta_title') || "New Source Sheet";
@@ -78,6 +78,7 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
     const {
         userSheets,
         loadSheet,
+        // eslint-disable-next-line no-unused-vars
         createNewSheet,
         currentSheetId,
         setCurrentSheetId
@@ -114,6 +115,7 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                 });
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sheetId]);
 
     const sendMessageToGemini = async (userText) => {
@@ -226,6 +228,7 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                 setIsSidebarOpen(true);
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [messages, currentUser]);
 
     const toggleSidebar = () => setIsSidebarOpen(prev => !prev);
@@ -248,6 +251,7 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
             window.removeEventListener("mousemove", resize);
             window.removeEventListener("mouseup", stopResizing);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isResizing]);
 
     return (

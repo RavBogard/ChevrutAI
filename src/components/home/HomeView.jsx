@@ -11,7 +11,9 @@ const HomeView = () => {
 
     useEffect(() => {
         if (!currentUser) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setSheets([]);
+             
             setLoading(false);
             return;
         }

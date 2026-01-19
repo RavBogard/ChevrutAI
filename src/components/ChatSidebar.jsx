@@ -9,10 +9,7 @@ const ChatSidebar = ({
     isLoading,
     isMobileOpen,
     onMobileClose,
-    onToggleSidebar, // New Prop for Desktop Toggle
-    darkMode,
-    toggleDarkMode,
-    language,
+    onToggleSidebar,
     suggestedInput,
     userSheets = [],
     onLoadSheet,
@@ -25,8 +22,10 @@ const ChatSidebar = ({
     const hasSetInitialTab = useRef(false);
 
     // Default to 'history' (My Sheets) if user has sheets and hasn't started chatting
+    // Set initial tab based on user sheets - intentional state sync
     useEffect(() => {
         if (!hasSetInitialTab.current && userSheets && userSheets.length > 0) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setActiveTab('history');
             hasSetInitialTab.current = true;
         }
@@ -37,6 +36,7 @@ const ChatSidebar = ({
         const hasUserMessage = messages.some(m => m.role === 'user');
         const hasSources = sheetSources && sheetSources.length > 0;
         if ((hasUserMessage || hasSources) && activeTab !== 'chat') {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setActiveTab('chat');
         }
     }, [messages, activeTab, sheetSources]);
@@ -58,9 +58,10 @@ const ChatSidebar = ({
     // But first, let's keep the hook logic. I need to copy the `useEffect` and handlers.
 
     // Update input when a suggestion is clicked from the empty state
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
     useEffect(() => {
         if (suggestedInput) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setInputObj(suggestedInput);
             if (textareaRef.current) {
                 textareaRef.current.focus();
@@ -69,7 +70,7 @@ const ChatSidebar = ({
                 textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
             }
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+
     }, [suggestedInput]);
 
     const handleInputChange = (e) => {

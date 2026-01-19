@@ -15,11 +15,11 @@ export const useFirestore = (currentSheetTitle, currentSources, currentMessages)
     // Autosave timer
     const saveTimeoutRef = useRef(null);
     const isLoadingRef = useRef(false);
-    const isFirstLoad = useRef(true);
 
     // Subscribe to History List
     useEffect(() => {
         if (!currentUser) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setUserSheets([]);
             return;
         }

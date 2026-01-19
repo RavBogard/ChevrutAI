@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 // Toast context for app-wide notifications
+// eslint-disable-next-line react-refresh/only-export-components
 export const ToastContext = React.createContext({
     showToast: () => { },
 });
@@ -50,4 +51,5 @@ export const ToastProvider = ({ children }) => {
     );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useToast = () => React.useContext(ToastContext);

@@ -21,12 +21,18 @@ function App() {
   const [language, setLanguage] = useState('en');
   const toggleLanguage = () => setLanguage(prev => prev === 'en' ? 'he' : 'en');
 
+  // Generate new sheet ID (stable during render)
+  const NewSheetRedirect = () => {
+    const [id] = useState(() => Date.now().toString());
+    return <Navigate to={`/sheet/${id}`} replace />;
+  };
+
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to={`/sheet/${Date.now().toString()}`} replace />} />
+        <Route path="/" element={<NewSheetRedirect />} />
         <Route path="/dashboard" element={<HomeView />} />
-        <Route path="/sheet/new" element={<Navigate to={`/sheet/${Date.now().toString()}`} replace />} />
+        <Route path="/sheet/new" element={<NewSheetRedirect />} />
         {/* Pass props to EditorContainer */}
         <Route
           path="/sheet/:sheetId"

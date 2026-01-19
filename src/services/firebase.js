@@ -16,8 +16,7 @@ import {
     where,
     orderBy,
     onSnapshot,
-    serverTimestamp,
-    addDoc
+    serverTimestamp
 } from "firebase/firestore";
 
 // Your web app's Firebase configuration
