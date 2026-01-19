@@ -12,6 +12,7 @@ import SourceBlock from './sheet/SourceBlock';
 import CustomSourceBlock from './sheet/CustomSourceBlock';
 import SectionHeaderBlock from './sheet/SectionHeaderBlock';
 import SheetToolbar from './sheet/SheetToolbar';
+import UserMenu from './auth/UserMenu';
 
 const SortableSourceItem = ({ source, id, onRemove, onUpdate }) => {
     const {
@@ -164,7 +165,8 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
         <div className="sheet-view">
             {chatStarted && (
                 <header className="sheet-header">
-                    <div className="sheet-controls-row">
+                    <div className="sheet-controls-row" style={{ justifyContent: 'flex-end', marginBottom: '0.5rem' }}>
+                        <UserMenu />
                     </div>
 
                     <input
@@ -302,7 +304,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                 </p>
                 <div className="footer-powered">
                     <a href="https://www.sefaria.org" target="_blank" rel="noopener noreferrer">Powered by Sefaria</a>
-                    <span className="version-tag"> • v0.9.1</span>
+                    <span className="version-tag"> • v0.9.2</span>
                 </div>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>

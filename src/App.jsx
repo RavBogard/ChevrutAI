@@ -1,3 +1,4 @@
+import { AuthProvider } from './contexts/AuthContext';
 import { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import ChatSidebar from './components/ChatSidebar';
@@ -5,8 +6,6 @@ import SheetView from './components/SheetView';
 import Privacy from './components/Privacy';
 import Terms from './components/Terms';
 import { ToastProvider, useToast } from './components/Toast';
-// i18n disabled for now due to build issues - will be fixed in future version
-// import { I18nProvider } from './i18n';
 import { useUndoRedo } from './hooks/useUndoRedo';
 import { getSefariaText } from './services/sefaria';
 import './App.css';
@@ -411,15 +410,17 @@ function ChevrutaApp() {
 
 function App() {
   return (
-    <ToastProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<ChevrutaApp />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/terms" element={<Terms />} />
-        </Routes>
-      </Router>
-    </ToastProvider>
+    <AuthProvider>
+      <ToastProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<ChevrutaApp />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
+          </Routes>
+        </Router>
+      </ToastProvider>
+    </AuthProvider>
   );
 }
 
