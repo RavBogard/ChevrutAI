@@ -163,6 +163,12 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
 
     return (
         <div className="sheet-view">
+            {!chatStarted && (
+                <div style={{ position: 'absolute', top: '1rem', right: '1rem', zIndex: 100 }}>
+                    <UserMenu />
+                </div>
+            )}
+
             {chatStarted && (
                 <header className="sheet-header">
                     <div className="sheet-controls-row" style={{ justifyContent: 'flex-end', marginBottom: '0.5rem' }}>
@@ -304,7 +310,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                 </p>
                 <div className="footer-powered">
                     <a href="https://www.sefaria.org" target="_blank" rel="noopener noreferrer">Powered by Sefaria</a>
-                    <span className="version-tag"> • v0.9.4</span>
+                    <span className="version-tag"> • v0.9.5</span>
                 </div>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>

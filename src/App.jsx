@@ -185,7 +185,21 @@ function EditorContainer() {
       }
 
       const responseText = await response.text();
+      let parsedResponse;
+      try {
+        parsedResponse = JSON.parse(responseText);
+      } catch (e) {
+        // If it fails to parse, it might be raw text or error
+        console.warn("Could not parse JSON from Gemini:", responseText);
+        parsedResponse = { text: responseText };
+      }
 
+      const botMessage = {
+        id: Date.now().toString(),
+        role: 'model',
+        text: parsedResponse.text || responseText,
+        suggestedSources: parsedResponse.suggested_sources || []
+      };
 
       // Auto-update title if provided AND it's a good title
       let suggestedTitle = parsedResponse.suggested_title;
@@ -466,7 +480,8 @@ function App() {
       <ToastProvider>
         <Router>
           <Routes>
-            <Route path="/" element={<HomeView />} />
+            <Route path="/" element={<Navigate to={`/sheet/${Date.now().toString()}`} replace />} />
+            <Route path="/dashboard" element={<HomeView />} />
             <Route path="/sheet/new" element={<Navigate to={`/sheet/${Date.now().toString()}`} replace />} />
             <Route path="/sheet/:sheetId" element={<EditorContainer />} />
             <Route path="/privacy" element={<Privacy />} />
