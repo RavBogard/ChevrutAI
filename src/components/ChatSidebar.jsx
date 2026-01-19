@@ -94,6 +94,7 @@ const ChatSidebar = ({
                             className="theme-toggle-btn"
                             onClick={toggleDarkMode}
                             title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+                            aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
                         >
                             {darkMode ? (
                                 // Sun Icon
@@ -116,7 +117,7 @@ const ChatSidebar = ({
                             )}
                         </button>
                         {/* Mobile Close Button */}
-                        <button className="mobile-close-btn" onClick={onMobileClose}>
+                        <button className="mobile-close-btn" onClick={onMobileClose} aria-label="Close chat">
                             &times;
                         </button>
                     </div>

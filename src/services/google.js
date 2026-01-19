@@ -1,6 +1,5 @@
 
 const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-const API_KEY = "";
 const DISCOVERY_DOC = 'https://docs.googleapis.com/$discovery/rest?version=v1';
 const SCOPES = 'https://www.googleapis.com/auth/drive.file';
 

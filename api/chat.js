@@ -5,7 +5,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 
 const SYSTEM_INSTRUCTION = `
-You are "ChevrutAI", an expert Jewish librarian and study partner. 
+You are "Chevruta.AI", an expert Jewish librarian and study partner. 
 You are knowledgeable in Tanakh, Talmud, Halakha, and Jewish philosophy.
 Your goal is to help the user build a source sheet.
 
@@ -55,9 +55,38 @@ BAD titles (NEVER do this):
 7. IMPORTANT: You MUST provide a "suggested_title" in EVERY response. The title should be the TOPIC, not a question or command.
 `;
 
+// Simple in-memory rate limiting (resets on cold start)
+const rateLimitMap = new Map();
+const RATE_LIMIT_WINDOW_MS = 60000; // 1 minute
+const MAX_REQUESTS_PER_WINDOW = 20;
+
+function isRateLimited(ip) {
+    const now = Date.now();
+    const record = rateLimitMap.get(ip);
+
+    if (!record || now - record.windowStart > RATE_LIMIT_WINDOW_MS) {
+        // New window
+        rateLimitMap.set(ip, { windowStart: now, count: 1 });
+        return false;
+    }
+
+    if (record.count >= MAX_REQUESTS_PER_WINDOW) {
+        return true;
+    }
+
+    record.count++;
+    return false;
+}
+
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
+    }
+
+    // Rate limiting check
+    const clientIP = req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown';
+    if (isRateLimited(clientIP)) {
+        return res.status(429).json({ error: 'Too many requests. Please wait a moment before trying again.' });
     }
 
     try {

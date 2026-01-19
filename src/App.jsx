@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import ChatSidebar from './components/ChatSidebar';
 import SheetView from './components/SheetView';
 import Privacy from './components/Privacy';
 import Terms from './components/Terms';
+import { ToastProvider, useToast } from './components/Toast';
 import { getSefariaText } from './services/sefaria';
 import './App.css';
 
@@ -60,6 +60,7 @@ BAD titles (NEVER do this):
 `;
 
 function ChevrutaApp() {
+  const { showToast } = useToast();
   const [sourcesList, setSourcesList] = useState([]);
   const [messages, setMessages] = useState([
     {
@@ -214,9 +215,9 @@ function ChevrutaApp() {
     if (fullSource) {
       setSourcesList(prev => [...prev, fullSource]);
     } else {
-      // Maybe show a toast error? For now just log.
+      // Show toast error instead of alert
       console.error("Could not fetch source text");
-      alert(`Could not fetch text for ${sourceSuggestion.ref}. It might not exist in the free Sefaria edition API or is misspelt.`);
+      showToast(`Could not fetch text for ${sourceSuggestion.ref}. It might not exist in Sefaria.`, 'error');
     }
   };
 
@@ -399,13 +400,15 @@ function ChevrutaApp() {
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<ChevrutaApp />} />
-        <Route path="/privacy" element={<Privacy />} />
-        <Route path="/terms" element={<Terms />} />
-      </Routes>
-    </Router>
+    <ToastProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<ChevrutaApp />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
+        </Routes>
+      </Router>
+    </ToastProvider>
   );
 }
 
