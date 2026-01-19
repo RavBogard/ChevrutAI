@@ -243,10 +243,9 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                         {!chatStarted ? (
                             <div className="central-hero">
                                 <img
-                                    src={darkMode ? "/logo-dark.png" : "/logo.png"}
+                                    src="/branding-logo-blue.png"
                                     alt="ChevrutAI"
                                     className="hero-logo-img"
-                                    style={{ maxWidth: '400px', height: 'auto', marginBottom: '1rem' }}
                                 />
                                 <h2 className="gemini-headline">
                                     {language === 'he' ? 'איפה נתחיל?' : 'Where should we start?'}
