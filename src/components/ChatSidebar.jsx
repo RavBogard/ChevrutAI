@@ -89,22 +89,18 @@ const ChatSidebar = ({
         <div className={`chat-sidebar ${isMobileOpen ? 'mobile-open' : ''}`}>
             <div className="chat-header">
                 <div className="header-top-row">
-                    <Link to="/dashboard" className="sidebar-logo-text" style={{ textDecoration: 'none', color: 'inherit' }}>
-                        <span className="logo-serif">Chevruta</span>
-                        <span className="logo-sans">.AI</span>
-                        <span className="logo-sparkle">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="url(#sparkle-gradient)" stroke="none">
-                                <defs>
-                                    <linearGradient id="sparkle-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" stopColor="#4285F4" />
-                                        <stop offset="50%" stopColor="#9B72CB" />
-                                        <stop offset="100%" stopColor="#D96570" />
-                                    </linearGradient>
-                                </defs>
-                                <path d="M12 2L15.09 9.26L22 12L15.09 14.74L12 22L8.91 14.74L2 12L8.91 9.26L12 2Z" />
-                            </svg>
-                        </span>
-                    </Link>
+                    <button
+                        className="new-chat-btn-sidebar"
+                        onClick={() => { window.location.hash = '#/'; window.location.reload(); }}
+                        style={{
+                            display: 'flex', alignItems: 'center', gap: '8px',
+                            padding: '10px 16px', borderRadius: '24px',
+                            background: '#dde3ea', border: 'none',
+                            fontSize: '0.9rem', fontWeight: '500', cursor: 'pointer', color: '#444746'
+                        }}
+                    >
+                        <span style={{ fontSize: '1.2rem', lineHeight: 1 }}>+</span> New Chat
+                    </button>
                     <div className="header-controls">
                         <button
                             className="theme-toggle-btn"

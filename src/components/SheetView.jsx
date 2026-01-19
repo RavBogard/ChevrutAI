@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
@@ -46,6 +47,7 @@ const SortableSourceItem = ({ source, id, onRemove, onUpdate }) => {
 };
 
 const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClearSheet, onUndo, onRedo, canUndo, canRedo, language, onSuggestionClick, sheetTitle, onTitleChange, onSendMessage, chatStarted, onAddSource, userSheets, onLoadSheet }) => {
+    const { currentUser } = useAuth();
     const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
@@ -214,41 +216,19 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                     <div className="empty-state">
                         {!chatStarted ? (
                             <div className="central-hero">
-                                <div className="central-logo-text">
-                                    {language === 'he' ? (
-                                        <>
-                                            <span className="logo-serif logo-hebrew">חברותא</span>
-                                            <span className="logo-sans">AI</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <span className="logo-serif">Chevruta</span>
-                                            <span className="logo-sans">.AI</span>
-                                        </>
-                                    )}
-                                    <span className="logo-sparkle">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="url(#sparkle-gradient-central)" stroke="none">
-                                            <defs>
-                                                <linearGradient id="sparkle-gradient-central" x1="0%" y1="0%" x2="100%" y2="100%">
-                                                    <stop offset="0%" stopColor="#4285F4" />
-                                                    <stop offset="50%" stopColor="#9B72CB" />
-                                                    <stop offset="100%" stopColor="#D96570" />
-                                                </linearGradient>
-                                            </defs>
-                                            <path d="M12 2L15.09 9.26L22 12L15.09 14.74L12 22L8.91 14.74L2 12L8.91 9.26L12 2Z" />
-                                        </svg>
-                                    </span>
-                                </div>
-                                <p>{language === 'he'
-                                    ? 'אני שותף הלמידה שלך ליצירת דפי מקורות יהודיים. אני יכול לעזור לך למצוא מקורות, לתרגם טקסטים ולבנות דפים יפהפיים.'
-                                    : 'I am your AI partner in creating a Jewish text sheet. I can help you find sources, translate texts, and build beautiful source sheets.'}
-                                </p>
+                                <h1 className="gemini-greeting">
+                                    {language === 'he' ? 'שלום' : 'Shalom'}
+                                    {currentUser?.displayName ? `, ${currentUser.displayName.split(' ')[0]}` : ''}
+                                </h1>
+                                <h2 className="gemini-headline">
+                                    {language === 'he' ? 'איפה נתחיל?' : 'Where should we start?'}
+                                </h2>
 
                                 <div className="central-input-wrapper">
-                                    <form onSubmit={handleCentralSubmit}>
+                                    <form onSubmit={handleCentralSubmit} className="gemini-input-box">
                                         <textarea
                                             className="central-textarea"
-                                            placeholder={language === 'he' ? 'מה תרצה ללמוד היום?' : 'What would you like to learn about today?'}
+                                            placeholder={language === 'he' ? 'כתוב נושא או שאלה...' : 'Enter a prompt for Chevruta...'}
                                             value={inputVal}
                                             onChange={(e) => setInputVal(e.target.value)}
                                             onKeyDown={handleKeyDown}
@@ -256,40 +236,36 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                                             autoFocus
                                             dir={language === 'he' ? 'rtl' : 'ltr'}
                                         />
-                                        <button type="submit" className="central-send-btn" disabled={!inputVal.trim()}>
-                                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="currentColor"><path d="M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z" /></svg>
-                                        </button>
+                                        <div className="input-actions">
+                                            {/* We can add more buttons here later like mic or image */}
+                                            <button type="submit" className="central-send-btn" disabled={!inputVal.trim()}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="currentColor"><path d="M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z" /></svg>
+                                            </button>
+                                        </div>
                                     </form>
                                 </div>
                                 <div className="empty-prompts-grid">
                                     {userSheets && userSheets.length > 0 ? (
-                                        <>
-                                            <h3 style={{ gridColumn: '1/-1', opacity: 0.7, fontSize: '0.9rem', marginBottom: '-0.5rem', marginTop: '1rem' }}>
-                                                {language === 'he' ? 'דפים אחרונים' : 'Recent Sheets'}
-                                            </h3>
-                                            {userSheets.slice(0, 6).map((sheet) => (
-                                                <button
-                                                    key={sheet.id}
-                                                    className="prompt-card"
-                                                    onClick={() => onLoadSheet(sheet.id)}
-                                                    style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.5rem' }}
-                                                >
-                                                    <strong style={{ fontSize: '1rem', color: 'var(--primary-color)' }}>
-                                                        {sheet.title || "Untitled Sheet"}
-                                                    </strong>
-                                                    <span style={{ fontSize: '0.8rem', opacity: 0.7 }}>
-                                                        {sheet.updatedAt?.seconds ? new Date(sheet.updatedAt.seconds * 1000).toLocaleDateString() : 'Just now'}
-                                                    </span>
-                                                </button>
-                                            ))}
-                                        </>
+                                        userSheets.slice(0, 4).map((sheet) => (
+                                            <button
+                                                key={sheet.id}
+                                                className="gemini-pill"
+                                                onClick={() => onLoadSheet(sheet.id)}
+                                            >
+                                                <span className="gemini-pill-icon">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                                                </span>
+                                                {sheet.title || "Untitled Sheet"}
+                                            </button>
+                                        ))
                                     ) : (
                                         shuffledPrompts.map((prompt, i) => (
                                             <button
                                                 key={i}
-                                                className="prompt-card"
+                                                className="gemini-pill"
                                                 onClick={() => onSuggestionClick && onSuggestionClick(prompt)}
                                             >
+                                                <span className="gemini-pill-icon">✨</span>
                                                 {prompt}
                                             </button>
                                         ))
@@ -298,7 +274,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                             </div>
                         ) : (
                             <div className="central-hero">
-                                <h2>Build your sheet</h2>
+                                <h2 className="gemini-headline" style={{ fontSize: '2rem', marginBottom: '1rem' }}>Build your sheet</h2>
                                 <p>Use the chat on the left to find and add sources.</p>
                             </div>
                         )}
@@ -333,7 +309,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                 </p>
                 <div className="footer-powered">
                     <a href="https://www.sefaria.org" target="_blank" rel="noopener noreferrer">Powered by Sefaria</a>
-                    <span className="version-tag"> • v0.9.7</span>
+                    <span className="version-tag"> • v0.9.8</span>
                 </div>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>

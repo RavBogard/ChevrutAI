@@ -1203,79 +1203,97 @@ body.dark-mode .central-hero p {
   width: 100%;
   min-height: 90px;
   /* Taller: ~3 lines visible */
-  padding: 18px 56px 18px 24px;
-  border-radius: 20px;
-  /* Slightly less pill-shaped */
-  border: 1px solid #e0e0e0;
-  background-color: #f0f4f9;
-  /* Gemini light gray input */
-  color: #1f1f1f;
-  font-family: inherit;
-  font-size: 1.1rem;
-  line-height: 1.5;
-  resize: none;
-  outline: none;
-  transition: background-color 0.2s, box-shadow 0.2s;
-  overflow: hidden;
-  box-shadow: none;
+  padding: 2rem;
+  box-sizing: border-box;
 }
 
-.central-textarea:focus {
-  background-color: white;
-  box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
-  border-color: transparent;
+.gemini-greeting {
+  font-size: 3rem;
+  font-weight: 500;
+  color: #c4c7c5;
+  /* Muted gray for greeting */
+  background: linear-gradient(to right, #4285f4, #d96570);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0 0 0.5rem 0;
+  text-align: center;
+  letter-spacing: -0.02em;
 }
 
-.central-textarea::placeholder {
-  color: #5f6368;
-  opacity: 0.8;
+.gemini-headline {
+  font-size: 3rem;
+  font-weight: 500;
+  color: #444746;
+  /* Darker gray for headline */
+  margin: 0 0 3rem 0;
+  text-align: center;
+  letter-spacing: -0.02em;
 }
 
-body.dark-mode .central-textarea {
-  background-color: #1e1f20;
-  border-color: #444746;
+body.dark-mode .gemini-headline {
   color: #e3e3e3;
 }
 
-body.dark-mode .central-textarea:focus {
-  background-color: #282a2c;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+/* Gemini Input Bar */
+.central-input-wrapper {
+  width: 100%;
+  position: relative;
+  margin-bottom: 2rem;
 }
 
-.send-button {
-  position: absolute;
-  left: 12px;
-  bottom: 12px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
+.gemini-input-box {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1px solid transparent;
+  /* No border usually, just shadow? or subtle border */
+  border-radius: 24px;
+  /* Pill shape - actually rectangular with rounded corners */
+  padding: 1.25rem 1.5rem 3.5rem 1.5rem;
+  /* Extra bottom padding for buttons */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  /* Subtle border+shadow */
+  position: relative;
+  transition: box-shadow 0.2s;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: transform 0.2s, background-color 0.2s;
-  z-index: 10;
+  flex-direction: column;
 }
 
-.send-button svg {
-  width: 20px;
-  height: 20px;
+.gemini-input-box:focus-within {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.1);
+  background: var(--sheet-bg);
+}
+
+.central-textarea {
+  border: none;
+  background: transparent;
+  width: 100%;
+  resize: none;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  color: var(--sheet-text);
+  outline: none;
+  padding: 0;
+  margin: 0;
+  min-height: 24px;
+}
+
+.input-actions {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
 }
 
 .central-send-btn {
-  position: absolute;
-  right: 12px;
-  bottom: 8px;
-  /* Anchor to bottom for multi-line support */
+  background: transparent;
+  color: var(--sheet-text);
+  border: none;
+  border-radius: 50%;
   width: 40px;
   height: 40px;
-  border-radius: 50%;
-  background-color: transparent;
-  color: #5f6368;
-  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1283,19 +1301,11 @@ body.dark-mode .central-textarea:focus {
   transition: background 0.2s;
 }
 
-.central-send-btn svg {
-  width: 24px;
-  height: 24px;
+.central-send-btn:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .central-send-btn:disabled {
-  background-color: #9ca3af;
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.central-send-btn:not(:disabled):hover {
-  background-color: rgba(31, 31, 31, 0.08);
   color: #1f1f1f;
 }
 
@@ -1876,6 +1886,67 @@ html[dir="rtl"] .prompt-card {
   color: var(--border-color);
   opacity: 0.6;
 }
+
+/* Sidebar Container & Transitions */
+.chat-sidebar-wrapper {
+  height: 100vh;
+  background-color: var(--bg-paper);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 50;
+  overflow: hidden;
+}
+
+.chat-sidebar-wrapper.closed {
+  width: 0 !important;
+  min-width: 0 !important;
+  opacity: 0;
+  border-right: none;
+}
+
+/* Hamburger Menu Button */
+.main-hamburger-btn {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  z-index: 100;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  color: var(--sidebar-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.main-hamburger-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.main-hamburger-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Adjust SheetView to accommodate hamburger */
+.sheet-view {
+  position: relative;
+  transition: padding-left 0.3s;
+}
+
+/* Ensure Logo in SheetView doesn't overlap hamburger if sidebar is closed */
+/* Actually hamburger is on top left, replacing logo location.
+   If sidebar is closed, hamburger opens it.
+   If sidebar is open, hamburger closes it?
+   Gemini has hamburger INSIDE sidebar usually, or stays in place.
+   I'll keep it fixed in App Container top-left.
+*/
 
 /* Toolbar Styling */
 .sheet-toolbar {

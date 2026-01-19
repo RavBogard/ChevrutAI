@@ -339,8 +339,18 @@ function EditorContainer() {
     });
   };
 
-  const [sidebarWidth, setSidebarWidth] = useState(400); // Default width in px
+  const [sidebarWidth, setSidebarWidth] = useState(350); // Slightly narrower default
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Default closed for clean home
   const [isResizing, setIsResizing] = useState(false);
+
+  // Auto-open sidebar when chat starts (if on desktop)
+  useEffect(() => {
+    if (chatStarted && window.innerWidth > 768 && !isSidebarOpen) {
+      setIsSidebarOpen(true);
+    }
+  }, [chatStarted]);
+
+  const toggleSidebar = () => setIsSidebarOpen(prev => !prev);
 
   const startResizing = () => {
     setIsResizing(true);
@@ -373,32 +383,44 @@ function EditorContainer() {
 
   return (
     <div className={`app-container ${chatStarted ? 'chat-active' : 'chat-initial'}`}>
-      {chatStarted && (
-        <>
-          <div style={{ width: sidebarWidth, minWidth: '300px', flexShrink: 0, display: 'flex' }}>
-            <ChatSidebar
-              messages={messages}
-              onSendMessage={handleSendMessage}
-              onAddSource={handleAddSource}
-              sheetSources={sourcesList}
-              isLoading={isLoading}
-              isMobileOpen={mobileChatOpen}
-              onMobileClose={() => setMobileChatOpen(false)}
-              darkMode={darkMode}
-              toggleDarkMode={toggleDarkMode}
-              language={language}
-              toggleLanguage={toggleLanguage}
-              suggestedInput={suggestedPrompt}
-              userSheets={userSheets}
-              onLoadSheet={handleLoadSheet}
-              currentSheetId={currentSheetId}
-            />
-          </div>
-          <div
-            className="resizer"
-            onMouseDown={startResizing}
-          ></div>
-        </>
+
+      {/* Hamburger Menu - Always visible in top left */}
+      <button className="main-hamburger-btn" onClick={toggleSidebar} title="Toggle Menu">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="currentColor">
+          <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z" />
+        </svg>
+      </button>
+
+      {/* Sidebar Wrapper - Always rendered, transparency/width transitions */}
+      <div
+        className={`chat-sidebar-wrapper ${isSidebarOpen ? 'open' : 'closed'}`}
+        style={{ width: isSidebarOpen ? sidebarWidth : 0 }}
+      >
+        <ChatSidebar
+          messages={messages}
+          onSendMessage={handleSendMessage}
+          onAddSource={handleAddSource}
+          sheetSources={sourcesList}
+          isLoading={isLoading}
+          isMobileOpen={mobileChatOpen}
+          onMobileClose={() => setMobileChatOpen(false)}
+          darkMode={darkMode}
+          toggleDarkMode={toggleDarkMode}
+          language={language}
+          toggleLanguage={toggleLanguage}
+          suggestedInput={suggestedPrompt}
+          userSheets={userSheets}
+          onLoadSheet={handleLoadSheet}
+          currentSheetId={currentSheetId}
+        />
+      </div>
+
+      {/* Resizer - Only visible if sidebar is open */}
+      {isSidebarOpen && (
+        <div
+          className="resizer"
+          onMouseDown={startResizing}
+        ></div>
       )}
 
       <SheetView
