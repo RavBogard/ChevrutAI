@@ -1,0 +1,40 @@
+{
+    "app": {
+        "title": "חברותא.AI",
+        "tagline": "בנה דפי מקורות יהודיים יפים"
+    },
+    "welcome": {
+        "greeting": "שלום! איזה דף מקורות תרצה ליצור יחד?",
+        "placeholder": "על מה תרצה ללמוד היום?"
+    },
+    "actions": {
+        "addToSheet": "+ הוסף לדף",
+        "added": "נוסף",
+        "export": "ייצוא",
+        "clearSheet": "נקה דף",
+        "undo": "בטל",
+        "redo": "שחזר"
+    },
+    "export": {
+        "googleDocs": "Google Docs",
+        "word": "Word (.docx)",
+        "pdf": "PDF"
+    },
+    "sources": {
+        "suggestedSources": "מקורות מוצעים:",
+        "poweredBy": "מופעל על ידי ספריא"
+    },
+    "errors": {
+        "fetchFailed": "לא ניתן לטעון טקסט עבור {ref}. ייתכן שהוא לא קיים בספריא.",
+        "rateLimited": "יותר מדי בקשות. אנא המתן רגע."
+    },
+    "confirm": {
+        "clearSheet": "האם אתה בטוח שברצונך לנקות את הדף? לא ניתן לבטל פעולה זו."
+    },
+    "footer": {
+        "projectOf": "פרויקט של",
+        "author": "הרב דניאל בוגרד",
+        "privacyPolicy": "מדיניות פרטיות",
+        "termsOfService": "תנאי שימוש"
+    }
+}

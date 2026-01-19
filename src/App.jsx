@@ -5,6 +5,8 @@ import SheetView from './components/SheetView';
 import Privacy from './components/Privacy';
 import Terms from './components/Terms';
 import { ToastProvider, useToast } from './components/Toast';
+import { I18nProvider } from './i18n';
+import { useUndoRedo } from './hooks/useUndoRedo';
 import { getSefariaText } from './services/sefaria';
 import './App.css';
 
@@ -452,16 +454,21 @@ function ChevrutaApp() {
 
 
 function App() {
+  // Get language for i18n wrapper (simplified, actual state is in ChevrutaApp)
+  const lang = localStorage.getItem('appLanguage') || 'en';
+
   return (
-    <ToastProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<ChevrutaApp />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/terms" element={<Terms />} />
-        </Routes>
-      </Router>
-    </ToastProvider>
+    <I18nProvider language={lang}>
+      <ToastProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<ChevrutaApp />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
+          </Routes>
+        </Router>
+      </ToastProvider>
+    </I18nProvider>
   );
 }
 

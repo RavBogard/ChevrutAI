@@ -1,0 +1,40 @@
+{
+    "app": {
+        "title": "Chevruta.AI",
+        "tagline": "Build Beautiful Jewish Source Sheets"
+    },
+    "welcome": {
+        "greeting": "Shalom! What kind of text sheet do you want to create together?",
+        "placeholder": "What would you like to learn about today?"
+    },
+    "actions": {
+        "addToSheet": "+ Add to Sheet",
+        "added": "Added",
+        "export": "Export",
+        "clearSheet": "Clear Sheet",
+        "undo": "Undo",
+        "redo": "Redo"
+    },
+    "export": {
+        "googleDocs": "Google Docs",
+        "word": "Word (.docx)",
+        "pdf": "PDF"
+    },
+    "sources": {
+        "suggestedSources": "Suggested Sources:",
+        "poweredBy": "Powered by Sefaria"
+    },
+    "errors": {
+        "fetchFailed": "Could not fetch text for {ref}. It might not exist in Sefaria.",
+        "rateLimited": "Too many requests. Please wait a moment."
+    },
+    "confirm": {
+        "clearSheet": "Are you sure you want to clear your current sheet? This cannot be undone."
+    },
+    "footer": {
+        "projectOf": "A Project of",
+        "author": "Rabbi Daniel Bogard",
+        "privacyPolicy": "Privacy Policy",
+        "termsOfService": "Terms of Service"
+    }
+}
