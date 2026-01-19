@@ -2351,16 +2351,26 @@ body.dark-mode .sidebar-toggle-btn:hover {
   font-weight: 700;
 }
 
-/* Enhancing Suggestions (Gemini Pills) */
+/* Suggestion Cards - 3 Column Grid (v0.9.5 Style) */
 .gemini-suggestions {
-  display: flex !important;
-  /* Force flex */
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   margin-top: 2rem;
   width: 100%;
-  max-width: 800px;
+  max-width: 900px;
+}
+
+@media (max-width: 900px) {
+  .gemini-suggestions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .gemini-suggestions {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Hero Logo Image */
@@ -2406,17 +2416,8 @@ body.dark-mode .sidebar-toggle-btn:hover {
   /* Subtle indigo border */
 }
 
-border-color: transparent;
-z-index: 10;
-}
-
 .gemini-pill:active {
   transform: scale(0.98);
-}
-
-.gemini-suggestions {
-  gap: 1.2rem !important;
-  /* More breathing room */
 }
 
 /* Remove cheesy icon */
