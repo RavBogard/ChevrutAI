@@ -805,12 +805,13 @@ body.dark-mode .prompt-card:hover {
   }
 
   .central-logo-text {
-    font-size: min(11vw, 2.5rem);
+    font-size: clamp(1.8rem, 9vw, 2.5rem);
     flex-wrap: nowrap;
     justify-content: center;
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
+    text-align: center;
   }
 
   .central-logo-text .logo-sparkle {
