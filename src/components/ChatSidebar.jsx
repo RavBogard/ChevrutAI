@@ -32,13 +32,14 @@ const ChatSidebar = ({
         }
     }, [userSheets]);
 
-    // Switch to chat tab when user sends a message
+    // Switch to chat tab when user sends a message OR interacts with sheet (has sources)
     useEffect(() => {
         const hasUserMessage = messages.some(m => m.role === 'user');
-        if (hasUserMessage && activeTab !== 'chat') {
+        const hasSources = sheetSources && sheetSources.length > 0;
+        if ((hasUserMessage || hasSources) && activeTab !== 'chat') {
             setActiveTab('chat');
         }
-    }, [messages, activeTab]);
+    }, [messages, activeTab, sheetSources]);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
