@@ -116,7 +116,7 @@ const ChatSidebar = ({
                     </button>
 
                     <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-start', fontFamily: 'var(--font-english-serif)', gap: '1px' }}>
-                        <span style={{ fontSize: '1.6rem', fontWeight: '700', fontStyle: 'italic', color: 'var(--sheet-text)', letterSpacing: '-0.02em' }}>Chevruta</span>
+                        <span style={{ fontSize: '1.6rem', fontWeight: '700', color: 'var(--sheet-text)', letterSpacing: '-0.02em' }}>Chevruta</span>
                         <span style={{ fontSize: '1.6rem', fontWeight: '700', background: 'linear-gradient(135deg, #8b5cf6 0%, #f97316 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>.AI</span>
                         <span style={{ fontSize: '1.1rem', background: 'linear-gradient(135deg, #8b5cf6 0%, #f97316 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginLeft: '2px', transform: 'translateY(-4px)' }}>✦</span>
                     </div>

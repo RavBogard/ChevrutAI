@@ -2351,23 +2351,25 @@ body.dark-mode .sidebar-toggle-btn:hover {
   font-weight: 700;
 }
 
-/* Suggestion Cards - 3 Column Grid (v0.9.5 Style) */
+/* Suggestion Cards - 3 Column Grid (Modern AI Aesthetic) */
 .gemini-suggestions {
   display: grid !important;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin-top: 2rem;
+  gap: 0.75rem;
+  margin: 2rem auto 0 auto;
+  /* Center horizontally */
   width: 100%;
-  max-width: 900px;
+  max-width: 700px;
+  /* Match input box width */
 }
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .gemini-suggestions {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 500px) {
   .gemini-suggestions {
     grid-template-columns: 1fr;
   }
@@ -2381,39 +2383,36 @@ body.dark-mode .sidebar-toggle-btn:hover {
   transition: opacity 0.3s;
 }
 
-/* Polished Suggestion Pills */
-/* Polished Suggestion Cards */
+/* Modern AI-Style Suggestion Cards */
 .gemini-pill {
-  /* Reset */
   border-radius: 12px !important;
-  padding: 20px 24px !important;
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 0.95rem !important;
-  font-weight: 500 !important;
+  padding: 1rem 1.25rem !important;
+  font-family: var(--font-ui);
+  font-size: 0.9rem !important;
+  font-weight: 400 !important;
   line-height: 1.5;
-  color: var(--sheet-text);
-  background: #f0f4f8;
-  /* Cool light gray/blue */
-  border: 1px solid transparent;
-  /* No border for clean look */
+  color: #334155;
+  /* Slate 700 - readable */
+  background: #f8fafc;
+  /* Slate 50 - very light */
+  border: 1px solid #e2e8f0;
+  /* Slate 200 - subtle border */
   box-shadow: none;
-  /* Flatter look */
-  transition: all 0.2s ease-out;
+  transition: all 0.15s ease-out;
   text-align: left;
   display: flex !important;
   justify-content: flex-start;
-  align-items: center;
-  min-height: 80px;
+  align-items: flex-start;
+  min-height: auto;
+  cursor: pointer;
 }
 
 .gemini-pill:hover {
-  background: #e0e7ff;
-  /* Indigo-100 tint on hover */
-  transform: translateY(-2px) !important;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  /* Subtle lift */
-  border-color: rgba(99, 102, 241, 0.2);
-  /* Subtle indigo border */
+  background: #f1f5f9;
+  /* Slate 100 */
+  border-color: #cbd5e1;
+  /* Slate 300 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
 .gemini-pill:active {
@@ -2426,19 +2425,21 @@ body.dark-mode .sidebar-toggle-btn:hover {
 }
 
 .pill-text {
-  /* Just normal text now, centered or left? */
   width: 100%;
-  text-align: center;
 }
 
 body.dark-mode .gemini-pill {
-  background: rgba(31, 41, 55, 0.8);
-  border-color: #4b5563;
+  background: #1e293b;
+  /* Slate 800 */
+  color: #e2e8f0;
+  /* Slate 200 */
+  border-color: #334155;
+  /* Slate 700 */
 }
 
 body.dark-mode .gemini-pill:hover {
-  background: rgba(55, 65, 81, 0.9);
-  border-color: #a855f7;
+  background: #334155;
+  border-color: #475569;
 }
 
 /* Sidebar Logo Adjustment */

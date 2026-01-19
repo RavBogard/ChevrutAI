@@ -243,7 +243,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                         {!chatStarted ? (
                             <div className="central-hero">
                                 <div className="chevruta-logo-hero" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.1rem', marginBottom: '1rem', fontFamily: 'var(--font-english-serif)' }}>
-                                    <span style={{ fontSize: '4rem', fontWeight: '700', fontStyle: 'italic', color: 'var(--sheet-text)', letterSpacing: '-0.02em' }}>Chevruta</span>
+                                    <span style={{ fontSize: '4rem', fontWeight: '700', color: 'var(--sheet-text)', letterSpacing: '-0.02em' }}>Chevruta</span>
                                     <span style={{ fontSize: '4rem', fontWeight: '700', background: 'linear-gradient(135deg, #8b5cf6 0%, #f97316 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>.AI</span>
                                     <span style={{ fontSize: '2rem', background: 'linear-gradient(135deg, #8b5cf6 0%, #f97316 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginLeft: '0.25rem', transform: 'translateY(-8px)', display: 'inline-block' }}>✦</span>
                                 </div>
@@ -322,7 +322,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                 </p>
                 <div className="footer-powered">
                     <a href="https://www.sefaria.org" target="_blank" rel="noopener noreferrer">Powered by Sefaria</a>
-                    <span className="version-tag"> • v0.9.11</span>
+                    <span className="version-tag"> • v0.9.12</span>
                 </div>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
