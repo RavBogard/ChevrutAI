@@ -208,6 +208,12 @@ function ChevrutaApp() {
   };
 
   const handleAddSource = async (sourceSuggestion) => {
+    // If it's a custom block or header, just add it directly.
+    if (sourceSuggestion.type === 'custom' || sourceSuggestion.type === 'header') {
+      setSourcesList(prev => [...prev, sourceSuggestion]);
+      return;
+    }
+
     // Check if already exists to avoid dupes? Maybe allow dupes if user wants.
     // Let's fetch the full text.
     const fullSource = await getSefariaText(sourceSuggestion.ref);
@@ -332,6 +338,7 @@ function ChevrutaApp() {
 
       <SheetView
         sources={sourcesList}
+        onAddSource={handleAddSource} // Pass the handler
         onRemoveSource={handleRemoveSource}
         onUpdateSource={handleUpdateSource}
         onReorder={setSourcesList}

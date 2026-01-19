@@ -32,12 +32,40 @@ export const exportToDocx = async (title, sources) => {
                     const englishText = formatText(source.en);
                     const citation = source.ref;
 
+                    if (source.type === 'header') {
+                        return [
+                            new Paragraph({
+                                text: englishText,
+                                heading: HeadingLevel.HEADING_2,
+                                alignment: AlignmentType.CENTER,
+                                spacing: { before: 400, after: 200 },
+                            })
+                        ];
+                    }
+
+                    if (source.type === 'custom') {
+                        const elements = [];
+                        if (source.title) {
+                            elements.push(new Paragraph({
+                                text: source.title,
+                                heading: HeadingLevel.HEADING_3,
+                                spacing: { before: 200, after: 100 },
+                            }));
+                        }
+                        elements.push(new Paragraph({
+                            text: englishText,
+                            spacing: { after: 200 },
+                        }));
+                        return elements;
+                    }
+
                     return [
                         // Citation Header
                         new Paragraph({
                             text: citation,
-                            heading: HeadingLevel.HEADING_2,
+                            heading: HeadingLevel.HEADING_4, // Reduced from H2 since headers are H2
                             spacing: { before: 200, after: 100 },
+                            alignment: AlignmentType.CENTER
                         }),
                         // Side-by-Side Table
                         new Table({

@@ -9,7 +9,9 @@ import { exportToDocx } from '../services/docxExport';
 import { PROMPTS_EN, PROMPTS_HE } from '../data/prompts';
 
 import SourceBlock from './sheet/SourceBlock';
-import ExportMenu from './sheet/ExportMenu';
+import CustomSourceBlock from './sheet/CustomSourceBlock';
+import SectionHeaderBlock from './sheet/SectionHeaderBlock';
+import SheetToolbar from './sheet/SheetToolbar';
 
 const SortableSourceItem = ({ source, id, onRemove, onUpdate }) => {
     const {
@@ -23,11 +25,16 @@ const SortableSourceItem = ({ source, id, onRemove, onUpdate }) => {
     const style = {
         transform: CSS.Transform.toString(transform),
         transition,
+        marginBottom: source.type === 'header' ? '0' : '1rem' // Less margin for headers
     };
+
+    let BlockComponent = SourceBlock;
+    if (source.type === 'custom') BlockComponent = CustomSourceBlock;
+    if (source.type === 'header') BlockComponent = SectionHeaderBlock;
 
     return (
         <div ref={setNodeRef} style={style} className="sortable-item">
-            <SourceBlock
+            <BlockComponent
                 source={source}
                 onRemove={onRemove}
                 onUpdate={onUpdate}
@@ -37,7 +44,7 @@ const SortableSourceItem = ({ source, id, onRemove, onUpdate }) => {
     );
 };
 
-const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClearSheet, onUndo, onRedo, canUndo, canRedo, language, onSuggestionClick, sheetTitle, onTitleChange, onSendMessage, chatStarted }) => {
+const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClearSheet, onUndo, onRedo, canUndo, canRedo, language, onSuggestionClick, sheetTitle, onTitleChange, onSendMessage, chatStarted, onAddSource }) => {
     const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
@@ -46,6 +53,23 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
     );
 
     const [inputVal, setInputVal] = useState('');
+
+    const handleAddCustom = () => {
+        onAddSource({
+            type: 'custom',
+            ref: `note-${Date.now()}`, // Unique ID for drag key
+            en: '',
+            title: ''
+        });
+    };
+
+    const handleAddHeader = () => {
+        onAddSource({
+            type: 'header',
+            ref: `header-${Date.now()}`, // Unique ID for drag key
+            en: ''
+        });
+    };
 
     // Practical, inspiring prompts - real use cases for rabbis and Jewish educators
     const shuffledPrompts = useMemo(() => {
@@ -96,6 +120,8 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
         setExportUrl(null); // Reset previous url
         try {
             const formattedSources = sources.map(s => ({
+                type: s.type || 'sefaria',
+                title: s.title,
                 citation: s.ref,
                 hebrew: Array.isArray(s.he) ? s.he.join('\n') : s.he,
                 english: Array.isArray(s.en) ? s.en.join('\n') : s.en
@@ -139,58 +165,6 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
             {chatStarted && (
                 <header className="sheet-header">
                     <div className="sheet-controls-row">
-                        <ExportMenu
-                            showExportMenu={showExportMenu}
-                            setShowExportMenu={setShowExportMenu}
-                            isExportingGoogle={isExportingGoogle}
-                            handleExportGoogle={handleExportGoogle}
-                            handleExportDocx={handleExportDocx}
-                            handleExportPDF={handleExportPDF}
-                            onClearSheet={onClearSheet}
-                        />
-
-                        {/* Undo/Redo Buttons */}
-                        <div className="undo-redo-container">
-                            <button
-                                className="undo-redo-btn"
-                                onClick={onUndo}
-                                disabled={!canUndo}
-                                aria-label="Undo"
-                                title="Undo last change"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M3 7v6h6"></path>
-                                    <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"></path>
-                                </svg>
-                            </button>
-                            <button
-                                className="undo-redo-btn"
-                                onClick={onRedo}
-                                disabled={!canRedo}
-                                aria-label="Redo"
-                                title="Redo last change"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M21 7v6h-6"></path>
-                                    <path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"></path>
-                                </svg>
-                            </button>
-                        </div>
-
-                        {/* New Sheet Button */}
-                        <button
-                            className="new-sheet-btn"
-                            onClick={onClearSheet}
-                            title="Start a new sheet"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                <polyline points="14 2 14 8 20 8"></polyline>
-                                <line x1="12" y1="18" x2="12" y2="12"></line>
-                                <line x1="9" y1="15" x2="15" y2="15"></line>
-                            </svg>
-                            <span>New Sheet</span>
-                        </button>
                     </div>
 
                     <input
@@ -199,6 +173,22 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                         value={sheetTitle}
                         onChange={(e) => onTitleChange(e.target.value)}
                         placeholder="Untitled Source Sheet"
+                    />
+
+                    <SheetToolbar
+                        onAddCustom={handleAddCustom}
+                        onAddHeader={handleAddHeader}
+                        onUndo={onUndo}
+                        onRedo={onRedo}
+                        canUndo={canUndo}
+                        canRedo={canRedo}
+                        onClearSheet={onClearSheet}
+                        showExportMenu={showExportMenu}
+                        setShowExportMenu={setShowExportMenu}
+                        isExportingGoogle={isExportingGoogle}
+                        handleExportGoogle={handleExportGoogle}
+                        handleExportDocx={handleExportDocx}
+                        handleExportPDF={handleExportPDF}
                     />
 
                     {exportUrl && (
@@ -312,7 +302,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                 </p>
                 <div className="footer-powered">
                     <a href="https://www.sefaria.org" target="_blank" rel="noopener noreferrer">Powered by Sefaria</a>
-                    <span className="version-tag"> • v0.9.0</span>
+                    <span className="version-tag"> • v0.9.1</span>
                 </div>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>

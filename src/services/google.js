@@ -109,17 +109,26 @@ export async function exportToGoogleDoc(sheetTitle, sources) {
     `;
 
     sources.forEach(source => {
-        // Use clean text for safety but wrap in our classes
-        htmlContent += `<div class="citation">${stripHtml(source.citation)}</div>`;
+        if (source.type === 'header') {
+            htmlContent += `<div style="font-size: 18pt; font-weight: bold; margin-top: 30px; margin-bottom: 15px; border-bottom: 2px solid #ccc; padding-bottom: 5px;">${stripHtml(source.english)}</div>`;
+        } else if (source.type === 'custom') {
+            if (source.title) {
+                htmlContent += `<div style="font-size: 14pt; font-weight: bold; margin-top: 20px; margin-bottom: 10px;">${stripHtml(source.title)}</div>`;
+            }
+            htmlContent += `<div style="font-size: 11pt; margin-bottom: 20px; line-height: 1.5;">${source.english}</div>`; // custom text might have html from editable content
+        } else {
+            // Default Sefaria Source
+            htmlContent += `<div class="citation">${stripHtml(source.citation)}</div>`;
 
-        htmlContent += `
-        <table>
-          <tr>
-            <td class="english">${stripHtml(source.english)}</td>
-            <td class="hebrew">${stripHtml(source.hebrew)}</td>
-          </tr>
-        </table>
-        `;
+            htmlContent += `
+            <table>
+              <tr>
+                <td class="english">${stripHtml(source.english)}</td>
+                <td class="hebrew">${stripHtml(source.hebrew)}</td>
+              </tr>
+            </table>
+            `;
+        }
     });
 
     htmlContent += `
