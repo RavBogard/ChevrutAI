@@ -289,7 +289,7 @@ h6 {
   border: 1px solid var(--border-color);
   background-color: var(--input-bg);
   color: var(--sidebar-text);
-  font-family: inherit;
+  font-family: var(--font-ui);
   font-size: 0.95rem;
   line-height: 1.5;
   resize: none;
@@ -2326,7 +2326,7 @@ body.dark-mode .sidebar-toggle-btn:hover {
 
 /* New Chat Button Hover */
 .new-chat-btn-sidebar {
-  background: linear-gradient(135deg, var(--primary-color) 0%, #a855f7 100%) !important;
+  background: linear-gradient(135deg, #8b5cf6 0%, #f97316 100%) !important;
   color: white !important;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border: none;
@@ -2344,8 +2344,9 @@ body.dark-mode .sidebar-toggle-btn:hover {
 .central-logo-hero {
   font-family: var(--font-english-serif);
   font-size: 3rem;
-  background: linear-gradient(135deg, var(--primary-color) 0%, #a855f7 100%);
+  background: linear-gradient(135deg, #8b5cf6 0%, #f97316 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 0.5rem;
   letter-spacing: -0.03em;
@@ -2446,7 +2447,8 @@ body.dark-mode .gemini-pill:hover {
 /* Sidebar Logo Adjustment */
 .sidebar-logo-text {
   /* Gradient text for brand */
-  background: linear-gradient(135deg, var(--primary-color) 0%, #a855f7 100%);
+  background: linear-gradient(135deg, #8b5cf6 0%, #f97316 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
