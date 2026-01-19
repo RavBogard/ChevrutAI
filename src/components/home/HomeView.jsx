@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { subscribeToUserSheets } from '../../services/firebase';
 import { useNavigate } from 'react-router-dom';
-import { createNewSheet } from '../../hooks/useFirestore';
 
 const HomeView = () => {
     const { currentUser, login } = useAuth();
