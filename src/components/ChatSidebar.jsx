@@ -22,6 +22,15 @@ const ChatSidebar = ({
     const [activeTab, setActiveTab] = useState('chat');
     const messagesEndRef = useRef(null);
     const textareaRef = useRef(null);
+    const hasSetInitialTab = useRef(false);
+
+    // Default to 'history' (My Sheets) if user has sheets and hasn't started chatting
+    useEffect(() => {
+        if (!hasSetInitialTab.current && userSheets && userSheets.length > 0) {
+            setActiveTab('history');
+            hasSetInitialTab.current = true;
+        }
+    }, [userSheets]);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

@@ -2324,9 +2324,19 @@ body.dark-mode .sidebar-toggle-btn:hover {
 }
 
 /* New Chat Button Hover */
+.new-chat-btn-sidebar {
+  background: linear-gradient(135deg, var(--primary-color) 0%, #a855f7 100%) !important;
+  color: white !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
 .new-chat-btn-sidebar:hover {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   transform: translateY(-1px);
+  filter: brightness(1.05);
 }
 
 /* Central Logo */
