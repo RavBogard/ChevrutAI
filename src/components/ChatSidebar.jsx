@@ -115,16 +115,12 @@ const ChatSidebar = ({
                         </svg>
                     </button>
 
-                    <div className="sidebar-logo-text" style={{
-                        flex: 1,
-                        fontFamily: 'var(--font-english-serif)',
-                        fontSize: '1.5rem',
-                        fontWeight: 600,
-                        color: 'var(--sheet-text)',
-                        letterSpacing: '-0.02em',
-                        textAlign: 'left' // "Stretching across full width"? Maybe left align is best.
-                    }}>
-                        ChevrutAI
+                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
+                        <img
+                            src="/branding-logo-blue.png"
+                            alt="ChevrutAI"
+                            style={{ height: '40px', maxWidth: '180px', objectFit: 'contain' }}
+                        />
                     </div>
 
                     <button

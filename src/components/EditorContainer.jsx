@@ -260,15 +260,7 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                             <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z" />
                         </svg>
                     </button>
-                    <div className="collapsed-logo-text" style={{
-                        fontFamily: 'var(--font-english-serif)',
-                        fontSize: '1.4rem',
-                        fontWeight: 600,
-                        color: 'var(--sheet-text)',
-                        letterSpacing: '-0.02em'
-                    }}>
-                        ChevrutAI
-                    </div>
+
                 </div>
             )}
 
