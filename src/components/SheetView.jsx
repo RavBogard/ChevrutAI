@@ -5,165 +5,11 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSo
 import { CSS } from '@dnd-kit/utilities';
 import html2pdf from 'html2pdf.js';
 import { exportToGoogleDoc } from '../services/google';
-import { getSefariaTextByVersion } from '../services/sefaria';
 import { exportToDocx } from '../services/docxExport';
 import { PROMPTS_EN, PROMPTS_HE } from '../data/prompts';
 
-const EditableContent = ({ html, className, onChange, dir }) => {
-    const [displayHtml, setDisplayHtml] = useState("");
-
-    React.useEffect(() => {
-        if (!html) {
-            setDisplayHtml("");
-            return;
-        }
-        if (Array.isArray(html)) {
-            setDisplayHtml(html.map(c => `<p>${c}</p>`).join(""));
-        } else {
-            // If it looks like it already has block tags, leave it. Otherwise wrap in P.
-            const trimmed = html.trim();
-            if (trimmed.startsWith('<p') || trimmed.startsWith('<div') || trimmed.startsWith('<ul') || trimmed.startsWith('<ol')) {
-                setDisplayHtml(html);
-            } else {
-                setDisplayHtml(`<p>${html}</p>`);
-            }
-        }
-    }, [html]);
-
-    const handleBlur = (e) => {
-        const val = e.currentTarget.innerHTML;
-        if (val !== displayHtml) {
-            onChange(val);
-        }
-    };
-
-    return (
-        <div
-            className={className}
-            dir={dir}
-            contentEditable
-            suppressContentEditableWarning
-            onBlur={handleBlur}
-            dangerouslySetInnerHTML={{ __html: displayHtml }}
-            style={{ outline: 'none', minHeight: '1em' }}
-        />
-    );
-};
-
-const SourceBlock = ({ source, onRemove, onUpdate, dragHandleProps }) => {
-    const [viewMode, setViewMode] = useState('bilingual'); // bilingual, hebrew, english
-    const [loadingVersion, setLoadingVersion] = useState(false);
-
-    const handleVersionChange = async (e) => {
-        const newTitle = e.target.value;
-        if (newTitle === source.versionTitle) return;
-
-        setLoadingVersion(true);
-        const newText = await getSefariaTextByVersion(source.ref, newTitle);
-        setLoadingVersion(false);
-
-        if (newText) {
-            onUpdate({
-                en: newText,
-                versionTitle: newTitle
-            });
-        }
-    };
-
-    return (
-        <div className="source-block">
-            <div className="source-header">
-                <div className="header-left">
-                    {/* Drag Handle */}
-                    <div className="drag-handle" {...dragHandleProps} title="Drag to reorder">
-                        <svg width="14" height="24" viewBox="0 0 14 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="4" cy="4" r="2" fill="#9CA3AF" />
-                            <circle cx="4" cy="12" r="2" fill="#9CA3AF" />
-                            <circle cx="4" cy="20" r="2" fill="#9CA3AF" />
-                            <circle cx="10" cy="4" r="2" fill="#9CA3AF" />
-                            <circle cx="10" cy="12" r="2" fill="#9CA3AF" />
-                            <circle cx="10" cy="20" r="2" fill="#9CA3AF" />
-                        </svg>
-                    </div>
-                    <h3>{source.ref}</h3>
-                </div>
-
-                <div className="source-controls" data-html2canvas-ignore="true">
-                    {source.versions && source.versions.length > 1 && (
-                        <select
-                            className="version-select"
-                            value={source.versionTitle || ""}
-                            onChange={handleVersionChange}
-                            disabled={loadingVersion}
-                            style={{ maxWidth: '150px', marginRight: '0.5rem' }}
-                        >
-                            {!source.versions.find(v => v.versionTitle === source.versionTitle) && source.versionTitle && (
-                                <option value={source.versionTitle}>{source.versionTitle}</option>
-                            )}
-                            {source.versions.map((v, i) => (
-                                <option key={i} value={v.versionTitle}>
-                                    {v.versionTitle}
-                                </option>
-                            ))}
-                        </select>
-                    )}
-
-                    <select
-                        value={viewMode}
-                        onChange={(e) => setViewMode(e.target.value)}
-                        className="view-toggle"
-                    >
-                        <option value="bilingual">Bilingual</option>
-                        <option value="hebrew">Hebrew Only</option>
-                        <option value="english">English Only</option>
-                    </select>
-                    <button className="remove-btn" onClick={onRemove} title="Remove Source">
-                        &times;
-                    </button>
-                </div>
-            </div>
-
-            <div className={`source-content view-${viewMode}`}>
-                {loadingVersion ? (
-                    <div className="loading-text">Loading translation...</div>
-                ) : (
-                    <>
-                        {(viewMode === 'bilingual' || viewMode === 'english') && (
-                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                                {(!source.en || (Array.isArray(source.en) && source.en.every(s => !s || !s.trim())) || (!Array.isArray(source.en) && !source.en.trim())) ? (
-                                    <div className="empty-content-msg">No English text available</div>
-                                ) : (
-                                    <EditableContent
-                                        className="text-eng"
-                                        dir="ltr"
-                                        html={source.en}
-                                        onChange={(val) => onUpdate({ en: val })}
-                                    />
-                                )}
-                                <small className="version-label">{source.versionTitle}</small>
-                            </div>
-                        )}
-
-                        {(viewMode === 'bilingual' || viewMode === 'hebrew') && (
-                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                                {(!source.he || (Array.isArray(source.he) && source.he.every(s => !s || !s.trim())) || (!Array.isArray(source.he) && !source.he.trim())) ? (
-                                    <div className="empty-content-msg">No Hebrew text available</div>
-                                ) : (
-                                    <EditableContent
-                                        className="text-heb"
-                                        dir="rtl"
-                                        html={source.he}
-                                        onChange={(val) => onUpdate({ he: val })}
-                                    />
-                                )}
-                            </div>
-                        )}
-                    </>
-                )}
-            </div>
-        </div>
-    );
-};
+import SourceBlock from './sheet/SourceBlock';
+import ExportMenu from './sheet/ExportMenu';
 
 const SortableSourceItem = ({ source, id, onRemove, onUpdate }) => {
     const {
@@ -242,7 +88,6 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
     };
 
     const [isExportingGoogle, setIsExportingGoogle] = useState(false);
-    // const [sheetTitle, setSheetTitle] = useState("New Source Sheet"); // Lifted to App.jsx
     const [exportUrl, setExportUrl] = useState(null);
     const [showExportMenu, setShowExportMenu] = useState(false);
 
@@ -294,27 +139,15 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
             {chatStarted && (
                 <header className="sheet-header">
                     <div className="sheet-controls-row">
-                        <div className="export-menu-container">
-                            <button className="export-main-btn" onClick={() => setShowExportMenu(!showExportMenu)}>
-                                Export ▾
-                            </button>
-                            {showExportMenu && (
-                                <div className="export-dropdown">
-                                    <button onClick={() => { handleExportGoogle(); setShowExportMenu(false); }} disabled={isExportingGoogle}>
-                                        Google Docs
-                                    </button>
-                                    <button onClick={handleExportDocx}>Word (.docx)</button>
-                                    <button onClick={() => { handleExportPDF(); setShowExportMenu(false); }}>PDF</button>
-                                    <hr style={{ margin: '4px 0', border: 'none', borderTop: '1px solid #e5e7eb' }} />
-                                    <button
-                                        onClick={() => { onClearSheet(); setShowExportMenu(false); }}
-                                        style={{ color: '#ef4444' }}
-                                    >
-                                        Clear Sheet
-                                    </button>
-                                </div>
-                            )}
-                        </div>
+                        <ExportMenu
+                            showExportMenu={showExportMenu}
+                            setShowExportMenu={setShowExportMenu}
+                            isExportingGoogle={isExportingGoogle}
+                            handleExportGoogle={handleExportGoogle}
+                            handleExportDocx={handleExportDocx}
+                            handleExportPDF={handleExportPDF}
+                            onClearSheet={onClearSheet}
+                        />
 
                         {/* Undo/Redo Buttons */}
                         <div className="undo-redo-container">
