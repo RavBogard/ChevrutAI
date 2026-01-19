@@ -214,7 +214,7 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
         sendMessageToGemini(text);
     };
 
-    const [sidebarWidth, setSidebarWidth] = useState(350);
+    const [sidebarWidth, setSidebarWidth] = useState(400);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isResizing, setIsResizing] = useState(false);
 

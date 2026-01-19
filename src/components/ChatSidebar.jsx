@@ -115,7 +115,11 @@ const ChatSidebar = ({
                         </svg>
                     </button>
 
-                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-start', fontFamily: 'var(--font-english-serif)', gap: '1px' }}>
+                    <div
+                        style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-start', fontFamily: 'var(--font-english-serif)', gap: '1px', cursor: 'pointer' }}
+                        onClick={() => { setActiveTab('chat'); window.location.hash = '#/'; window.location.reload(); }}
+                        title="Go to home"
+                    >
                         <span style={{ fontSize: '2rem', fontWeight: '700', color: 'var(--sheet-text)', letterSpacing: '-0.02em' }}>Chevruta</span>
                         <span style={{ fontSize: '2rem', fontWeight: '700', background: 'linear-gradient(135deg, #8b5cf6 0%, #f97316 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>.AI</span>
                         <span style={{ fontSize: '1.3rem', background: 'linear-gradient(135deg, #8b5cf6 0%, #f97316 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginLeft: '4px', transform: 'translateY(-6px)' }}>✦</span>
@@ -123,7 +127,7 @@ const ChatSidebar = ({
 
                     <button
                         className="new-chat-btn-sidebar"
-                        onClick={() => { window.location.hash = '#/'; window.location.reload(); }}
+                        onClick={() => { setActiveTab('chat'); window.location.hash = '#/'; window.location.reload(); }}
                         style={{
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             width: '36px', height: '36px', borderRadius: '50%',
@@ -235,7 +239,8 @@ const ChatSidebar = ({
                             <small>Sign in and start creating sheets to see them here.</small>
                         </div>
                     ) : (
-                        userSheets.map((sheet) => (
+                        // Deduplicate sheets by ID
+                        [...new Map(userSheets.map(s => [s.id, s])).values()].map((sheet) => (
                             <div
                                 key={sheet.id}
                                 className={`history-item ${currentSheetId === sheet.id ? 'active' : ''}`}
