@@ -6,7 +6,10 @@ import { useState, useCallback } from 'react';
  * @param {number} maxHistory - Maximum number of history states to keep
  */
 export function useUndoRedo(initialState, maxHistory = 50) {
-    const [history, setHistory] = useState([initialState]);
+    const [history, setHistory] = useState(() => {
+        const resolvedInitial = typeof initialState === 'function' ? initialState() : initialState;
+        return [resolvedInitial];
+    });
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const state = history[currentIndex];
