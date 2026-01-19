@@ -77,7 +77,8 @@ function ChevrutaApp() {
   } = useUndoRedo(() => {
     try {
       const saved = localStorage.getItem('chevruta_sources');
-      return saved ? JSON.parse(saved) : [];
+      const parsed = saved ? JSON.parse(saved) : [];
+      return Array.isArray(parsed) ? parsed : [];
     } catch { return []; }
   });
 

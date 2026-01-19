@@ -136,7 +136,7 @@ const ChatSidebar = ({
                                     {msg.suggestedSources.map((source, idx) => {
                                         // Check if source is already in the sheet
                                         // We check if any source in the sheet has the same ref
-                                        const isAdded = sheetSources && sheetSources.some(s => s.ref === source.ref);
+                                        const isAdded = Array.isArray(sheetSources) && sheetSources.some(s => s.ref === source.ref);
 
                                         return (
                                             <div key={idx} className="source-suggestion-card">
