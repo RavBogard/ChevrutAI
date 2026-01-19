@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import ChatSidebar from './components/ChatSidebar';
 import SheetView from './components/SheetView';
 import Privacy from './components/Privacy';
@@ -477,6 +478,7 @@ function App() {
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
         </Routes>
+        <Analytics />
       </Router>
     </ToastProvider>
   );
