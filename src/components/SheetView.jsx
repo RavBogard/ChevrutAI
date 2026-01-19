@@ -45,7 +45,7 @@ const SortableSourceItem = ({ source, id, onRemove, onUpdate }) => {
     );
 };
 
-const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClearSheet, onUndo, onRedo, canUndo, canRedo, language, onSuggestionClick, sheetTitle, onTitleChange, onSendMessage, chatStarted, onAddSource }) => {
+const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClearSheet, onUndo, onRedo, canUndo, canRedo, language, onSuggestionClick, sheetTitle, onTitleChange, onSendMessage, chatStarted, onAddSource, userSheets, onLoadSheet }) => {
     const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
@@ -262,15 +262,38 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                                     </form>
                                 </div>
                                 <div className="empty-prompts-grid">
-                                    {shuffledPrompts.map((prompt, i) => (
-                                        <button
-                                            key={i}
-                                            className="prompt-card"
-                                            onClick={() => onSuggestionClick && onSuggestionClick(prompt)}
-                                        >
-                                            {prompt}
-                                        </button>
-                                    ))}
+                                    {userSheets && userSheets.length > 0 ? (
+                                        <>
+                                            <h3 style={{ gridColumn: '1/-1', opacity: 0.7, fontSize: '0.9rem', marginBottom: '-0.5rem', marginTop: '1rem' }}>
+                                                {language === 'he' ? 'דפים אחרונים' : 'Recent Sheets'}
+                                            </h3>
+                                            {userSheets.slice(0, 6).map((sheet) => (
+                                                <button
+                                                    key={sheet.id}
+                                                    className="prompt-card"
+                                                    onClick={() => onLoadSheet(sheet.id)}
+                                                    style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.5rem' }}
+                                                >
+                                                    <strong style={{ fontSize: '1rem', color: 'var(--primary-color)' }}>
+                                                        {sheet.title || "Untitled Sheet"}
+                                                    </strong>
+                                                    <span style={{ fontSize: '0.8rem', opacity: 0.7 }}>
+                                                        {sheet.updatedAt?.seconds ? new Date(sheet.updatedAt.seconds * 1000).toLocaleDateString() : 'Just now'}
+                                                    </span>
+                                                </button>
+                                            ))}
+                                        </>
+                                    ) : (
+                                        shuffledPrompts.map((prompt, i) => (
+                                            <button
+                                                key={i}
+                                                className="prompt-card"
+                                                onClick={() => onSuggestionClick && onSuggestionClick(prompt)}
+                                            >
+                                                {prompt}
+                                            </button>
+                                        ))
+                                    )}
                                 </div>
                             </div>
                         ) : (

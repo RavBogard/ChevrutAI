@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 const ChatSidebar = ({
     messages,
@@ -88,7 +89,7 @@ const ChatSidebar = ({
         <div className={`chat-sidebar ${isMobileOpen ? 'mobile-open' : ''}`}>
             <div className="chat-header">
                 <div className="header-top-row">
-                    <div className="sidebar-logo-text">
+                    <Link to="/dashboard" className="sidebar-logo-text" style={{ textDecoration: 'none', color: 'inherit' }}>
                         <span className="logo-serif">Chevruta</span>
                         <span className="logo-sans">.AI</span>
                         <span className="logo-sparkle">
@@ -103,7 +104,7 @@ const ChatSidebar = ({
                                 <path d="M12 2L15.09 9.26L22 12L15.09 14.74L12 22L8.91 14.74L2 12L8.91 9.26L12 2Z" />
                             </svg>
                         </span>
-                    </div>
+                    </Link>
                     <div className="header-controls">
                         <button
                             className="theme-toggle-btn"

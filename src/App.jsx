@@ -421,6 +421,8 @@ function EditorContainer() {
         onSuggestionClick={handleSendMessage}
         onSendMessage={handleSendMessage}
         chatStarted={chatStarted}
+        userSheets={userSheets}
+        onLoadSheet={handleLoadSheet}
       />
 
       {/* Mobile Floating Action Button - only show after chat has started */}
