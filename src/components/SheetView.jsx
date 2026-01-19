@@ -46,7 +46,7 @@ const SortableSourceItem = ({ source, id, onRemove, onUpdate }) => {
     );
 };
 
-const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClearSheet, onUndo, onRedo, canUndo, canRedo, language, onSuggestionClick, sheetTitle, onTitleChange, onSendMessage, chatStarted, onAddSource, userSheets, onLoadSheet }) => {
+const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClearSheet, onUndo, onRedo, canUndo, canRedo, language, onSuggestionClick, sheetTitle, onTitleChange, onSendMessage, chatStarted, onAddSource, userSheets, onLoadSheet, darkMode, toggleDarkMode, toggleLanguage }) => {
     const { currentUser } = useAuth();
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -166,7 +166,33 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
     return (
         <div className="sheet-view">
             {!chatStarted && (
-                <div style={{ position: 'absolute', top: '1rem', right: '1rem', zIndex: 100 }}>
+                <div style={{ position: 'absolute', top: '1rem', right: '1rem', zIndex: 100, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <button
+                        className="initial-theme-toggle"
+                        onClick={toggleLanguage}
+                        title={language === 'en' ? "Switch to Hebrew" : "Switch to English"}
+                        style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: 'var(--sheet-text)' }}
+                    >
+                        {language === 'en' ? (
+                            <span style={{ fontWeight: 'bold', fontSize: '1.2rem', fontFamily: 'var(--font-hebrew)' }}>עב</span>
+                        ) : (
+                            <span style={{ fontWeight: 'bold', fontSize: '1rem' }}>EN</span>
+                        )}
+                    </button>
+
+                    <button
+                        className="initial-theme-toggle"
+                        onClick={toggleDarkMode}
+                        title="Toggle Theme"
+                        style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: 'var(--sheet-text)', display: 'flex', alignItems: 'center' }}
+                    >
+                        {darkMode ? (
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        ) : (
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                        )}
+                    </button>
+
                     <UserMenu />
                 </div>
             )}
@@ -216,10 +242,12 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                     <div className="empty-state">
                         {!chatStarted ? (
                             <div className="central-hero">
-                                <h1 className="gemini-greeting">
-                                    {language === 'he' ? 'שלום' : 'Shalom'}
-                                    {currentUser?.displayName ? `, ${currentUser.displayName.split(' ')[0]}` : ''}
-                                </h1>
+                                <img
+                                    src={darkMode ? "/logo-dark.png" : "/logo.png"}
+                                    alt="ChevrutAI"
+                                    className="hero-logo-img"
+                                    style={{ maxWidth: '400px', height: 'auto', marginBottom: '1rem' }}
+                                />
                                 <h2 className="gemini-headline">
                                     {language === 'he' ? 'איפה נתחיל?' : 'Where should we start?'}
                                 </h2>
@@ -251,7 +279,6 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                                             className="gemini-pill"
                                             onClick={() => onSuggestionClick && onSuggestionClick(prompt)}
                                         >
-                                            <span className="pill-icon">✨</span>
                                             <span className="pill-text">{prompt}</span>
                                         </button>
                                     ))}

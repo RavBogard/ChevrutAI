@@ -2363,35 +2363,63 @@ body.dark-mode .sidebar-toggle-btn:hover {
   max-width: 800px;
 }
 
+/* Hero Logo Image */
+.hero-logo-img {
+  max-width: 400px;
+  height: auto;
+  margin-bottom: 2rem;
+  transition: opacity 0.3s;
+}
+
+/* Polished Suggestion Pills */
 .gemini-pill {
+  /* Reset from previous override */
+  border-radius: 20px !important;
+  /* Not 100px. Slightly squared corners as requested for "pop" vs old school pills? Or keep rounded but distinct. User said "bubbles need to pop more". */
+  padding: 16px 24px !important;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 1.05rem !important;
+  font-weight: 500 !important;
+  line-height: 1.4;
+  color: var(--sheet-text);
   background: var(--bg-paper);
   border: 1px solid var(--border-color);
-  border-radius: 100px;
-  /* Full pill shape */
-  padding: 12px 24px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--sheet-text);
-  font-size: 0.95rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
-  /* Glassmorphism hint */
-  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.06);
+  /* "Pop" effect */
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Bouncy transition */
+  text-align: left;
+  /* Bubbles need to pop more: gradient border? */
+  position: relative;
+  overflow: hidden;
 }
 
 .gemini-pill:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
-  border-color: var(--primary-color);
-  background: linear-gradient(to right, var(--bg-paper), var(--bg-secondary));
+  transform: scale(1.03) translateY(-4px) !important;
+  box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.15), 0 0 0 2px var(--primary-color) inset;
+  /* Inset border */
+  border-color: transparent;
+  z-index: 10;
 }
 
-.gemini-pill .pill-icon {
-  font-size: 1.2rem;
-  opacity: 0.8;
+.gemini-pill:active {
+  transform: scale(0.98);
+}
+
+.gemini-suggestions {
+  gap: 1.2rem !important;
+  /* More breathing room */
+}
+
+/* Remove cheesy icon */
+.pill-icon {
+  display: none !important;
+}
+
+.pill-text {
+  /* Just normal text now, centered or left? */
+  width: 100%;
+  text-align: center;
 }
 
 body.dark-mode .gemini-pill {
