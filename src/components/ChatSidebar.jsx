@@ -10,7 +10,8 @@ const ChatSidebar = ({
     onMobileClose,
     darkMode,
     toggleDarkMode,
-    language
+    language,
+    suggestedInput
 }) => {
     const [inputObj, setInputObj] = useState('');
     const messagesEndRef = useRef(null);
