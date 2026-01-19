@@ -9,6 +9,7 @@ const ChatSidebar = ({
     isLoading,
     isMobileOpen,
     onMobileClose,
+    onToggleSidebar, // New Prop for Desktop Toggle
     darkMode,
     toggleDarkMode,
     language,
@@ -89,35 +90,40 @@ const ChatSidebar = ({
         <div className={`chat-sidebar ${isMobileOpen ? 'mobile-open' : ''}`}>
             <div className="chat-header">
                 <div className="header-top-row">
+                    {/* Desktop Sidebar Toggle (Inside Sidebar to Close it) */}
+                    <button
+                        className="sidebar-toggle-btn"
+                        onClick={onToggleSidebar}
+                        style={{
+                            background: 'transparent', border: 'none', cursor: 'pointer',
+                            padding: '8px', borderRadius: '50%', color: 'var(--sheet-text)',
+                            marginRight: '8px'
+                        }}
+                        title="Close Menu"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="currentColor">
+                            <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z" />
+                        </svg>
+                    </button>
+
                     <button
                         className="new-chat-btn-sidebar"
                         onClick={() => { window.location.hash = '#/'; window.location.reload(); }}
                         style={{
                             display: 'flex', alignItems: 'center', gap: '8px',
-                            padding: '10px 16px', borderRadius: '24px',
-                            background: '#dde3ea', border: 'none',
-                            fontSize: '0.9rem', fontWeight: '500', cursor: 'pointer', color: '#444746'
+                            padding: '8px 16px', borderRadius: '24px',
+                            background: 'var(--input-bg)', border: 'none',
+                            fontSize: '0.9rem', fontWeight: '500', cursor: 'pointer', color: 'var(--sheet-text)',
+                            flex: 1 // Take up space
                         }}
                     >
                         <span style={{ fontSize: '1.2rem', lineHeight: 1 }}>+</span> New Chat
                     </button>
-                    <div className="header-controls">
-                        <button
-                            className="theme-toggle-btn"
-                            onClick={toggleDarkMode}
-                            title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-                            aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-                        >
-                            {darkMode ? (
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                            ) : (
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-                            )}
-                        </button>
-                        <button className="mobile-close-btn" onClick={onMobileClose} aria-label="Close chat">
-                            &times;
-                        </button>
-                    </div>
+
+                    {/* Mobile Close Button - hidden on desktop via CSS likely, or we can explicit it */}
+                    <button className="mobile-close-btn" onClick={onMobileClose} aria-label="Close chat">
+                        &times;
+                    </button>
                 </div>
 
                 {/* Tabs */}

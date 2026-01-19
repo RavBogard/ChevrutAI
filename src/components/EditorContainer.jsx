@@ -209,12 +209,15 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isResizing, setIsResizing] = useState(false);
 
-    // Auto-open sidebar when chat starts (desktop only)
+    // Auto-open sidebar when chat starts OR when user is logged in (desktop only)
     useEffect(() => {
-        if (messages.length > 1 && window.innerWidth > 768 && !isSidebarOpen) {
-            setIsSidebarOpen(true);
+        const isDesktop = window.innerWidth > 768;
+        if (isDesktop && !isSidebarOpen) {
+            if (messages.length > 1 || currentUser) {
+                setIsSidebarOpen(true);
+            }
         }
-    }, [messages]);
+    }, [messages, currentUser]);
 
     const toggleSidebar = () => setIsSidebarOpen(prev => !prev);
     const startResizing = () => setIsResizing(true);
@@ -241,12 +244,33 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
     return (
         <div className={`app-container ${messages.length > 1 ? 'chat-active' : 'chat-initial'}`}>
 
-            {/* Hamburger Menu - Always visible in top left */}
-            <button className="main-hamburger-btn" onClick={toggleSidebar} title="Toggle Menu">
-                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="currentColor">
-                    <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z" />
-                </svg>
-            </button>
+            {/* Collapsed Header - Visible only when sidebar is CLOSED */}
+            {!isSidebarOpen && (
+                <div className="collapsed-header" style={{
+                    position: 'absolute',
+                    top: '1rem',
+                    left: '1rem',
+                    zIndex: 50,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem'
+                }}>
+                    <button className="main-hamburger-btn" onClick={toggleSidebar} title="Open Menu">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="currentColor">
+                            <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z" />
+                        </svg>
+                    </button>
+                    <div className="collapsed-logo-text" style={{
+                        fontFamily: 'var(--font-english-serif)',
+                        fontSize: '1.4rem',
+                        fontWeight: 600,
+                        color: 'var(--sheet-text)',
+                        letterSpacing: '-0.02em'
+                    }}>
+                        ChevrutAI
+                    </div>
+                </div>
+            )}
 
             {/* Sidebar Wrapper */}
             <div
@@ -261,6 +285,7 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                     isLoading={isLoading}
                     isMobileOpen={mobileChatOpen}
                     onMobileClose={() => setMobileChatOpen(false)}
+                    onToggleSidebar={toggleSidebar}
                     darkMode={darkMode}
                     toggleDarkMode={toggleDarkMode}
                     language={language}
