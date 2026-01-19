@@ -2328,3 +2328,76 @@ body.dark-mode .sidebar-toggle-btn:hover {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transform: translateY(-1px);
 }
+
+/* Central Logo */
+.central-logo-hero {
+  font-family: var(--font-english-serif);
+  font-size: 3rem;
+  background: linear-gradient(135deg, var(--primary-color) 0%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+}
+
+/* Enhancing Suggestions (Gemini Pills) */
+.gemini-suggestions {
+  display: flex !important;
+  /* Force flex */
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  width: 100%;
+  max-width: 800px;
+}
+
+.gemini-pill {
+  background: var(--bg-paper);
+  border: 1px solid var(--border-color);
+  border-radius: 100px;
+  /* Full pill shape */
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--sheet-text);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+  /* Glassmorphism hint */
+  backdrop-filter: blur(10px);
+}
+
+.gemini-pill:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
+  border-color: var(--primary-color);
+  background: linear-gradient(to right, var(--bg-paper), var(--bg-secondary));
+}
+
+.gemini-pill .pill-icon {
+  font-size: 1.2rem;
+  opacity: 0.8;
+}
+
+body.dark-mode .gemini-pill {
+  background: rgba(31, 41, 55, 0.8);
+  border-color: #4b5563;
+}
+
+body.dark-mode .gemini-pill:hover {
+  background: rgba(55, 65, 81, 0.9);
+  border-color: #a855f7;
+}
+
+/* Sidebar Logo Adjustment */
+.sidebar-logo-text {
+  /* Gradient text for brand */
+  background: linear-gradient(135deg, var(--primary-color) 0%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

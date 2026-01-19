@@ -106,18 +106,30 @@ const ChatSidebar = ({
                         </svg>
                     </button>
 
+                    <div className="sidebar-logo-text" style={{
+                        flex: 1,
+                        fontFamily: 'var(--font-english-serif)',
+                        fontSize: '1.5rem',
+                        fontWeight: 600,
+                        color: 'var(--sheet-text)',
+                        letterSpacing: '-0.02em',
+                        textAlign: 'left' // "Stretching across full width"? Maybe left align is best.
+                    }}>
+                        ChevrutAI
+                    </div>
+
                     <button
                         className="new-chat-btn-sidebar"
                         onClick={() => { window.location.hash = '#/'; window.location.reload(); }}
                         style={{
-                            display: 'flex', alignItems: 'center', gap: '8px',
-                            padding: '8px 16px', borderRadius: '24px',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            width: '36px', height: '36px', borderRadius: '50%',
                             background: 'var(--input-bg)', border: 'none',
-                            fontSize: '0.9rem', fontWeight: '500', cursor: 'pointer', color: 'var(--sheet-text)',
-                            flex: 1 // Take up space
+                            fontSize: '1.2rem', fontWeight: '500', cursor: 'pointer', color: 'var(--sheet-text)'
                         }}
+                        title="New Chat"
                     >
-                        <span style={{ fontSize: '1.2rem', lineHeight: 1 }}>+</span> New Chat
+                        +
                     </button>
 
                     {/* Mobile Close Button - hidden on desktop via CSS likely, or we can explicit it */}
