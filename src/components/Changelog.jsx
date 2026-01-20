@@ -11,6 +11,13 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.5 <span className="version-date">January 20, 2026</span></h2>
+                    <ul>
+                        <li><strong>Fixed "Add Note" bug</strong> – Resolved an error where adding a note would try to fetch text from Sefaria.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.4 <span className="version-date">January 19, 2026</span></h2>
                     <ul>
                         <li><strong>Clickable version number</strong> – You can now click the version in the footer to see this changelog!</li>
