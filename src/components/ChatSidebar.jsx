@@ -32,14 +32,14 @@ const ChatSidebar = ({
     }, [userSheets]);
 
     // Switch to chat tab when user sends a message OR interacts with sheet (has sources)
+    // Switch to chat tab ONLY when a NEW message arrives
+    const prevMessageCount = useRef(messages.length);
     useEffect(() => {
-        const hasUserMessage = messages.some(m => m.role === 'user');
-        const hasSources = sheetSources && sheetSources.length > 0;
-        if ((hasUserMessage || hasSources) && activeTab !== 'chat') {
-            // eslint-disable-next-line react-hooks/set-state-in-effect
+        if (messages.length > prevMessageCount.current) {
             setActiveTab('chat');
         }
-    }, [messages, activeTab, sheetSources]);
+        prevMessageCount.current = messages.length;
+    }, [messages]);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
