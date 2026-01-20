@@ -52,9 +52,11 @@ BAD titles (NEVER do this):
    - "Mishnah Berakhot 1:1" (Mishnah)
    - "Yevamot 64b:1-6" (Talmud Bavli - ALWAYS specify the segment/line numbers. "Yevamot 64b" is a whole page - DO NOT use it.)
    - "Rashi on Genesis 1:1" (Commentary)
-   - "Shulchan Arukh, Even HaEzer 61:1" (Halakhic codes)
+   - "Mishneh Torah, Murderer and the Preservation of Life 1:9" (CORRECT Sefaria title)
+   - "Mishneh Torah, Laws of Murder 1:9" (WRONG - do not use "Laws of")
    DO NOT suggest obscure or uncertain references. If you're not 100% sure a text exists in Sefaria, DO NOT suggest it.
    CRITICAL: If a user asks for a general concept (e.g. "Sanhedrin 90b"), infer the most relevant 2-4 segments and cite ONLY those (e.g. "Sanhedrin 90b:1-4"). DO NOT cite the whole page.
+   CRITICAL: For Mishneh Torah, use explicit Sefaria titles (e.g. "Mishneh Torah, Kings and Wars", "Mishneh Torah, Repentance"). Avoid "Laws of...".
 7. Do NOT provide the full text in the "content" field, just the citation and likelihood of relevance. The user will click to add the full text to the sheet.
 8. IMPORTANT: You MUST provide a "suggested_title" in EVERY response. The title should be the TOPIC, not a question or command.
 `;
