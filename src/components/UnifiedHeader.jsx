@@ -42,7 +42,7 @@ const UnifiedHeader = ({
     return (
         <div className={`unified-header ${!isVisible ? 'header-hidden' : ''}`}>
             {/* Left: Hamburger */}
-            <div className="header-left">
+            <div className="header-left" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <button
                     className={`header-icon-btn hamburger ${isSidebarOpen ? 'hidden-burger' : ''}`}
                     onClick={onToggleSidebar}
@@ -53,6 +53,28 @@ const UnifiedHeader = ({
                         <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z" />
                     </svg>
                 </button>
+
+                {/* Persistent Branding (Visible when sidebar closed) */}
+                <div
+                    className="header-branding"
+                    style={{
+                        opacity: isSidebarOpen ? 0 : 1,
+                        transition: 'opacity 0.3s ease',
+                        pointerEvents: isSidebarOpen ? 'none' : 'auto',
+                        display: 'flex',
+                        alignItems: 'center',
+                        fontFamily: 'var(--font-english-serif)',
+                        cursor: 'pointer'
+                    }}
+                    onClick={() => {
+                        window.location.hash = '#/';
+                        window.location.reload();
+                    }}
+                >
+                    <span style={{ fontSize: '1.5rem', fontWeight: '700', color: 'var(--sheet-text)', letterSpacing: '-0.02em' }}>Chevruta</span>
+                    <span style={{ fontSize: '1.5rem', fontWeight: '700', background: 'linear-gradient(135deg, #8b5cf6 0%, #f97316 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>.AI</span>
+                    <span style={{ fontSize: '1rem', background: 'linear-gradient(135deg, #8b5cf6 0%, #f97316 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginLeft: '3px', transform: 'translateY(-4px)' }}>✦</span>
+                </div>
             </div>
 
             {/* Right: Controls Group */}
