@@ -43,7 +43,12 @@ const UnifiedHeader = ({
         <div className={`unified-header ${!isVisible ? 'header-hidden' : ''}`}>
             {/* Left: Hamburger */}
             <div className="header-left">
-                <button className="header-icon-btn hamburger" onClick={onToggleSidebar} title="Open Menu">
+                <button
+                    className={`header-icon-btn hamburger ${isSidebarOpen ? 'hidden-burger' : ''}`}
+                    onClick={onToggleSidebar}
+                    title="Open Menu"
+                    style={{ opacity: isSidebarOpen ? 0 : 1, pointerEvents: isSidebarOpen ? 'none' : 'auto' }}
+                >
                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="currentColor">
                         <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z" />
                     </svg>

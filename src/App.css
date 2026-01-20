@@ -1892,7 +1892,8 @@ html[dir="rtl"] .prompt-card {
   flex-direction: column;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  z-index: 50;
+  z-index: 1001;
+  /* Above Unified Header (900) */
   overflow: hidden;
 }
 
@@ -1905,29 +1906,8 @@ html[dir="rtl"] .prompt-card {
 
 /* Hamburger Menu Button */
 .main-hamburger-btn {
-  position: absolute;
-  top: 1.5rem;
-  left: 1.5rem;
-  z-index: 100;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 50%;
-  color: var(--sidebar-text);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.2s;
-}
-
-.main-hamburger-btn:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
-.main-hamburger-btn svg {
-  width: 24px;
-  height: 24px;
+  display: none;
+  /* Deprecated in favor of UnifiedHeader */
 }
 
 /* Hide desktop sidebar on mobile */
@@ -1945,7 +1925,8 @@ html[dir="rtl"] .prompt-card {
     width: 85vw !important;
     /* Slightly less than full width */
     max-width: 400px;
-    z-index: 150 !important;
+    z-index: 1200 !important;
+    /* Above everything */
     box-shadow: 2px 0 16px rgba(0, 0, 0, 0.2);
     display: flex !important;
     /* Force display since we conditionally render */
@@ -2510,6 +2491,7 @@ html[dir="rtl"] .prompt-card {
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
 /* --- Mobile Layout Fixes (v1.0.4) --- */
 
 .central-hero-logo-container {
@@ -2549,18 +2531,21 @@ html[dir="rtl"] .prompt-card {
 }
 
 @media (max-width: 768px) {
+
   .hero-text-chevruta,
   .hero-text-ai {
-    font-size: 2.5rem; /* Reduced from 4rem */
+    font-size: 2.5rem;
+    /* Reduced from 4rem */
   }
-  
+
   .hero-text-sparkle {
     font-size: 1.5rem;
     transform: translateY(-4px);
   }
 
   .sheet-paper {
-     padding-bottom: 100px; /* Space for FAB overlap */
+    padding-bottom: 100px;
+    /* Space for FAB overlap */
   }
 }
 
@@ -2568,6 +2553,7 @@ html[dir="rtl"] .prompt-card {
 /* --- Mobile Layout Refinements (v1.0.6) --- */
 
 @media (max-width: 768px) {
+
   /* Fix Home Screen Chat Input Width */
   .central-input-wrapper {
     width: 90% !important;
@@ -2575,19 +2561,21 @@ html[dir="rtl"] .prompt-card {
     padding: 0 1rem;
     box-sizing: border-box;
   }
-  
+
   .gemini-input-box {
     width: 100%;
-    padding: 1rem 1rem 3.5rem 1rem; /* Adjust padding for mobile */
+    padding: 1rem 1rem 3.5rem 1rem;
+    /* Adjust padding for mobile */
   }
 
   /* Fix Sheet Toolbar Overflow */
   .sheet-toolbar {
-    flex-wrap: wrap; 
+    flex-wrap: wrap;
     gap: 0.5rem;
     justify-content: center;
     padding: 0.5rem;
-    height: auto; /* Allow growth */
+    height: auto;
+    /* Allow growth */
   }
 
   .toolbar-group {
@@ -2600,9 +2588,10 @@ html[dir="rtl"] .prompt-card {
     padding: 6px 10px;
     font-size: 0.8rem;
   }
-  
+
   .toolbar-divider {
-    display: none; /* Hide dividers on mobile to save space */
+    display: none;
+    /* Hide dividers on mobile to save space */
   }
 }
 
@@ -2610,7 +2599,8 @@ html[dir="rtl"] .prompt-card {
 /* --- Mobile Sticky Header Styles (v1.0.7) --- */
 
 .mobile-top-bar {
-  display: none; /* Hidden on desktop */
+  display: none;
+  /* Hidden on desktop */
 }
 
 @media (max-width: 768px) {
@@ -2624,7 +2614,8 @@ html[dir="rtl"] .prompt-card {
     left: 0;
     right: 0;
     z-index: 900;
-    background-color: var(--sheet-bg); /* Opaque bg or glassmorphism */
+    background-color: var(--sheet-bg);
+    /* Opaque bg or glassmorphism */
     border-bottom: 1px solid var(--border-color);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -2637,7 +2628,7 @@ html[dir="rtl"] .prompt-card {
 
   /* Add padding to body so content doesn't hide behind fixed header */
   .sheet-view {
-    padding-top: 60px; 
+    padding-top: 60px;
   }
 
   .mobile-header-controls {
@@ -2662,17 +2653,19 @@ html[dir="rtl"] .prompt-card {
   .sheet-header .sheet-controls-row,
   .initial-theme-toggle,
   .initial-lang-toggle,
-  .sheet-view .user-menu-container { 
-    /* Be careful not to hide UserMenu inside the mobile header */ 
+  .sheet-view .user-menu-container {
+    /* Be careful not to hide UserMenu inside the mobile header */
   }
-  
+
   /* Target specific controls in the sheet header/corner to hide them on mobile */
-  .sheet-view > div[style*='position: absolute'] {
-      display: none !important; /* Hide the top-right corner controls */
+  .sheet-view>div[style*='position: absolute'] {
+    display: none !important;
+    /* Hide the top-right corner controls */
   }
 
   .sheet-header .sheet-controls-row {
-      display: none !important; /* Hide inline controls in sheet header */
+    display: none !important;
+    /* Hide inline controls in sheet header */
   }
 }
 
@@ -2754,10 +2747,13 @@ html[dir="rtl"] .prompt-card {
 */
 
 @media (min-width: 769px) {
+
   /* On Desktop, make it seamless */
   .unified-header {
-    background-color: transparent; /* Seamless blend */
-    border-bottom: none; /* Or keep subtle border? user prefers seamless */
+    background-color: transparent;
+    /* Seamless blend */
+    border-bottom: none;
+    /* Or keep subtle border? user prefers seamless */
     backdrop-filter: none;
     background: transparent;
     padding: 1rem 2rem;
@@ -2770,7 +2766,7 @@ html[dir="rtl"] .prompt-card {
   .sheet-view {
     padding-top: 60px;
   }
-  
+
   /* Hide the hamburger if sidebar is open? Or keep it to close? */
   /* Sidebar has its own close button? Checks internal sidebar... */
   /* Sidebar had a close button inside. */
@@ -2778,15 +2774,35 @@ html[dir="rtl"] .prompt-card {
 
   /* If sidebar is open, maybe shift header? Or just overlay? */
   /* Let's lets header float on top. Sidebar z-index usually higher? */
-  
+
   /* Sidebar wrapper has z-index... */
   /* Let's verify sidebar overlapping. */
 }
 
 @media (max-width: 768px) {
+
   /* Ensure padding for mobile body */
   .sheet-view {
-    padding-top: 70px; /* Space for mobile header */
+    padding-top: 70px;
+    /* Space for mobile header */
+  }
+}
+/* Fix mobile chatbox centering (v1.0.10) */
+@media (max-width: 768px) {
+  .central-input-wrapper {
+    width: 100% !important; /* Let margins handle width constraints? Or 90% centered. */
+    /* Let's reset: */
+    width: 90% !important;
+    margin: 0 auto !important; /* Force center */
+    padding: 0 !important; /* Remove wrapper padding that might offset content */
+    left: 0 !important; 
+    right: 0 !important;
+  }
+  
+  /* Ensure content box itself doesn't have weird margins */
+  .gemini-input-box {
+    margin: 0 auto !important;
+    width: 100% !important;
   }
 }
 
