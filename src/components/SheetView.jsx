@@ -303,12 +303,12 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                 </p>
                 <div className="footer-powered">
                     <a href="https://www.sefaria.org" target="_blank" rel="noopener noreferrer">Powered by Sefaria</a>
-                    <Link to="/changelog" className="version-tag"> • v1.1.4</Link>
+                    <Link to="/changelog" className="version-tag"> • v1.1.6</Link>
                 </div>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
                 </div>
-            </footer>
+            </footer >
         </div >
     );
 };

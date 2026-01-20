@@ -618,6 +618,18 @@ h6 {
   line-height: 1.6;
 }
 
+/* Bilingual Segment Highlighting */
+.segment-highlight {
+  background-color: var(--highlight-bg, rgba(255, 225, 0, 0.15));
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+[data-theme='dark'] .segment-highlight {
+  background-color: rgba(255, 215, 0, 0.15);
+  /* Slightly brighter gold for dark mode */
+}
+
 /* View Modes */
 .view-english .text-heb {
   display: none;

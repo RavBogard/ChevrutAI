@@ -11,6 +11,13 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.6 <span className="version-date">January 20, 2026</span></h2>
+                    <ul>
+                        <li><strong>Bilingual Highlighting</strong> – Hovering over a paragraph in one language now highlights the corresponding paragraph in the other language.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.5 <span className="version-date">January 20, 2026</span></h2>
                     <ul>
                         <li><strong>Fixed "Add Note" bug</strong> – Resolved an error where adding a note would try to fetch text from Sefaria.</li>

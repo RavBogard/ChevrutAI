@@ -28,6 +28,12 @@ export const useSheetManager = (initialTitle = "New Source Sheet") => {
     }, [sheetTitle]);
 
     const handleAddSource = async (source) => {
+        // Skip fetching text for custom notes and headers
+        if (source.type === 'custom' || source.type === 'header') {
+            setSourcesList(prev => [...prev, source]);
+            return;
+        }
+
         if (!source.he || !source.en) {
             const data = await getSefariaText(source.ref);
             if (data) {
