@@ -260,6 +260,15 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isResizing]);
 
+    const handleSuggestionClick = (text) => {
+        handleSendMessage(text);
+        if (window.innerWidth <= 768) {
+            setMobileChatOpen(true);
+        } else {
+            setIsSidebarOpen(true);
+        }
+    };
+
     return (
         <div className={`app-container ${messages.length > 1 ? 'chat-active' : 'chat-initial'}`}>
 
@@ -354,7 +363,7 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                 canUndo={canUndo}
                 canRedo={canRedo}
                 language={language}
-                onSuggestionClick={sendMessageToGemini}
+                onSuggestionClick={handleSuggestionClick}
                 sheetTitle={sheetTitle}
                 onTitleChange={setSheetTitle}
                 onSendMessage={handleSendMessage}
