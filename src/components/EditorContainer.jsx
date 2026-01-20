@@ -191,14 +191,18 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
         setSourcesList(prev => [...prev, source]);
     };
 
-    const handleRemoveSource = (indexOrId) => {
-        setSourcesList(items => items.filter(item => item.id !== indexOrId));
+    const handleRemoveSource = (index) => {
+        setSourcesList(items => items.filter((_, i) => i !== index));
     };
 
-    const handleUpdateSource = (id, updates) => {
-        setSourcesList(items => items.map(item =>
-            item.id === id ? { ...item, ...updates } : item
-        ));
+    const handleUpdateSource = (index, updates) => {
+        setSourcesList(items => {
+            const newItems = [...items];
+            if (index >= 0 && index < newItems.length) {
+                newItems[index] = { ...newItems[index], ...updates };
+            }
+            return newItems;
+        });
     };
 
     const handleReorder = (newSources) => {
