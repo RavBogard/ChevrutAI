@@ -41,7 +41,8 @@ function App() {
       <ErrorBoundary>
         <Suspense fallback={<LoadingFallback />}>
           <Routes>
-            <Route path="/" element={<HomeView />} />
+            <Route path="/" element={<NewSheetRedirect />} />
+            {/* User hated the dashboard. Redirect to editor. */}
             <Route path="/dashboard" element={<Navigate to="/" replace />} />
             <Route path="/sheet/new" element={<NewSheetRedirect />} />
             {/* Pass props to EditorContainer */}
