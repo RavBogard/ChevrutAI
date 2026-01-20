@@ -2688,3 +2688,105 @@ html[dir="rtl"] .prompt-card {
   height: 32px;
 }
 
+
+/* --- Unified Header Styles (v1.0.9) --- */
+
+.unified-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 900;
+  background-color: var(--sheet-bg);
+  border-bottom: 1px solid var(--border-color);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.9);
+  transition: transform 0.3s ease-in-out;
+}
+
+[data-theme='dark'] .unified-header {
+  background-color: rgba(15, 23, 42, 0.9);
+}
+
+.header-hidden {
+  transform: translateY(-100%);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Icons in header */
+.header-icon-btn {
+  background: transparent;
+  border: none;
+  padding: 8px;
+  border-radius: 50%;
+  color: var(--sheet-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.header-icon-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme='dark'] .header-icon-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Make sure header stays above sidebar on desktop if needed, 
+   but sidebar z-index should handle it. 
+   On desktop, we want it to span the width BUT sidebar pushes content?
+   Usually layout is Sidebar | Content. 
+   If header is fixed left 0 right 0, it covers sidebar.
+   On Desktop, let's keep it fixed but maybe transparent or integrated?
+*/
+
+@media (min-width: 769px) {
+  /* On Desktop, make it seamless */
+  .unified-header {
+    background-color: transparent; /* Seamless blend */
+    border-bottom: none; /* Or keep subtle border? user prefers seamless */
+    backdrop-filter: none;
+    background: transparent;
+    padding: 1rem 2rem;
+    /* Position it relative or sticky? or keep fixed? */
+    /* If fixed, it floats over content. */
+    /* Let's keep it fixed but ensure content padding */
+  }
+
+  /* Adjust SheetView padding on desktop to not hide behind header */
+  .sheet-view {
+    padding-top: 60px;
+  }
+  
+  /* Hide the hamburger if sidebar is open? Or keep it to close? */
+  /* Sidebar has its own close button? Checks internal sidebar... */
+  /* Sidebar had a close button inside. */
+  /* Unified header hamburger acts as toggle. */
+
+  /* If sidebar is open, maybe shift header? Or just overlay? */
+  /* Let's lets header float on top. Sidebar z-index usually higher? */
+  
+  /* Sidebar wrapper has z-index... */
+  /* Let's verify sidebar overlapping. */
+}
+
+@media (max-width: 768px) {
+  /* Ensure padding for mobile body */
+  .sheet-view {
+    padding-top: 70px; /* Space for mobile header */
+  }
+}
+

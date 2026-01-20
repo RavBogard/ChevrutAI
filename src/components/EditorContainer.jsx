@@ -7,7 +7,7 @@ import { useFirestore } from '../hooks/useFirestore';
 import { getSefariaText } from '../services/sefaria';
 import SheetView from './SheetView';
 import ChatSidebar from './ChatSidebar';
-import MobileTopBar from './MobileTopBar';
+import UnifiedHeader from './UnifiedHeader';
 
 // Wrapper to pass params to logic
 const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage }) => {
@@ -277,34 +277,15 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
     return (
         <div className={`app-container ${messages.length > 1 ? 'chat-active' : 'chat-initial'}`}>
 
-            {/* Mobile Sticky Top Bar */}
-            <MobileTopBar
+            {/* Unified Sticky Header (Mobile & Desktop) */}
+            <UnifiedHeader
                 onToggleSidebar={toggleSidebar}
                 darkMode={darkMode}
                 toggleDarkMode={toggleDarkMode}
                 language={language}
                 toggleLanguage={toggleLanguage}
+                isSidebarOpen={isSidebarOpen}
             />
-
-            {/* Collapsed Header - Visible when sidebar is closed (Desktop ONLY now) */}
-            {!isSidebarOpen && window.innerWidth > 768 && (
-                <div className="collapsed-header" style={{
-                    position: 'absolute',
-                    top: '1rem',
-                    left: '1rem',
-                    zIndex: 50,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.75rem'
-                }}>
-                    <button className="main-hamburger-btn" onClick={toggleSidebar} title="Open Menu">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="currentColor">
-                            <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z" />
-                        </svg>
-                    </button>
-
-                </div>
-            )}
 
             {/* Sidebar Wrapper for Desktop */}
             <div
@@ -389,18 +370,6 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                 toggleDarkMode={toggleDarkMode}
                 toggleLanguage={toggleLanguage}
             />
-
-            {messages.length > 1 && (
-                <button
-                    className="mobile-chat-fab"
-                    onClick={() => setMobileChatOpen(true)}
-                    aria-label="Open Chat"
-                >
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                </button>
-            )}
 
             {/* Toggles moved to SheetView for better alignment with UserMenu */}
             {mobileChatOpen && (
