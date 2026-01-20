@@ -276,8 +276,17 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
     return (
         <div className={`app-container ${messages.length > 1 ? 'chat-active' : 'chat-initial'}`}>
 
-            {/* Collapsed Header - Visible when sidebar is closed (Desktop) OR always on Mobile (when drawer closed) */}
-            {(!isSidebarOpen || window.innerWidth <= 768) && !mobileChatOpen && (
+            {/* Mobile Sticky Top Bar */}
+            <MobileTopBar
+                onToggleSidebar={toggleSidebar}
+                darkMode={darkMode}
+                toggleDarkMode={toggleDarkMode}
+                language={language}
+                toggleLanguage={toggleLanguage}
+            />
+
+            {/* Collapsed Header - Visible when sidebar is closed (Desktop ONLY now) */}
+            {!isSidebarOpen && window.innerWidth > 768 && (
                 <div className="collapsed-header" style={{
                     position: 'absolute',
                     top: '1rem',
