@@ -15,7 +15,7 @@ import SectionHeaderBlock from './sheet/SectionHeaderBlock';
 import SheetToolbar from './sheet/SheetToolbar';
 import UserMenu from './auth/UserMenu';
 
-const SortableSourceItem = ({ source, id, onRemove, onUpdate }) => {
+const SortableSourceItem = ({ source, id, onRemove, onUpdate, onRefine }) => {
     const {
         attributes,
         listeners,
@@ -41,6 +41,7 @@ const SortableSourceItem = ({ source, id, onRemove, onUpdate }) => {
                 onRemove={onRemove}
                 onUpdate={onUpdate}
                 dragHandleProps={{ ...attributes, ...listeners }}
+                onRefine={onRefine}
             />
         </div>
     );
@@ -166,6 +167,11 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
         setShowExportMenu(false);
     };
 
+    const handleRefine = (source) => {
+        const query = `Please explain the source "${source.ref}" and provide more context about it.`;
+        onSendMessage(query);
+    };
+
     return (
         <div className="sheet-view">
             {!chatStarted && (
@@ -283,6 +289,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                                     source={source}
                                     onRemove={() => onRemoveSource(index)}
                                     onUpdate={(newData) => onUpdateSource(index, newData)}
+                                    onRefine={handleRefine}
                                 />
                             ))}
                         </SortableContext>
@@ -304,6 +311,37 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
             </footer>
         </div >
     );
+};
+
+import PropTypes from 'prop-types';
+
+SheetView.propTypes = {
+    sources: PropTypes.arrayOf(PropTypes.shape({
+        ref: PropTypes.string.isRequired,
+        he: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
+        en: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
+        type: PropTypes.string
+    })).isRequired,
+    onRemoveSource: PropTypes.func.isRequired,
+    onUpdateSource: PropTypes.func.isRequired,
+    onReorder: PropTypes.func,
+    onClearSheet: PropTypes.func.isRequired,
+    onUndo: PropTypes.func.isRequired,
+    onRedo: PropTypes.func.isRequired,
+    canUndo: PropTypes.bool.isRequired,
+    canRedo: PropTypes.bool.isRequired,
+    language: PropTypes.string.isRequired,
+    onSuggestionClick: PropTypes.func,
+    sheetTitle: PropTypes.string.isRequired,
+    onTitleChange: PropTypes.func.isRequired,
+    onSendMessage: PropTypes.func.isRequired,
+    chatStarted: PropTypes.bool.isRequired,
+    onAddSource: PropTypes.func.isRequired,
+    userSheets: PropTypes.array,
+    onLoadSheet: PropTypes.func,
+    darkMode: PropTypes.bool.isRequired,
+    toggleDarkMode: PropTypes.func.isRequired,
+    toggleLanguage: PropTypes.func.isRequired
 };
 
 export default SheetView;

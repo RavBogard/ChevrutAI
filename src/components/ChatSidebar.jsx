@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router-dom';
 
 const ChatSidebar = ({
@@ -191,7 +192,16 @@ const ChatSidebar = ({
                         {messages.map((msg) => (
                             <div key={msg.id} className={`message ${msg.role} `}>
                                 <div className="message-content">
-                                    {msg.text && <p>{msg.text}</p>}
+                                    {msg.text && (
+                                        <ReactMarkdown
+                                            className="markdown-content"
+                                            components={{
+                                                a: ({ node, ...props }) => <a {...props} target="_blank" rel="noopener noreferrer" />
+                                            }}
+                                        >
+                                            {msg.text}
+                                        </ReactMarkdown>
+                                    )}
 
                                     {msg.suggestedSources && msg.suggestedSources.length > 0 && (
                                         <div className="suggested-sources">
@@ -235,6 +245,28 @@ const ChatSidebar = ({
                     </div>
 
                     <div className="chat-input-container">
+                        {messages.length <= 1 && (
+                            <div className="starter-chips" style={{ display: 'flex', gap: '8px', marginBottom: '12px', overflowX: 'auto', paddingBottom: '4px' }}>
+                                {['Parashat Noah', 'Ethics of War', 'Shabbat Candles', 'Laws of Tzedakah'].map(chip => (
+                                    <button
+                                        key={chip}
+                                        onClick={() => setInputObj(chip)}
+                                        style={{
+                                            background: 'var(--sheet-bg)',
+                                            border: '1px solid var(--primary-color)',
+                                            color: 'var(--primary-color)',
+                                            borderRadius: '16px',
+                                            padding: '4px 12px',
+                                            fontSize: '0.85rem',
+                                            cursor: 'pointer',
+                                            whiteSpace: 'nowrap'
+                                        }}
+                                    >
+                                        {chip}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
                         <form onSubmit={handleSubmit} style={{ position: 'relative', width: '100%' }}>
                             <textarea
                                 ref={textareaRef}
@@ -252,6 +284,55 @@ const ChatSidebar = ({
                                 </svg>
                             </button>
                         </form>
+
+                        {/* Onboarding Tooltip */}
+                        {messages.length <= 1 && !localStorage.getItem('hasSeenOnboarding') && (
+                            <div className="onboarding-tooltip" style={{
+                                position: 'absolute',
+                                bottom: '100%',
+                                left: '20px',
+                                background: '#1e40af',
+                                color: 'white',
+                                padding: '12px',
+                                borderRadius: '8px',
+                                marginBottom: '10px',
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                                maxWidth: '250px',
+                                zIndex: 100
+                            }}>
+                                <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>Start Here! 👋</div>
+                                <p style={{ fontSize: '0.9rem', margin: 0 }}>Ask the AI to find a text, or pick a starter topic above.</p>
+                                <button
+                                    onClick={() => {
+                                        localStorage.setItem('hasSeenOnboarding', 'true');
+                                        // Force re-render trick or just let it hide on next load. 
+                                        // For now, hide visually.
+                                        document.querySelector('.onboarding-tooltip').style.display = 'none';
+                                    }}
+                                    style={{
+                                        marginTop: '8px',
+                                        background: 'rgba(255,255,255,0.2)',
+                                        border: 'none',
+                                        color: 'white',
+                                        padding: '4px 8px',
+                                        borderRadius: '4px',
+                                        fontSize: '0.8rem',
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    Got it
+                                </button>
+                                <div style={{
+                                    content: '""',
+                                    position: 'absolute',
+                                    top: '100%',
+                                    left: '20px',
+                                    borderWidth: '8px',
+                                    borderStyle: 'solid',
+                                    borderColor: '#1e40af transparent transparent transparent'
+                                }}></div>
+                            </div>
+                        )}
                     </div>
                 </>
             ) : (

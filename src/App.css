@@ -1,4 +1,9 @@
-*, *::before, *::after { box-sizing: border-box; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 /* Global Vars & Reset fixes */
 :root {
   --primary-color: #1e40af;
@@ -794,10 +799,252 @@ h6 {
   }
 
   .source-controls {
-    width: 100%;
+
+    /* --- Markdown Styles --- */
+    .markdown-content {
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .markdown-content p {
+      margin: 0 0 0.5rem 0;
+    }
+
+    .markdown-content p:last-child {
+      margin-bottom: 0;
+    }
+
+    .markdown-content strong {
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+
+    .markdown-content ul,
+    .markdown-content ol {
+      margin: 0.5rem 0;
+      padding-left: 1.5rem;
+    }
+
+    .markdown-content li {
+      margin-bottom: 0.25rem;
+    }
+
+    .markdown-content code {
+      background: rgba(0, 0, 0, 0.1);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.9em;
+    }
+
+    [data-theme='dark'] .markdown-content code {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+  }
+
+  /* --- Dashboard / Home Redesign --- */
+  .dashboard-content {
+    padding: 2rem 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .welcome-section {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #3b82f6 100%);
+    color: white;
+    padding: 3rem;
+    border-radius: 20px;
+    margin-bottom: 3rem;
+    display: flex;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    align-items: center;
+    box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
+  }
+
+  .welcome-section h2 {
+    font-size: 2rem;
+    margin: 0;
+    font-family: var(--font-english-serif);
+  }
+
+  .new-sheet-btn {
+    background: white;
+    color: var(--primary-color);
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .new-sheet-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .recent-sheets-section h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--sheet-text);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.5rem;
+  }
+
+  .sheets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+
+  .sheet-card {
+    background: var(--sheet-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    height: 220px;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  .sheet-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.15);
+    border-color: var(--primary-color);
+  }
+
+  .sheet-card-preview {
+    flex: 1;
+    background: var(--sidebar-bg);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    opacity: 0.6;
+  }
+
+  .preview-line {
+    height: 8px;
+    background: var(--border-color);
+    border-radius: 4px;
+    width: 100%;
+  }
+
+  .preview-line.short {
+    width: 60%;
+  }
+
+  .sheet-card-footer {
+    padding: 1.25rem;
+    background: var(--sheet-bg);
+    border-top: 1px solid var(--border-color);
+  }
+
+  .sheet-card-footer h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--sheet-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sheet-date {
+    display: block;
+    margin-top: 0.4rem;
+    font-size: 0.85rem;
+    color: #9ca3af;
+  }
+
+  /* Skeleton Loading */
+  .skeleton {
+    background: #e2e8f0;
+    border-radius: 4px;
+    animation: shimmer 2s infinite linear;
+    background: linear-gradient(to right, #f1f5f9 4%, #e2e8f0 25%, #f1f5f9 36%);
+    background-size: 1000px 100%;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -1000px 0;
+    }
+
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+
+  .sheet-card.skeleton-card {
+    border: none;
+    box-shadow: none;
+    pointer-events: none;
+  }
+
+  .skeleton-preview {
+    height: 140px;
+    width: 100%;
+  }
+
+  .skeleton-title {
+    height: 20px;
+    width: 80%;
+    margin-top: 1rem;
+  }
+
+  .skeleton-date {
+    height: 14px;
+    width: 40%;
+    margin-top: 0.5rem;
+  }
+
+  /* Empty State Illustration */
+  .branded-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    background: var(--sidebar-bg);
+    border-radius: 20px;
+    border: 2px dashed var(--border-color);
+    color: #9ca3af;
+    grid-column: 1 / -1;
+  }
+
+  .branded-empty-state svg {
+    margin-bottom: 1.5rem;
+    color: var(--border-color);
+  }
+
+  .branded-empty-state p {
+    font-size: 1.2rem;
+    font-family: var(--font-english-serif);
+  }
+
+  /* Responsive Dashboard */
+  @media (max-width: 768px) {
+    .dashboard-content {
+      padding: 1rem;
+    }
+
+    .welcome-section {
+      flex-direction: column;
+      text-align: center;
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+
+    .sheets-grid {
+      grid-template-columns: 1fr;
+    }
   }
 
   /* Make selects flex to fill available space comfortably */
@@ -2788,18 +3035,22 @@ html[dir="rtl"] .prompt-card {
     /* Space for mobile header */
   }
 }
+
 /* Fix mobile chatbox centering (v1.0.10) */
 @media (max-width: 768px) {
   .central-input-wrapper {
-    width: 100% !important; /* Let margins handle width constraints? Or 90% centered. */
+    width: 100% !important;
+    /* Let margins handle width constraints? Or 90% centered. */
     /* Let's reset: */
     width: 90% !important;
-    margin: 0 auto !important; /* Force center */
-    padding: 0 !important; /* Remove wrapper padding that might offset content */
-    left: 0 !important; 
+    margin: 0 auto !important;
+    /* Force center */
+    padding: 0 !important;
+    /* Remove wrapper padding that might offset content */
+    left: 0 !important;
     right: 0 !important;
   }
-  
+
   /* Ensure content box itself doesn't have weird margins */
   .gemini-input-box {
     margin: 0 auto !important;
@@ -2811,7 +3062,8 @@ html[dir="rtl"] .prompt-card {
 /* Delete Sheet Button Styles (v1.0.11) */
 .history-item {
   display: flex !important;
-  justify-content: space-between; /* Space between content and delete button */
+  justify-content: space-between;
+  /* Space between content and delete button */
   align-items: center;
   /* Ensure padding handles the button space */
   padding: 12px 1rem !important;
@@ -2819,17 +3071,20 @@ html[dir="rtl"] .prompt-card {
 
 .history-content-wrapper {
   flex: 1;
-  overflow: hidden; /* For text truncation if needed */
+  overflow: hidden;
+  /* For text truncation if needed */
 }
 
 .delete-sheet-btn {
   background: transparent;
   border: none;
   color: #9ca3af;
-  padding: 4px; /* Reduced touch target visual */
+  padding: 4px;
+  /* Reduced touch target visual */
   cursor: pointer;
   border-radius: 4px;
-  opacity: 0; /* Hidden by default */
+  opacity: 0;
+  /* Hidden by default */
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
@@ -2839,17 +3094,20 @@ html[dir="rtl"] .prompt-card {
 
 .history-item:hover .delete-sheet-btn,
 .delete-sheet-btn:focus {
-  opacity: 1; /* Show on hover */
+  opacity: 1;
+  /* Show on hover */
 }
 
 .delete-sheet-btn:hover {
-  color: #dc2626; /* Red on hover */
+  color: #dc2626;
+  /* Red on hover */
   background: rgba(220, 38, 38, 0.1);
 }
 
 @media (max-width: 768px) {
   .delete-sheet-btn {
-    opacity: 1; /* Always show on mobile since no hover */
+    opacity: 1;
+    /* Always show on mobile since no hover */
   }
 }
 
@@ -2858,7 +3116,8 @@ html[dir="rtl"] .prompt-card {
 .central-hero {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Enforce flex centering */
+  align-items: center;
+  /* Enforce flex centering */
   width: 100%;
 }
 
@@ -2866,7 +3125,8 @@ html[dir="rtl"] .prompt-card {
   margin-left: auto !important;
   margin-right: auto !important;
   /* Match grid width for visual consistency if desired, or just center strict */
-  max-width: 800px; /* Compromise? Or keep 900 but ensure centered. */
+  max-width: 800px;
+  /* Compromise? Or keep 900 but ensure centered. */
 }
 
 .empty-prompts-grid {
@@ -2875,11 +3135,12 @@ html[dir="rtl"] .prompt-card {
 }
 
 @media (max-width: 768px) {
+
   /* Mobile specific alignment fixes */
   .central-input-wrapper {
-     right: auto !important;
-     left: auto !important;
-     width: 90% !important;
+    right: auto !important;
+    left: auto !important;
+    width: 90% !important;
   }
 }
 
@@ -2887,12 +3148,13 @@ html[dir="rtl"] .prompt-card {
 /* Enforce strict mobile centering (v1.0.12 Override) */
 @media (max-width: 768px) {
   .central-input-wrapper {
-     margin-left: auto !important;
-     margin-right: auto !important;
-     left: 0 !important;
-     right: 0 !important;
-     width: 90% !important;
-     max-width: none !important; /* Let it fill screen on mobile */
+    margin-left: auto !important;
+    margin-right: auto !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 90% !important;
+    max-width: none !important;
+    /* Let it fill screen on mobile */
   }
 }
 
@@ -2908,24 +3170,29 @@ html[dir="rtl"] .prompt-card {
 .central-input-wrapper {
   margin-left: auto !important;
   margin-right: auto !important;
-  max-width: 750px !important; /* Standardize with grid */
+  max-width: 750px !important;
+  /* Standardize with grid */
 }
 
 .empty-prompts-grid {
   margin-left: auto !important;
   margin-right: auto !important;
-  max-width: 750px !important; /* Standardize with input */
+  max-width: 750px !important;
+  /* Standardize with input */
   width: 100% !important;
 }
 
 /* Ensure mobile overrides */
 @media (max-width: 768px) {
   .central-input-wrapper {
-      max-width: 90% !important; /* Reset to percentage */
+    max-width: 90% !important;
+    /* Reset to percentage */
   }
+
   .empty-prompts-grid {
-      max-width: 90% !important;
-      grid-template-columns: 1fr !important; /* Stack them */
+    max-width: 90% !important;
+    grid-template-columns: 1fr !important;
+    /* Stack them */
   }
 }
 
@@ -2936,8 +3203,10 @@ html[dir="rtl"] .prompt-card {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  padding: 0.75rem 1rem !important; /* EXACT match to UnifiedHeader */
-  height: 60px; /* Force height match */
+  padding: 0.75rem 1rem !important;
+  /* EXACT match to UnifiedHeader */
+  height: 60px;
+  /* Force height match */
   box-sizing: border-box;
 }
 
@@ -2976,12 +3245,13 @@ html[dir="rtl"] .prompt-card {
 
 /* Ensure mobile close button is only visible on mobile */
 .mobile-close-btn {
-  display: none !important; /* Default hidden */
+  display: none !important;
+  /* Default hidden */
 }
 
 @media (max-width: 768px) {
   .mobile-close-btn {
-    display: flex !important; /* Visible on mobile */
+    display: flex !important;
+    /* Visible on mobile */
   }
 }
-

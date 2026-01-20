@@ -27,6 +27,14 @@ const CustomSourceBlock = ({ source, onRemove, onUpdate, dragHandleProps }) => {
                     </div>
                 </div>
                 <div className="source-controls" data-html2canvas-ignore="true">
+                    <button
+                        className="icon-btn"
+                        onClick={() => onUpdate({ dir: source.dir === 'rtl' ? 'ltr' : 'rtl' })}
+                        title="Toggle Text Direction"
+                        style={{ fontSize: '0.8rem', marginRight: '0.5rem' }}
+                    >
+                        {source.dir === 'rtl' ? 'LTR' : 'RTL'}
+                    </button>
                     <button className="remove-btn" onClick={onRemove} title="Remove Block">
                         &times;
                     </button>
@@ -36,10 +44,9 @@ const CustomSourceBlock = ({ source, onRemove, onUpdate, dragHandleProps }) => {
             <div className="source-content" style={{ flexDirection: 'column', gap: '0.5rem' }}>
                 <EditableContent
                     className="custom-text-content"
-                    html={source.en} // reusing 'en' field for content to simplify export logic
+                    html={source.en}
                     onChange={(val) => onUpdate({ en: val })}
-                    dir="ltr" // Default LTR, user can type Hebrew if they want but alignment is left for now. 
-                // Ideally we could add a toggle for RTL/LTR for custom blocks.
+                    dir={source.dir || 'ltr'}
                 />
             </div>
         </div>

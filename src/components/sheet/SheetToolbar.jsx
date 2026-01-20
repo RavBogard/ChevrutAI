@@ -1,5 +1,6 @@
 import React from 'react';
 import ExportMenu from './ExportMenu';
+import ShareButton from './ShareButton';
 
 const SheetToolbar = ({
     onAddCustom,
@@ -67,6 +68,7 @@ const SheetToolbar = ({
 
             {/* Group 3: Export & Actions */}
             <div className="toolbar-group action-group">
+                <ShareButton />
                 <ExportMenu
                     showExportMenu={showExportMenu}
                     setShowExportMenu={setShowExportMenu}

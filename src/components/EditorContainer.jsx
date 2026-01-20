@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from './Toast';
-import { useUndoRedo } from '../hooks/useUndoRedo';
 import { useFirestore } from '../hooks/useFirestore';
-import { getSefariaText } from '../services/sefaria';
+import { useSheetManager } from '../hooks/useSheetManager';
+import { useChat } from '../hooks/useChat';
+import { useResizableSidebar } from '../hooks/useResizableSidebar';
 import SheetView from './SheetView';
 import ChatSidebar from './ChatSidebar';
 import UnifiedHeader from './UnifiedHeader';
@@ -14,75 +15,55 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
     const { sheetId } = useParams();
     const navigate = useNavigate();
     const { currentUser } = useAuth();
+    // eslint-disable-next-line no-unused-vars
     const { showToast } = useToast();
-    const [mobileChatOpen, setMobileChatOpen] = useState(false);
 
-    // Undo/Redo enabled sourcesList with localStorage persistence
-    // Fresh Start: Do not load from localStorage on init
+    // --- State Management Hooks ---
     const {
-        state: sourcesList,
-        setState: setSourcesList,
-        undo: undoSources,
-        redo: redoSources,
+        sourcesList,
+        setSourcesList,
+        sheetTitle,
+        setSheetTitle,
+        undoSources,
+        redoSources,
         canUndo,
         canRedo,
-        resetHistory: _resetHistory
-    } = useUndoRedo(() => []); // Start empty
+        handleAddSource,
+        handleRemoveSource,
+        handleUpdateSource,
+        handleReorder,
+        clearSheet
+    } = useSheetManager();
 
-    const [messages, setMessages] = useState(() => {
-        // Start fresh with welcome message
-        return [{
-            id: 'welcome',
-            role: 'model',
-            text: 'Shalom! What kind of text sheet do you want to create together?',
-            suggestedSources: []
-        }];
-    });
+    const {
+        messages,
+        setMessages,
+        isLoading,
+        handleSendMessage: _handleSendMessage
+    } = useChat();
 
-    const [isLoading, setIsLoading] = useState(false);
+    // Wrapper to pass title state to chat for auto-titling
+    const handleSendMessage = (text) => {
+        _handleSendMessage(text, sheetTitle, setSheetTitle);
+    };
 
-    // Start with default title
-    const [sheetTitle, setSheetTitle] = useState("New Source Sheet");
-
-    // Persist state changes to localStorage
-    useEffect(() => {
-        localStorage.setItem('chevruta_sources', JSON.stringify(sourcesList));
-    }, [sourcesList]);
-
-    useEffect(() => {
-        localStorage.setItem('chevruta_messages', JSON.stringify(messages));
-    }, [messages]);
-
-    useEffect(() => {
-        localStorage.setItem('chevruta_title', sheetTitle);
-    }, [sheetTitle]);
-
-    // Cloud Persistence & Autosave
+    // --- Firestore Sync ---
     const {
         userSheets,
         loadSheet,
-        // eslint-disable-next-line no-unused-vars
-        createNewSheet,
         currentSheetId,
         setCurrentSheetId,
         deleteSheet
     } = useFirestore(sheetTitle, sourcesList, messages);
 
     // Sync URL ID with System
-    // Sync URL ID with System
     useEffect(() => {
         if (!sheetId) return;
-
-        // Only act if the URL ID differs from our current internal state
         if (sheetId !== currentSheetId) {
             const isTimestamp = /^\d+$/.test(sheetId);
-
             if (isTimestamp) {
-                // If it's a numeric timestamp ID (draft/legacy), we adopt it immediately.
-                // This allows new drafts to be created with a specific ID.
                 setCurrentSheetId(sheetId);
             } else {
-                // If it's a Firestore alphanumeric ID, we MUST load existing data.
                 loadSheet(sheetId, setSourcesList, setMessages, setSheetTitle).then((loaded) => {
                     if (!loaded) {
                         setCurrentSheetId(sheetId);
@@ -93,111 +74,17 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sheetId]);
 
-    const sendMessageToGemini = async (userText) => {
-        setIsLoading(true);
-        try {
-            let historyMessages = messages.slice(-10);
-            historyMessages = historyMessages.filter(m => m.text && m.text.trim() !== '');
-            if (historyMessages.length > 0 && historyMessages[0].role === 'model') {
-                historyMessages = historyMessages.slice(1);
-            }
-            const history = historyMessages.map(m => ({
-                role: m.role,
-                parts: [{ text: m.text }]
-            }));
-
-            const response = await fetch('/api/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    message: userText,
-                    history: history
-                })
-            });
-
-            if (!response.ok) {
-                const errorData = await response.text();
-                console.error("API Error:", response.status, errorData);
-                throw new Error(`API Request Failed: ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            // Handle suggested_title if provided
-            if (data.suggested_title && sheetTitle === 'New Source Sheet') {
-                setSheetTitle(data.suggested_title);
-            }
-
-            const botMessage = {
-                id: Date.now().toString(),
-                role: 'model',
-                text: data.content || data.text || '', // Support both field names
-                suggestedSources: data.suggested_sources || []
-            };
-
-            setMessages(prev => [...prev, botMessage]);
-
-        } catch (error) {
-            console.error("Chat error:", error);
-            setMessages(prev => [...prev, {
-                id: Date.now().toString(),
-                role: 'model',
-                text: "I'm having trouble connecting to the Beit Midrash right now. Please try again.",
-                suggestedSources: []
-            }]);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const handleAddSource = async (source) => {
-        if (!source.he || !source.en) {
-            const data = await getSefariaText(source.ref);
-            if (data) {
-                source.he = data.he;
-                source.en = data.en;
-                source.versions = data.versions;
-                source.versionTitle = data.versionTitle;
-            } else {
-                showToast(`Could not fetch text for ${source.ref}`, "error");
-                return;
-            }
-        }
-        setSourcesList(prev => [...prev, source]);
-    };
-
-    const handleRemoveSource = (index) => {
-        setSourcesList(items => items.filter((_, i) => i !== index));
-    };
-
-    const handleUpdateSource = (index, updates) => {
-        setSourcesList(items => {
-            const newItems = [...items];
-            if (index >= 0 && index < newItems.length) {
-                newItems[index] = { ...newItems[index], ...updates };
-            }
-            return newItems;
-        });
-    };
-
-    const handleReorder = (newSources) => {
-        setSourcesList(newSources);
-    };
-
-    const handleLoadSheet = async (id) => {
-        await loadSheet(id, setSourcesList, setMessages, setSheetTitle);
-        navigate(`/sheet/${id}`);
-    };
-
-    const handleSendMessage = (text) => {
-        const userMsg = { id: Date.now().toString(), role: 'user', text: text };
-        setMessages(prev => [...prev, userMsg]);
-        sendMessageToGemini(text);
-    };
-
-    const [sidebarWidth, setSidebarWidth] = useState(400);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [isResizing, setIsResizing] = useState(false);
+    // --- Sidebar & Resizing Logic ---
+    const {
+        sidebarWidth,
+        isSidebarOpen,
+        isResizing,
+        startResizing,
+        toggleSidebar,
+        mobileChatOpen,
+        setMobileChatOpen,
+        setIsSidebarOpen
+    } = useResizableSidebar();
 
     // Auto-open sidebar only when chat starts (desktop only)
     useEffect(() => {
@@ -210,34 +97,14 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [messages]);
 
-    const toggleSidebar = () => {
+    const handleSuggestionClick = (text) => {
+        handleSendMessage(text);
         if (window.innerWidth <= 768) {
-            setMobileChatOpen(prev => !prev);
+            setMobileChatOpen(true);
         } else {
-            setIsSidebarOpen(prev => !prev);
+            setIsSidebarOpen(true);
         }
     };
-    const startResizing = () => setIsResizing(true);
-    const stopResizing = () => setIsResizing(false);
-
-    const resize = (mouseMoveEvent) => {
-        if (isResizing) {
-            const newWidth = mouseMoveEvent.clientX;
-            if (newWidth > 300 && newWidth < 800) {
-                setSidebarWidth(newWidth);
-            }
-        }
-    };
-
-    useEffect(() => {
-        window.addEventListener("mousemove", resize);
-        window.addEventListener("mouseup", stopResizing);
-        return () => {
-            window.removeEventListener("mousemove", resize);
-            window.removeEventListener("mouseup", stopResizing);
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isResizing]);
 
     const handleSuggestionClick = (text) => {
         handleSendMessage(text);
@@ -248,8 +115,45 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
         }
     };
 
+    // --- UX SAFETY FEATURES ---
+
+    // 1. Unsaved Changes Warning
+    useEffect(() => {
+        const handleBeforeUnload = (e) => {
+            if (sourcesList.length > 0) {
+                e.preventDefault();
+                e.returnValue = ''; // Trigger browser warning
+            }
+        };
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }, [sourcesList]);
+
+    // 2. Logo Logic
+    // "Home" is when we have no sources AND we haven't really started chatting (just welcome msg)
+    const isHomeState = sourcesList.length === 0 && messages.length <= 1;
+
     return (
         <div className={`app-container ${messages.length > 1 ? 'chat-active' : 'chat-initial'}`}>
+
+            {/* Guest Mode Banner */}
+            {!currentUser && sourcesList.length > 0 && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    background: '#fff7ed', // orange-50
+                    color: '#c2410c', // orange-700
+                    textAlign: 'center',
+                    padding: '4px',
+                    fontSize: '0.8rem',
+                    zIndex: 2000, // Above everything
+                    borderBottom: '1px solid #fed7aa'
+                }}>
+                    Guest Mode: Changes are not saved to an account. Sign in to save.
+                </div>
+            )}
 
             {/* Unified Sticky Header (Mobile & Desktop) */}
             <UnifiedHeader
@@ -259,6 +163,7 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                 language={language}
                 toggleLanguage={toggleLanguage}
                 isSidebarOpen={isSidebarOpen}
+                isHome={isHomeState} // <-- Calculated logic passed down
             />
 
             {/* Sidebar Wrapper for Desktop */}
@@ -279,7 +184,7 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                     toggleDarkMode={toggleDarkMode}
                     language={language}
                     userSheets={userSheets}
-                    onLoadSheet={handleLoadSheet}
+                    onLoadSheet={(id) => loadSheet(id, setSourcesList, setMessages, setSheetTitle).then(() => navigate(`/sheet/${id}`))}
                     currentSheetId={currentSheetId}
                     onDeleteSheet={deleteSheet}
                 />
@@ -302,7 +207,8 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                         language={language}
                         userSheets={userSheets}
                         onLoadSheet={(id) => {
-                            handleLoadSheet(id);
+                            loadSheet(id, setSourcesList, setMessages, setSheetTitle);
+                            navigate(`/sheet/${id}`);
                             setMobileChatOpen(false);
                         }}
                         currentSheetId={currentSheetId}
@@ -324,11 +230,7 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                 onRemoveSource={handleRemoveSource}
                 onUpdateSource={handleUpdateSource}
                 onReorder={handleReorder}
-                onClearSheet={() => {
-                    if (window.confirm("Are you sure you want to clear the sheet?")) {
-                        setSourcesList([]);
-                    }
-                }}
+                onClearSheet={clearSheet}
                 onUndo={undoSources}
                 onRedo={redoSources}
                 canUndo={canUndo}
@@ -341,13 +243,13 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                 chatStarted={messages.length > 1}
                 onAddSource={handleAddSource}
                 userSheets={userSheets}
-                onLoadSheet={handleLoadSheet}
+                onLoadSheet={(id) => loadSheet(id, setSourcesList, setMessages, setSheetTitle).then(() => navigate(`/sheet/${id}`))}
                 darkMode={darkMode}
                 toggleDarkMode={toggleDarkMode}
                 toggleLanguage={toggleLanguage}
             />
 
-            {/* Toggles moved to SheetView for better alignment with UserMenu */}
+            {/* Mobile Backdrop */}
             {mobileChatOpen && (
                 <div className="mobile-chat-backdrop" onClick={() => setMobileChatOpen(false)}></div>
             )}

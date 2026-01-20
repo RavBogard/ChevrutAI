@@ -7,26 +7,14 @@ const UnifiedHeader = ({
     toggleDarkMode,
     language,
     toggleLanguage,
-    isSidebarOpen
+    isSidebarOpen,
+    isHome // Now passed as prop
 }) => {
     const [isVisible, setIsVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
-    const [isHome, setIsHome] = useState(false);
 
-    useEffect(() => {
-        // Check initial path
-        const checkHome = () => {
-            const hash = window.location.hash;
-            // Home is usually #/ or empty hash
-            setIsHome(hash === '#/' || hash === '' || hash === '#');
-        };
+    // Removed hash listener logic as we prefer the explicit prop from parent
 
-        checkHome();
-
-        // Listen for hash changes
-        window.addEventListener('hashchange', checkHome);
-        return () => window.removeEventListener('hashchange', checkHome);
-    }, []);
 
     useEffect(() => {
         const controlNavbar = () => {

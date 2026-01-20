@@ -13,7 +13,7 @@ const HomeView = () => {
         if (!currentUser) {
             // eslint-disable-next-line react-hooks/set-state-in-effect
             setSheets([]);
-             
+
             setLoading(false);
             return;
         }
@@ -78,12 +78,18 @@ const HomeView = () => {
                 </div>
                 <div className="user-profile">
                     <img src={currentUser.photoURL} alt={currentUser.displayName} className="avatar" />
+                    <button className="logout-btn-text" onClick={() => window.location.reload()}>Log Out</button>
+                    {/* Note: Logout isn't implemented in context well yet, usually just reloading or creating new session works for MVP. 
+                        Actually UserMenu handles this inside the app. For now just Avatar. */ }
                 </div>
             </header>
 
             <main className="dashboard-content">
                 <section className="welcome-section">
-                    <h2>Welcome back, {currentUser.displayName.split(' ')[0]}</h2>
+                    <div>
+                        <h2>Welcome back, {currentUser.displayName?.split(' ')[0] || 'Scholar'}</h2>
+                        <p style={{ opacity: 0.9, marginTop: '0.5rem' }}>Ready to learn something new today?</p>
+                    </div>
                     <button className="cta-button new-sheet-btn" onClick={handleCreateNew}>
                         + Create New Sheet
                     </button>
@@ -93,24 +99,37 @@ const HomeView = () => {
                     <h3>My Sheets</h3>
 
                     {loading ? (
-                        <div className="loading-spinner">Loading sheets...</div>
+                        <div className="sheets-grid">
+                            {[1, 2, 3].map(i => (
+                                <div key={i} className="sheet-card skeleton-card">
+                                    <div className="skeleton skeleton-preview"></div>
+                                    <div className="sheet-card-footer">
+                                        <div className="skeleton skeleton-title"></div>
+                                        <div className="skeleton skeleton-date"></div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     ) : sheets.length === 0 ? (
-                        <div className="empty-state">
-                            <p>You haven't created any sheets yet.</p>
+                        <div className="branded-empty-state">
+                            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+                            </svg>
+                            <p>No sheets yet. Start your first journey!</p>
                         </div>
                     ) : (
                         <div className="sheets-grid">
                             {sheets.map((sheet) => (
                                 <div key={sheet.id} className="sheet-card" onClick={() => handleOpenSheet(sheet.id)}>
                                     <div className="sheet-card-preview">
-                                        {/* Placeholder for preview logic */}
-                                        <div className="preview-lines"></div>
-                                        <div className="preview-lines"></div>
+                                        <div className="preview-line"></div>
+                                        <div className="preview-line short"></div>
+                                        <div className="preview-line"></div>
                                     </div>
                                     <div className="sheet-card-footer">
                                         <h4 className="sheet-title">{sheet.title || "Untitled Sheet"}</h4>
                                         <span className="sheet-date">
-                                            {sheet.updatedAt?.seconds ? new Date(sheet.updatedAt.seconds * 1000).toLocaleDateString() : 'Just now'}
+                                            {sheet.updatedAt?.seconds ? new Date(sheet.updatedAt.seconds * 1000).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : 'Just now'}
                                         </span>
                                     </div>
                                 </div>

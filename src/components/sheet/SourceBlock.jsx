@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { getSefariaTextByVersion } from '../../services/sefaria';
 import EditableContent from './EditableContent';
 
-const SourceBlock = ({ source, onRemove, onUpdate, dragHandleProps }) => {
+const SourceBlock = ({ source, onRemove, onUpdate, dragHandleProps, onRefine }) => {
     const viewMode = source.viewMode || 'bilingual';
     const [loadingVersion, setLoadingVersion] = useState(false);
 
@@ -69,6 +69,17 @@ const SourceBlock = ({ source, onRemove, onUpdate, dragHandleProps }) => {
                         <option value="hebrew">Hebrew Only</option>
                         <option value="english">English Only</option>
                     </select>
+
+                    {/* Refine Button (Magic Sparkle) */}
+                    <button
+                        className="icon-btn refine-btn"
+                        onClick={() => onRefine && onRefine(source)}
+                        title="Ask AI to Explain/Refine"
+                        style={{ color: '#8b5cf6', marginRight: '4px' }}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" /></svg>
+                    </button>
+
                     <button className="remove-btn" onClick={onRemove} title="Remove Source">
                         &times;
                     </button>
