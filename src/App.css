@@ -2951,7 +2951,7 @@ html[dir="rtl"] .prompt-card {
 }
 
 [data-theme='dark'] .unified-header {
-  background-color: rgba(15, 23, 42, 0.9);
+  background-color: rgba(2, 6, 23, 0.9);
 }
 
 .header-hidden {
@@ -3008,6 +3008,11 @@ html[dir="rtl"] .prompt-card {
     /* Position it relative or sticky? or keep fixed? */
     /* If fixed, it floats over content. */
     /* Let's keep it fixed but ensure content padding */
+  }
+
+  [data-theme='dark'] .unified-header {
+    background-color: transparent !important;
+    background: transparent !important;
   }
 
   /* Adjust SheetView padding on desktop to not hide behind header */
