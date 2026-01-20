@@ -6,6 +6,7 @@ import './App.css';
 const HomeView = lazy(() => import('./components/home/HomeView'));
 const Privacy = lazy(() => import('./components/Privacy'));
 const Terms = lazy(() => import('./components/Terms'));
+const Changelog = lazy(() => import('./components/Changelog'));
 const EditorContainer = lazy(() => import('./components/EditorContainer'));
 import ErrorBoundary from './components/ErrorBoundary';
 
@@ -59,6 +60,7 @@ function App() {
             />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="/changelog" element={<Changelog />} />
           </Routes>
         </Suspense>
       </ErrorBoundary>
