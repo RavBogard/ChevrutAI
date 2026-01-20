@@ -2564,3 +2564,45 @@ html[dir="rtl"] .prompt-card {
   }
 }
 
+
+/* --- Mobile Layout Refinements (v1.0.6) --- */
+
+@media (max-width: 768px) {
+  /* Fix Home Screen Chat Input Width */
+  .central-input-wrapper {
+    width: 90% !important;
+    max-width: none;
+    padding: 0 1rem;
+    box-sizing: border-box;
+  }
+  
+  .gemini-input-box {
+    width: 100%;
+    padding: 1rem 1rem 3.5rem 1rem; /* Adjust padding for mobile */
+  }
+
+  /* Fix Sheet Toolbar Overflow */
+  .sheet-toolbar {
+    flex-wrap: wrap; 
+    gap: 0.5rem;
+    justify-content: center;
+    padding: 0.5rem;
+    height: auto; /* Allow growth */
+  }
+
+  .toolbar-group {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* Make toolbar buttons smaller on mobile */
+  .toolbar-btn {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+  
+  .toolbar-divider {
+    display: none; /* Hide dividers on mobile to save space */
+  }
+}
+
