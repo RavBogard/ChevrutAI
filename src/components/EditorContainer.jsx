@@ -106,14 +106,7 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
         }
     };
 
-    const handleSuggestionClick = (text) => {
-        handleSendMessage(text);
-        if (window.innerWidth <= 768) {
-            setMobileChatOpen(true);
-        } else {
-            setIsSidebarOpen(true);
-        }
-    };
+
 
     // --- UX SAFETY FEATURES ---
 
