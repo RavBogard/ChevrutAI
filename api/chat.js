@@ -54,9 +54,12 @@ BAD titles (NEVER do this):
    - "Rashi on Genesis 1:1" (Commentary)
    - "Mishneh Torah, Murderer and the Preservation of Life 1:9" (CORRECT Sefaria title)
    - "Mishneh Torah, Laws of Murder 1:9" (WRONG - do not use "Laws of")
+   - "Even Bochan 28:1" (CORRECT - just Book + Chapter:Verse)
+   - "Even Bochan, The Prayer of Kalonymus" (WRONG - do not include subtitles/descriptions)
    DO NOT suggest obscure or uncertain references. If you're not 100% sure a text exists in Sefaria, DO NOT suggest it.
    CRITICAL: If a user asks for a general concept (e.g. "Sanhedrin 90b"), infer the most relevant 2-4 segments and cite ONLY those (e.g. "Sanhedrin 90b:1-4"). DO NOT cite the whole page.
    CRITICAL: For Mishneh Torah, use explicit Sefaria titles (e.g. "Mishneh Torah, Kings and Wars", "Mishneh Torah, Repentance"). Avoid "Laws of...".
+   CRITICAL: NEVER include a descriptive subtitle in the "ref". "Even Bochan, The Prayer of Kalonymus" is INVALID. Use "Even Bochan 28:1".
 7. Do NOT provide the full text in the "content" field, just the citation and likelihood of relevance. The user will click to add the full text to the sheet.
 8. IMPORTANT: You MUST provide a "suggested_title" in EVERY response. The title should be the TOPIC, not a question or command.
 `;

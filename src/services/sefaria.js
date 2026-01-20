@@ -1,4 +1,50 @@
 const BASE_URL = "https://www.sefaria.org/api/texts";
+const NAME_BASE_URL = "https://www.sefaria.org/api/name";
+
+/**
+ * Tries to resolve a fuzzy or incorrect ref to a canonical Sefaria Ref using the Name API.
+ * @param {string} ref 
+ * @returns {Promise<string|null>} The corrected ref or null
+ */
+const resolveSefariaRef = async (ref) => {
+    try {
+        let term = ref;
+        // regex to grab the "Book Name" part (e.g. from "Book Name 1:1" -> "Book Name")
+        // Also stripping potential subtitles if they appear after a comma e.g. "Even Bochan, The Prayer..."
+        const match = ref.match(/^([^,:]+)/);
+        if (match) {
+            term = match[1].trim();
+        }
+
+        const encoded = encodeURIComponent(term);
+        const response = await fetch(`${NAME_BASE_URL}/${encoded}?limit=5`);
+        if (!response.ok) return null;
+
+        const data = await response.json();
+
+        // Look for best match in completion_objects
+        if (data.completion_objects && data.completion_objects.length > 0) {
+            const candidates = data.completion_objects
+                .filter(obj => obj.type === 'ref' || obj.type === 'Index')
+                .map(obj => obj.key);
+
+            if (candidates.length > 0) {
+                // Try to reconstruct the ref with the canonical title
+                // Find where the numbers start in the original ref
+                const numberMatch = ref.match(/(\d+[.:].*)$/);
+                if (numberMatch) {
+                    return `${candidates[0]} ${numberMatch[1]}`;
+                }
+                // If no numbers, just return the book
+                return candidates[0];
+            }
+        }
+        return null;
+    } catch (e) {
+        // Silent fail
+        return null;
+    }
+};
 
 /**
  * Fetches specific English version of a text.
@@ -18,7 +64,6 @@ export const getSefariaTextByVersion = async (ref, versionTitle) => {
         const data = await response.json();
         return data.text; // Returns the English text for this version
     } catch (error) {
-        console.error("Version fetch failed:", error);
         return null;
     }
 };
@@ -30,19 +75,31 @@ export const getSefariaTextByVersion = async (ref, versionTitle) => {
  */
 export const getSefariaText = async (ref) => {
     try {
-        const encodedRef = encodeURIComponent(ref);
-        const response = await fetch(`${BASE_URL}/${encodedRef}?context=0`);
+        const fetchRef = async (citationRef) => {
+            const encodedRef = encodeURIComponent(citationRef);
+            const response = await fetch(`${BASE_URL}/${encodedRef}?context=0`);
+            if (!response.ok) return null;
+            return await response.json();
+        };
 
-        if (!response.ok) {
-            console.error(`Error fetching ${ref}: ${response.statusText}`);
-            return null;
+        let data = await fetchRef(ref);
+
+        // If direct fetch failed, try to recover using Name API
+        if (!data || data.error) {
+            const resolvedRef = await resolveSefariaRef(ref);
+            if (resolvedRef && resolvedRef !== ref) {
+                data = await fetchRef(resolvedRef);
+            }
         }
 
-        const data = await response.json();
+        if (!data || data.error) {
+            return null;
+        }
 
         let hebrewText = data.he;
         let englishText = data.text;
         let versionTitle = data.versionTitle;
+        let canonicalRef = data.ref || ref;
 
         // Filter for available English versions
         const enVersions = data.versions ? data.versions.filter(v => v.language === 'en') : [];
@@ -51,14 +108,10 @@ export const getSefariaText = async (ref) => {
         const isEnglishEmpty = !englishText || (Array.isArray(englishText) && englishText.every(s => !s || !s.trim())) || (typeof englishText === 'string' && !englishText.trim());
 
         if (isEnglishEmpty && enVersions.length > 0) {
-            console.log(`Default text empty for ${ref}. Attempting to find valid English version from options:`, enVersions.map(v => v.versionTitle));
-
             // Iterate through ALL available English versions until we find one with actual text
             for (const version of enVersions) {
                 const candidateTitle = version.versionTitle;
-                console.log(`Trying version: ${candidateTitle}`);
-
-                const fallbackText = await getSefariaTextByVersion(ref, candidateTitle);
+                const fallbackText = await getSefariaTextByVersion(canonicalRef, candidateTitle);
 
                 // Check if this fallback text is actually valid/non-empty
                 const isValidFallback = fallbackText &&
@@ -66,7 +119,6 @@ export const getSefariaText = async (ref) => {
                         (typeof fallbackText === 'string' && fallbackText.trim()));
 
                 if (isValidFallback) {
-                    console.log(`Found valid text in version: ${candidateTitle}`);
                     englishText = fallbackText;
                     versionTitle = candidateTitle;
                     break; // Stop looking, we found one!
@@ -75,7 +127,7 @@ export const getSefariaText = async (ref) => {
         }
 
         return {
-            ref: data.ref, // The canonical reference
+            ref: canonicalRef, // The canonical reference
             he: hebrewText,
             en: englishText,
             categories: data.categories,

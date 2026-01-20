@@ -7,6 +7,7 @@ const HomeView = lazy(() => import('./components/home/HomeView'));
 const Privacy = lazy(() => import('./components/Privacy'));
 const Terms = lazy(() => import('./components/Terms'));
 const EditorContainer = lazy(() => import('./components/EditorContainer'));
+import ErrorBoundary from './components/ErrorBoundary';
 
 const LoadingFallback = () => (
   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: '#666' }}>
@@ -37,27 +38,29 @@ function App() {
 
   return (
     <Router>
-      <Suspense fallback={<LoadingFallback />}>
-        <Routes>
-          <Route path="/" element={<NewSheetRedirect />} />
-          <Route path="/dashboard" element={<HomeView />} />
-          <Route path="/sheet/new" element={<NewSheetRedirect />} />
-          {/* Pass props to EditorContainer */}
-          <Route
-            path="/sheet/:sheetId"
-            element={
-              <EditorContainer
-                darkMode={darkMode}
-                toggleDarkMode={toggleDarkMode}
-                language={language}
-                toggleLanguage={toggleLanguage}
-              />
-            }
-          />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/terms" element={<Terms />} />
-        </Routes>
-      </Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={<LoadingFallback />}>
+          <Routes>
+            <Route path="/" element={<NewSheetRedirect />} />
+            <Route path="/dashboard" element={<HomeView />} />
+            <Route path="/sheet/new" element={<NewSheetRedirect />} />
+            {/* Pass props to EditorContainer */}
+            <Route
+              path="/sheet/:sheetId"
+              element={
+                <EditorContainer
+                  darkMode={darkMode}
+                  toggleDarkMode={toggleDarkMode}
+                  language={language}
+                  toggleLanguage={toggleLanguage}
+                />
+              }
+            />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
+          </Routes>
+        </Suspense>
+      </ErrorBoundary>
     </Router>
   );
 }
