@@ -1,10 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import HomeView from './components/home/HomeView';
-import Privacy from './components/Privacy';
-import Terms from './components/Terms';
-import EditorContainer from './components/EditorContainer';
 import './App.css';
+
+// Lazy load components for performance
+const HomeView = lazy(() => import('./components/home/HomeView'));
+const Privacy = lazy(() => import('./components/Privacy'));
+const Terms = lazy(() => import('./components/Terms'));
+const EditorContainer = lazy(() => import('./components/EditorContainer'));
+
+const LoadingFallback = () => (
+  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: '#666' }}>
+    Loading...
+  </div>
+);
 
 function App() {
   const [darkMode, setDarkMode] = useState(() => {
@@ -29,25 +37,27 @@ function App() {
 
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<NewSheetRedirect />} />
-        <Route path="/dashboard" element={<HomeView />} />
-        <Route path="/sheet/new" element={<NewSheetRedirect />} />
-        {/* Pass props to EditorContainer */}
-        <Route
-          path="/sheet/:sheetId"
-          element={
-            <EditorContainer
-              darkMode={darkMode}
-              toggleDarkMode={toggleDarkMode}
-              language={language}
-              toggleLanguage={toggleLanguage}
-            />
-          }
-        />
-        <Route path="/privacy" element={<Privacy />} />
-        <Route path="/terms" element={<Terms />} />
-      </Routes>
+      <Suspense fallback={<LoadingFallback />}>
+        <Routes>
+          <Route path="/" element={<NewSheetRedirect />} />
+          <Route path="/dashboard" element={<HomeView />} />
+          <Route path="/sheet/new" element={<NewSheetRedirect />} />
+          {/* Pass props to EditorContainer */}
+          <Route
+            path="/sheet/:sheetId"
+            element={
+              <EditorContainer
+                darkMode={darkMode}
+                toggleDarkMode={toggleDarkMode}
+                language={language}
+                toggleLanguage={toggleLanguage}
+              />
+            }
+          />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
+        </Routes>
+      </Suspense>
     </Router>
   );
 }

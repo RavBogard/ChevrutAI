@@ -59,47 +59,56 @@ export const exportToDocx = async (title, sources) => {
                         return elements;
                     }
 
+                    // Default Sefaria Source
+                    const mode = source.viewMode || 'bilingual';
+
+                    const englishCell = new TableCell({
+                        children: [new Paragraph({
+                            text: englishText,
+                            alignment: AlignmentType.LEFT
+                        })],
+                        width: {
+                            size: mode === 'bilingual' ? 50 : 100,
+                            type: WidthType.PERCENTAGE,
+                        },
+                    });
+
+                    const hebrewCell = new TableCell({
+                        children: [new Paragraph({
+                            text: hebrewText,
+                            alignment: AlignmentType.RIGHT,
+                            bidirectional: true
+                        })],
+                        width: {
+                            size: mode === 'bilingual' ? 50 : 100,
+                            type: WidthType.PERCENTAGE,
+                        },
+                    });
+
+                    let tableRows = [];
+                    if (mode === 'bilingual') {
+                        tableRows = [new TableRow({ children: [englishCell, hebrewCell] })];
+                    } else if (mode === 'english') {
+                        tableRows = [new TableRow({ children: [englishCell] })];
+                    } else if (mode === 'hebrew') {
+                        tableRows = [new TableRow({ children: [hebrewCell] })];
+                    }
+
                     return [
                         // Citation Header
                         new Paragraph({
                             text: citation,
-                            heading: HeadingLevel.HEADING_4, // Reduced from H2 since headers are H2
+                            heading: HeadingLevel.HEADING_4,
                             spacing: { before: 200, after: 100 },
                             alignment: AlignmentType.CENTER
                         }),
-                        // Side-by-Side Table
+                        // Table
                         new Table({
                             width: {
                                 size: 100,
                                 type: WidthType.PERCENTAGE,
                             },
-                            rows: [
-                                new TableRow({
-                                    children: [
-                                        new TableCell({
-                                            children: [new Paragraph({
-                                                text: englishText,
-                                                alignment: AlignmentType.LEFT
-                                            })],
-                                            width: {
-                                                size: 50,
-                                                type: WidthType.PERCENTAGE,
-                                            },
-                                        }),
-                                        new TableCell({
-                                            children: [new Paragraph({
-                                                text: hebrewText,
-                                                alignment: AlignmentType.RIGHT,
-                                                bidirectional: true // For Hebrew RTL support in Word
-                                            })],
-                                            width: {
-                                                size: 50,
-                                                type: WidthType.PERCENTAGE,
-                                            },
-                                        }),
-                                    ],
-                                }),
-                            ],
+                            rows: tableRows,
                         }),
                         new Paragraph({ text: "" }), // Spacer
                     ];

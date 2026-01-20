@@ -6,7 +6,7 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSo
 import { CSS } from '@dnd-kit/utilities';
 import html2pdf from 'html2pdf.js';
 import { exportToGoogleDoc } from '../services/google';
-import { exportToDocx } from '../services/docxExport';
+// exportToDocx is now dynamically imported to save bundle size
 import { PROMPTS_EN, PROMPTS_HE } from '../data/prompts';
 
 import SourceBlock from './sheet/SourceBlock';
@@ -157,6 +157,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
 
     const handleExportDocx = async () => {
         try {
+            const { exportToDocx } = await import('../services/docxExport');
             await exportToDocx(sheetTitle, sources);
         } catch (error) {
             console.error("DocX Export Error:", error);
@@ -348,7 +349,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                 </p>
                 <div className="footer-powered">
                     <a href="https://www.sefaria.org" target="_blank" rel="noopener noreferrer">Powered by Sefaria</a>
-                    <span className="version-tag"> • v0.9.25</span>
+                    <span className="version-tag"> • v1.0.0</span>
                 </div>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
