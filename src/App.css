@@ -2930,3 +2930,58 @@ html[dir="rtl"] .prompt-card {
 }
 
 
+
+/* Fix Sidebar Hamburger Alignment (v1.0.14) */
+.sidebar-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0.75rem 1rem !important; /* EXACT match to UnifiedHeader */
+  height: 60px; /* Force height match */
+  box-sizing: border-box;
+}
+
+.mobile-close-btn {
+  background: transparent !important;
+  border: none !important;
+  padding: 8px !important;
+  border-radius: 50% !important;
+  color: var(--sheet-text) !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 40px !important;
+  height: 40px !important;
+  /* Position it absolutely if needed, or rely on flex */
+}
+
+/* Ensure Logo text aligns with header logo text if present, 
+   but sidebar usually has 'Chevruta.AI' text on left. 
+   Unified Header has hamburger on LEFT. 
+   Sidebar has Logo on LEFT, Close on RIGHT?
+   Wait. Unified Header: Hamburger (Left) ... 
+   Sidebar: Logo (Left) ... Close (Right)?
+   
+   If the user clicked Hamburger (Left), the menu opens. 
+   If the menu slides from Left, the Close button should be on the Left to replace Hamburger?
+   OR does the user want the Close button to be in the same spot as the Hamburger?
+   
+   If sidebar slides from LEFT. The Hamburger was on LEFT.
+   The user likely expects the Close button to be on the LEFT to toggle it back.
+   
+   Let's check ChatSidebar.jsx order.
+*/
+
+
+/* Ensure mobile close button is only visible on mobile */
+.mobile-close-btn {
+  display: none !important; /* Default hidden */
+}
+
+@media (max-width: 768px) {
+  .mobile-close-btn {
+    display: flex !important; /* Visible on mobile */
+  }
+}
+

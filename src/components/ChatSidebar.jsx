@@ -110,19 +110,22 @@ const ChatSidebar = ({
         <div className={`chat-sidebar ${isMobileOpen ? 'mobile-open' : ''}`}>
             <div className="chat-header">
                 <div className="header-top-row">
-                    {/* Desktop Sidebar Toggle (Inside Sidebar to Close it) */}
+                    {/* Unified Sidebar Toggle (Left) - Always visible, acts as Close */}
                     <button
                         className="sidebar-toggle-btn"
                         onClick={onToggleSidebar}
                         style={{
                             background: 'transparent', border: 'none', cursor: 'pointer',
                             padding: '8px', borderRadius: '50%', color: 'var(--sheet-text)',
-                            marginRight: '8px'
+                            marginRight: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            width: '40px', height: '40px'
                         }}
                         title="Close Menu"
                     >
+                        {/* Close Icon (X) to replace Hamburger */}
                         <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="currentColor">
-                            <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z" />
+                            <path d="M280-120 120-280l360-360 360 360-160 160-200-200-200 200Z" style={{ display: 'none' }} /> {/* Placeholder, real path below */}
+                            <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
                         </svg>
                     </button>
 
@@ -162,10 +165,7 @@ const ChatSidebar = ({
                         +
                     </button>
 
-                    {/* Mobile Close Button - hidden on desktop via CSS likely, or we can explicit it */}
-                    <button className="mobile-close-btn" onClick={onMobileClose} aria-label="Close chat">
-                        &times;
-                    </button>
+                    {/* Removed redundant mobile-close-btn */}
                 </div>
 
                 {/* Tabs */}
