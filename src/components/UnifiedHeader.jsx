@@ -11,6 +11,22 @@ const UnifiedHeader = ({
 }) => {
     const [isVisible, setIsVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
+    const [isHome, setIsHome] = useState(false);
+
+    useEffect(() => {
+        // Check initial path
+        const checkHome = () => {
+            const hash = window.location.hash;
+            // Home is usually #/ or empty hash
+            setIsHome(hash === '#/' || hash === '' || hash === '#');
+        };
+
+        checkHome();
+
+        // Listen for hash changes
+        window.addEventListener('hashchange', checkHome);
+        return () => window.removeEventListener('hashchange', checkHome);
+    }, []);
 
     useEffect(() => {
         const controlNavbar = () => {
@@ -54,13 +70,13 @@ const UnifiedHeader = ({
                     </svg>
                 </button>
 
-                {/* Persistent Branding (Visible when sidebar closed) */}
+                {/* Persistent Branding (Visible when sidebar closed AND NOT on home screen) */}
                 <div
                     className="header-branding"
                     style={{
-                        opacity: isSidebarOpen ? 0 : 1,
+                        opacity: (isSidebarOpen || isHome) ? 0 : 1,
                         transition: 'opacity 0.3s ease',
-                        pointerEvents: isSidebarOpen ? 'none' : 'auto',
+                        pointerEvents: (isSidebarOpen || isHome) ? 'none' : 'auto',
                         display: 'flex',
                         alignItems: 'center',
                         fontFamily: 'var(--font-english-serif)',
