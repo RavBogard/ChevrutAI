@@ -220,18 +220,24 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isResizing, setIsResizing] = useState(false);
 
-    // Auto-open sidebar when chat starts OR when user is logged in (desktop only)
+    // Auto-open sidebar only when chat starts (desktop only)
     useEffect(() => {
         const isDesktop = window.innerWidth > 768;
         if (isDesktop && !isSidebarOpen) {
-            if (messages.length > 1 || currentUser) {
+            if (messages.length > 1) {
                 setIsSidebarOpen(true);
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [messages, currentUser]);
+    }, [messages]);
 
-    const toggleSidebar = () => setIsSidebarOpen(prev => !prev);
+    const toggleSidebar = () => {
+        if (window.innerWidth <= 768) {
+            setMobileChatOpen(prev => !prev);
+        } else {
+            setIsSidebarOpen(prev => !prev);
+        }
+    };
     const startResizing = () => setIsResizing(true);
     const stopResizing = () => setIsResizing(false);
 
@@ -257,8 +263,8 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
     return (
         <div className={`app-container ${messages.length > 1 ? 'chat-active' : 'chat-initial'}`}>
 
-            {/* Collapsed Header - Visible only when sidebar is CLOSED */}
-            {!isSidebarOpen && (
+            {/* Collapsed Header - Visible when sidebar is closed (Desktop) OR always on Mobile (when drawer closed) */}
+            {(!isSidebarOpen || window.innerWidth <= 768) && !mobileChatOpen && (
                 <div className="collapsed-header" style={{
                     position: 'absolute',
                     top: '1rem',
@@ -277,9 +283,9 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                 </div>
             )}
 
-            {/* Sidebar Wrapper */}
+            {/* Sidebar Wrapper for Desktop */}
             <div
-                className={`chat-sidebar-wrapper ${isSidebarOpen ? 'open' : 'closed'}`}
+                className={`chat-sidebar-wrapper ${isSidebarOpen ? 'open' : 'closed'} desktop-sidebar`}
                 style={{ width: isSidebarOpen ? sidebarWidth : 0 }}
             >
                 <ChatSidebar
@@ -288,8 +294,8 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                     onAddSource={handleAddSource}
                     sheetSources={sourcesList}
                     isLoading={isLoading}
-                    isMobileOpen={mobileChatOpen}
-                    onMobileClose={() => setMobileChatOpen(false)}
+                    isMobileOpen={false} // Desktop doesn't use this prop
+                    onMobileClose={() => { }}
                     onToggleSidebar={toggleSidebar}
                     darkMode={darkMode}
                     toggleDarkMode={toggleDarkMode}
@@ -299,6 +305,31 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                     currentSheetId={currentSheetId}
                 />
             </div>
+
+            {/* Mobile Sidebar Drawer */}
+            {mobileChatOpen && (
+                <div className={`chat-sidebar-wrapper mobile-drawer open`}>
+                    <ChatSidebar
+                        messages={messages}
+                        onSendMessage={handleSendMessage}
+                        onAddSource={handleAddSource}
+                        sheetSources={sourcesList}
+                        isLoading={isLoading}
+                        isMobileOpen={true}
+                        onMobileClose={() => setMobileChatOpen(false)}
+                        onToggleSidebar={() => setMobileChatOpen(false)}
+                        darkMode={darkMode}
+                        toggleDarkMode={toggleDarkMode}
+                        language={language}
+                        userSheets={userSheets}
+                        onLoadSheet={(id) => {
+                            handleLoadSheet(id);
+                            setMobileChatOpen(false);
+                        }}
+                        currentSheetId={currentSheetId}
+                    />
+                </div>
+            )}
 
             {/* Resizer */}
             {isSidebarOpen && (

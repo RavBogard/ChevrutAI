@@ -120,14 +120,35 @@ export async function exportToGoogleDoc(sheetTitle, sources) {
             // Default Sefaria Source
             htmlContent += `<div class="citation">${stripHtml(source.citation)}</div>`;
 
-            htmlContent += `
-            <table>
-              <tr>
-                <td class="english">${stripHtml(source.english)}</td>
-                <td class="hebrew">${stripHtml(source.hebrew)}</td>
-              </tr>
-            </table>
-            `;
+            const mode = source.viewMode || 'bilingual';
+
+            if (mode === 'bilingual') {
+                htmlContent += `
+                <table>
+                  <tr>
+                    <td class="english">${stripHtml(source.english)}</td>
+                    <td class="hebrew">${stripHtml(source.hebrew)}</td>
+                  </tr>
+                </table>
+                `;
+            } else if (mode === 'english') {
+                htmlContent += `
+                <table>
+                  <tr>
+                    <td class="english" style="width: 100%; text-align: left; direction: ltr;">${stripHtml(source.english)}</td>
+                  </tr>
+                </table>
+                `;
+            } else if (mode === 'hebrew') {
+                htmlContent += `
+                <table>
+                  <tr>
+                    <td class="hebrew" style="width: 100%; text-align: right; direction: rtl;">${stripHtml(source.hebrew)}</td>
+                  </tr>
+                </table>
+                `;
+            }
+
         }
     });
 

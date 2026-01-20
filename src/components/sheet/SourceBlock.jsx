@@ -3,7 +3,7 @@ import { getSefariaTextByVersion } from '../../services/sefaria';
 import EditableContent from './EditableContent';
 
 const SourceBlock = ({ source, onRemove, onUpdate, dragHandleProps }) => {
-    const [viewMode, setViewMode] = useState('bilingual'); // bilingual, hebrew, english
+    const viewMode = source.viewMode || 'bilingual';
     const [loadingVersion, setLoadingVersion] = useState(false);
 
     const handleVersionChange = async (e) => {
@@ -62,7 +62,7 @@ const SourceBlock = ({ source, onRemove, onUpdate, dragHandleProps }) => {
 
                     <select
                         value={viewMode}
-                        onChange={(e) => setViewMode(e.target.value)}
+                        onChange={(e) => onUpdate({ viewMode: e.target.value })}
                         className="view-toggle"
                     >
                         <option value="bilingual">Bilingual</option>

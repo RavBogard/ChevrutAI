@@ -128,7 +128,8 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                 title: s.title,
                 citation: s.ref,
                 hebrew: Array.isArray(s.he) ? s.he.join('\n') : s.he,
-                english: Array.isArray(s.en) ? s.en.join('\n') : s.en
+                english: Array.isArray(s.en) ? s.en.join('\n') : s.en,
+                viewMode: s.viewMode || 'bilingual'
             }));
             const url = await exportToGoogleDoc(sheetTitle, formattedSources);
             setExportUrl(url); // Show link

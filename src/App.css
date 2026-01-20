@@ -31,7 +31,7 @@
   --source-bg: #ffffff;
 }
 
-body.dark-mode {
+[data-theme='dark'] {
   --primary-color: #60a5fa;
   /* Blue 400 for contrast on dark */
   --sidebar-bg: #0f172a;
@@ -96,6 +96,14 @@ h6 {
   /* Border moved to resizer */
   /* box-shadow handled by container if needed, or remove */
   z-index: 10;
+}
+
+/* On mobile, sidebar needs a transparent background if it's acting as a drawer */
+@media (max-width: 768px) {
+  .chat-sidebar {
+    background-color: var(--sidebar-bg);
+    /* Ensure opaque */
+  }
 }
 
 .resizer {
@@ -369,7 +377,7 @@ h6 {
 }
 
 /* Dark Mode Specific Overrides for Sidebar items */
-body.dark-mode .source-suggestion-card {
+[data-theme='dark'] .source-suggestion-card {
   background: #1f2937;
   /* Lighter than sidebar #111 */
   border-color: #374151;
@@ -406,13 +414,13 @@ body.dark-mode .source-suggestion-card {
   color: #f3f4f6;
 }
 
-body.dark-mode .prompt-card {
+[data-theme='dark'] .prompt-card {
   background-color: #1f2937;
   /* Lighter than sheet bg */
   border-color: #374151;
 }
 
-body.dark-mode .prompt-card:hover {
+[data-theme='dark'] .prompt-card:hover {
   background-color: #374151;
 }
 
@@ -654,30 +662,24 @@ body.dark-mode .prompt-card:hover {
      Let's implement the Bottom Sheet Chat approach logic.
   */
 
-  /* Hide sidebar by default on mobile */
+  /* Hide sidebar by default on mobile - NOT NEEDED as we use conditional rendering now */
+  /*
   .chat-sidebar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
+    ...
+  }
+  */
+
+  /* Since we wrapped it in .mobile-drawer, the .chat-sidebar itself just fills the height */
+  .chat-sidebar {
     width: 100%;
-    height: 85vh;
-    /* Cover most of height */
-    max-height: 85vh;
-    background-color: var(--sidebar-bg);
-    z-index: 100;
-    border-radius: 20px 20px 0 0;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
-    transform: translateY(110%);
-    /* Hidden */
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    border-right: none;
-    display: flex;
-    /* Override previous styles if needed */
+    height: 100%;
   }
 
+  /*
   .chat-sidebar.mobile-open {
     transform: translateY(0);
   }
+  */
 
   /* Chat Header Mobile Adjustments */
   .chat-header {
@@ -725,7 +727,8 @@ body.dark-mode .prompt-card:hover {
     align-items: center;
     justify-content: center;
     position: fixed;
-    bottom: 20px;
+    bottom: 90px;
+    /* Moved up to avoid footer controls */
     right: 20px;
     width: 56px;
     height: 56px;
@@ -885,7 +888,7 @@ body.dark-mode .prompt-card:hover {
   border-radius: 50%;
 }
 
-body.dark-mode .initial-theme-toggle {
+[data-theme='dark'] .initial-theme-toggle {
   background: rgba(255, 255, 255, 0.1);
 }
 
@@ -1167,7 +1170,7 @@ body.dark-mode .initial-theme-toggle {
   letter-spacing: -0.02em;
 }
 
-body.dark-mode .central-hero h2 {
+[data-theme='dark'] .central-hero h2 {
   background: linear-gradient(90deg, #8AB4F8, #C58AF9, #F28B82);
   -webkit-background-clip: text;
   background-clip: text;
@@ -1180,7 +1183,7 @@ body.dark-mode .central-hero h2 {
   font-weight: 300;
 }
 
-body.dark-mode .central-hero p {
+[data-theme='dark'] .central-hero p {
   color: #9aa0a6;
 }
 
@@ -1223,7 +1226,7 @@ body.dark-mode .central-hero p {
   letter-spacing: -0.02em;
 }
 
-body.dark-mode .gemini-headline {
+[data-theme='dark'] .gemini-headline {
   color: #e3e3e3;
 }
 
@@ -1301,11 +1304,11 @@ body.dark-mode .gemini-headline {
   color: #1f1f1f;
 }
 
-body.dark-mode .central-send-btn {
+[data-theme='dark'] .central-send-btn {
   color: #e3e3e3;
 }
 
-body.dark-mode .central-send-btn:not(:disabled):hover {
+[data-theme='dark'] .central-send-btn:not(:disabled):hover {
   background-color: rgba(227, 227, 227, 0.08);
 }
 
@@ -1362,13 +1365,13 @@ body.dark-mode .central-send-btn:not(:disabled):hover {
   display: none;
 }
 
-body.dark-mode .prompt-card {
+[data-theme='dark'] .prompt-card {
   background-color: #1e1f20;
   border-color: #444746;
   color: #e3e3e3;
 }
 
-body.dark-mode .prompt-card:hover {
+[data-theme='dark'] .prompt-card:hover {
   background-color: #282a2c;
   border-color: #5f6368;
 }
@@ -1446,7 +1449,7 @@ body.dark-mode .prompt-card:hover {
   color: #6b7280;
 }
 
-body.dark-mode .footer-attribution {
+[data-theme='dark'] .footer-attribution {
   color: #9ca3af;
 }
 
@@ -1472,8 +1475,8 @@ body.dark-mode .footer-attribution {
   text-decoration: underline;
 }
 
-body.dark-mode .footer-powered,
-body.dark-mode .footer-powered a {
+[data-theme='dark'] .footer-powered,
+[data-theme='dark'] .footer-powered a {
   color: #6b7280;
 }
 
@@ -1481,7 +1484,7 @@ body.dark-mode .footer-powered a {
   color: #9ca3af;
 }
 
-body.dark-mode .version-tag {
+[data-theme='dark'] .version-tag {
   color: #6b7280;
 }
 
@@ -1507,8 +1510,8 @@ body.dark-mode .version-tag {
   text-decoration: underline;
 }
 
-body.dark-mode .footer-legal,
-body.dark-mode .footer-legal a {
+[data-theme='dark'] .footer-legal,
+[data-theme='dark'] .footer-legal a {
   color: #4b5563;
 }
 
@@ -1551,7 +1554,7 @@ body.dark-mode .footer-legal a {
   position: static;
 }
 
-body.dark-mode .initial-theme-toggle {
+[data-theme='dark'] .initial-theme-toggle {
   color: #e3e3e3;
 }
 
@@ -1559,7 +1562,7 @@ body.dark-mode .initial-theme-toggle {
   background-color: rgba(0, 0, 0, 0.05);
 }
 
-body.dark-mode .initial-theme-toggle:hover {
+[data-theme='dark'] .initial-theme-toggle:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -2286,7 +2289,7 @@ html[dir="rtl"] .prompt-card {
   background-color: rgba(0, 0, 0, 0.04);
 }
 
-body.dark-mode .history-item:hover {
+[data-theme='dark'] .history-item:hover {
   background-color: rgba(255, 255, 255, 0.08);
 }
 
@@ -2314,7 +2317,7 @@ body.dark-mode .history-item:hover {
   background-color: rgba(0, 0, 0, 0.05) !important;
 }
 
-body.dark-mode .sidebar-toggle-btn:hover {
+[data-theme='dark'] .sidebar-toggle-btn:hover {
   background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
@@ -2424,7 +2427,7 @@ body.dark-mode .sidebar-toggle-btn:hover {
   width: 100%;
 }
 
-body.dark-mode .gemini-pill {
+[data-theme='dark'] .gemini-pill {
   background: #1e293b;
   /* Slate 800 */
   color: #e2e8f0;
@@ -2433,7 +2436,7 @@ body.dark-mode .gemini-pill {
   /* Slate 700 */
 }
 
-body.dark-mode .gemini-pill:hover {
+[data-theme='dark'] .gemini-pill:hover {
   background: #334155;
   border-color: #475569;
 }
