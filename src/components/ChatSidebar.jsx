@@ -13,7 +13,8 @@ const ChatSidebar = ({
     suggestedInput,
     userSheets = [],
     onLoadSheet,
-    currentSheetId
+    currentSheetId,
+    onDeleteSheet
 }) => {
     const [inputObj, setInputObj] = useState('');
     const [activeTab, setActiveTab] = useState('chat');
@@ -268,12 +269,28 @@ const ChatSidebar = ({
                                 className={`history-item ${currentSheetId === sheet.id ? 'active' : ''}`}
                                 onClick={() => onLoadSheet(sheet.id)}
                             >
-                                <div className="history-title">{sheet.title || "Untitled Sheet"}</div>
-                                <div className="history-meta">
-                                    {sheet.updatedAt && sheet.updatedAt.seconds
-                                        ? new Date(sheet.updatedAt.seconds * 1000).toLocaleDateString()
-                                        : 'Just now'}
+                                <div className="history-content-wrapper">
+                                    <div className="history-title">{sheet.title || "Untitled Sheet"}</div>
+                                    <div className="history-meta">
+                                        {sheet.updatedAt && sheet.updatedAt.seconds
+                                            ? new Date(sheet.updatedAt.seconds * 1000).toLocaleDateString()
+                                            : 'Just now'}
+                                    </div>
                                 </div>
+                                <button
+                                    className="delete-sheet-btn"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (window.confirm('Are you sure you want to delete this sheet?')) {
+                                            if (onDeleteSheet) onDeleteSheet(sheet.id);
+                                        }
+                                    }}
+                                    title="Delete Sheet"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor">
+                                        <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />
+                                    </svg>
+                                </button>
                             </div>
                         ))
                     )}

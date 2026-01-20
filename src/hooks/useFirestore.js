@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { saveSheetToFirestore, subscribeToUserSheets, getSheetFromFirestore } from '../services/firebase';
+import { saveSheetToFirestore, subscribeToUserSheets, getSheetFromFirestore, deleteSheetFromFirestore } from '../services/firebase';
 import { useToast } from '../components/Toast';
 
 export const useFirestore = (currentSheetTitle, currentSources, currentMessages) => {
@@ -126,11 +126,21 @@ export const useFirestore = (currentSheetTitle, currentSources, currentMessages)
         }, 300);
     };
 
+    const deleteSheet = async (id) => {
+        try {
+            await deleteSheetFromFirestore(id);
+        } catch (error) {
+            console.error("Failed to delete sheet:", error);
+            showToast("Failed to delete sheet", "error");
+        }
+    };
+
     return {
         userSheets,
         currentSheetId,
         loadSheet,
         createNewSheet,
+        deleteSheet,
         setCurrentSheetId // Exported so App can set it if loading from URL
     };
 };

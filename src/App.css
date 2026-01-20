@@ -2806,3 +2806,49 @@ html[dir="rtl"] .prompt-card {
   }
 }
 
+
+/* Delete Sheet Button Styles (v1.0.11) */
+.history-item {
+  display: flex !important;
+  justify-content: space-between; /* Space between content and delete button */
+  align-items: center;
+  /* Ensure padding handles the button space */
+  padding: 12px 1rem !important;
+}
+
+.history-content-wrapper {
+  flex: 1;
+  overflow: hidden; /* For text truncation if needed */
+}
+
+.delete-sheet-btn {
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  padding: 4px; /* Reduced touch target visual */
+  cursor: pointer;
+  border-radius: 4px;
+  opacity: 0; /* Hidden by default */
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+}
+
+.history-item:hover .delete-sheet-btn,
+.delete-sheet-btn:focus {
+  opacity: 1; /* Show on hover */
+}
+
+.delete-sheet-btn:hover {
+  color: #dc2626; /* Red on hover */
+  background: rgba(220, 38, 38, 0.1);
+}
+
+@media (max-width: 768px) {
+  .delete-sheet-btn {
+    opacity: 1; /* Always show on mobile since no hover */
+  }
+}
+

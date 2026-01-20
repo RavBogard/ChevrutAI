@@ -16,7 +16,8 @@ import {
     where,
     orderBy,
     onSnapshot,
-    serverTimestamp
+    serverTimestamp,
+    deleteDoc
 } from "firebase/firestore";
 
 // Your web app's Firebase configuration
@@ -110,3 +111,10 @@ export const subscribeToUserSheets = (userId, callback) => {
 };
 
 export { auth, db };
+
+// Delete a sheet
+export const deleteSheetFromFirestore = async (sheetId) => {
+    const docRef = doc(db, 'sheets', sheetId);
+    await deleteDoc(docRef);
+};
+
