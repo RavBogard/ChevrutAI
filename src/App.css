@@ -2510,3 +2510,57 @@ html[dir="rtl"] .prompt-card {
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+/* --- Mobile Layout Fixes (v1.0.4) --- */
+
+.central-hero-logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1rem;
+  margin-bottom: 1rem;
+  font-family: var(--font-english-serif);
+}
+
+.hero-text-chevruta {
+  font-size: 4rem;
+  font-weight: 700;
+  color: var(--sheet-text);
+  letter-spacing: -0.02em;
+}
+
+.hero-text-ai {
+  font-size: 4rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #8b5cf6 0%, #f97316 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-text-sparkle {
+  font-size: 2rem;
+  background: linear-gradient(135deg, #8b5cf6 0%, #f97316 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-left: 0.25rem;
+  transform: translateY(-8px);
+  display: inline-block;
+}
+
+@media (max-width: 768px) {
+  .hero-text-chevruta,
+  .hero-text-ai {
+    font-size: 2.5rem; /* Reduced from 4rem */
+  }
+  
+  .hero-text-sparkle {
+    font-size: 1.5rem;
+    transform: translateY(-4px);
+  }
+
+  .sheet-paper {
+     padding-bottom: 100px; /* Space for FAB overlap */
+  }
+}
+
