@@ -51,13 +51,26 @@ export const getSefariaText = async (ref) => {
         const isEnglishEmpty = !englishText || (Array.isArray(englishText) && englishText.every(s => !s || !s.trim())) || (typeof englishText === 'string' && !englishText.trim());
 
         if (isEnglishEmpty && enVersions.length > 0) {
-            const fallbackVersion = enVersions[0].versionTitle;
-            console.log(`Default text empty for ${ref}. Fetching fallback version: ${fallbackVersion}`);
+            console.log(`Default text empty for ${ref}. Attempting to find valid English version from options:`, enVersions.map(v => v.versionTitle));
 
-            const fallbackText = await getSefariaTextByVersion(ref, fallbackVersion);
-            if (fallbackText) {
-                englishText = fallbackText;
-                versionTitle = fallbackVersion;
+            // Iterate through ALL available English versions until we find one with actual text
+            for (const version of enVersions) {
+                const candidateTitle = version.versionTitle;
+                console.log(`Trying version: ${candidateTitle}`);
+
+                const fallbackText = await getSefariaTextByVersion(ref, candidateTitle);
+
+                // Check if this fallback text is actually valid/non-empty
+                const isValidFallback = fallbackText &&
+                    ((Array.isArray(fallbackText) && fallbackText.some(s => s && s.trim())) ||
+                        (typeof fallbackText === 'string' && fallbackText.trim()));
+
+                if (isValidFallback) {
+                    console.log(`Found valid text in version: ${candidateTitle}`);
+                    englishText = fallbackText;
+                    versionTitle = candidateTitle;
+                    break; // Stop looking, we found one!
+                }
             }
         }
 

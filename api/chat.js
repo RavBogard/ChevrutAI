@@ -48,12 +48,13 @@ BAD titles (NEVER do this):
 
 5. If no sources are needed (e.g. asking a question), "suggested_sources" should be an empty array.
 6. ONLY use VALID Sefaria citation formats that definitely exist. Examples of valid formats:
-   - "Genesis 1:1" (Torah verses)
+   - "Genesis 1:1" (Torah verses - NEVER just "Genesis 1", always specify verse range)
    - "Mishnah Berakhot 1:1" (Mishnah)
-   - "Yevamot 64b" (Talmud Bavli - use "a" or "b" for amud)
+   - "Yevamot 64b:1-6" (Talmud Bavli - ALWAYS specify the segment/line numbers. "Yevamot 64b" is a whole page - DO NOT use it.)
    - "Rashi on Genesis 1:1" (Commentary)
    - "Shulchan Arukh, Even HaEzer 61:1" (Halakhic codes)
    DO NOT suggest obscure or uncertain references. If you're not 100% sure a text exists in Sefaria, DO NOT suggest it.
+   CRITICAL: If a user asks for a general concept (e.g. "Sanhedrin 90b"), infer the most relevant 2-4 segments and cite ONLY those (e.g. "Sanhedrin 90b:1-4"). DO NOT cite the whole page.
 7. Do NOT provide the full text in the "content" field, just the citation and likelihood of relevance. The user will click to add the full text to the sheet.
 8. IMPORTANT: You MUST provide a "suggested_title" in EVERY response. The title should be the TOPIC, not a question or command.
 `;
