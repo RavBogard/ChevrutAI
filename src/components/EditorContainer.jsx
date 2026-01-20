@@ -60,16 +60,13 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
     useEffect(() => {
         if (!sheetId) return;
         if (sheetId !== currentSheetId) {
-            const isTimestamp = /^\d+$/.test(sheetId);
-            if (isTimestamp) {
-                setCurrentSheetId(sheetId);
-            } else {
-                loadSheet(sheetId, setSourcesList, setMessages, setSheetTitle).then((loaded) => {
-                    if (!loaded) {
-                        setCurrentSheetId(sheetId);
-                    }
-                });
-            }
+            // Always try to load from Firestore first. If it doesn't exist, treat as new sheet.
+            loadSheet(sheetId, setSourcesList, setMessages, setSheetTitle).then((loaded) => {
+                if (!loaded) {
+                    // Sheet doesn't exist in Firestore, treat as new sheet
+                    setCurrentSheetId(sheetId);
+                }
+            });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sheetId]);
