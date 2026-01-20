@@ -1306,6 +1306,19 @@ h6 {
   box-sizing: border-box;
 }
 
+.central-textarea {
+  width: 100%;
+  border: none;
+  resize: none;
+  background: transparent;
+  outline: none;
+  font-family: var(--font-ui);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--sheet-text);
+  min-height: 60px;
+}
+
 /* Gemini-style Suggestion Cards (Grid Layout) */
 .empty-prompts-grid {
   display: grid;
