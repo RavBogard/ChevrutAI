@@ -1491,8 +1491,15 @@ h6 {
 }
 
 .gemini-input-box:focus-within {
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.1);
-  background: var(--sheet-bg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.1);
+  /* Removed white background on focus */
+}
+
+[data-theme='dark'] .gemini-input-box:focus-within {
+  background-color: #1e293b;
+  /* Maintain visible background in dark mode */
+  border-color: rgba(96, 165, 250, 0.3);
+  /* Subtle blue glow */
 }
 
 .central-textarea {
@@ -1504,7 +1511,8 @@ h6 {
   line-height: 1.5;
   color: var(--sheet-text);
   outline: none;
-  padding: 0;
+  padding: 4px 8px;
+  /* Added padding to prevent clipping */
   margin: 0;
   min-height: 24px;
 }
@@ -1565,6 +1573,8 @@ h6 {
   line-height: 1.6;
   color: var(--sheet-text);
   min-height: 60px;
+  padding: 4px 8px;
+  /* Added padding to prevent clipping */
 }
 
 /* Gemini-style Suggestion Cards (Grid Layout) */
