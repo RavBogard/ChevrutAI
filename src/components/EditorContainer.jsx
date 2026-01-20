@@ -7,6 +7,7 @@ import { useFirestore } from '../hooks/useFirestore';
 import { getSefariaText } from '../services/sefaria';
 import SheetView from './SheetView';
 import ChatSidebar from './ChatSidebar';
+import MobileTopBar from './MobileTopBar';
 
 // Wrapper to pass params to logic
 const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage }) => {

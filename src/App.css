@@ -2676,3 +2676,15 @@ html[dir="rtl"] .prompt-card {
   }
 }
 
+
+/* Add spacing for Mobile Top Bar items */
+.mobile-top-bar .mobile-header-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.mobile-header-controls .user-menu-container .avatar {
+  width: 32px;
+  height: 32px;
+}
+
