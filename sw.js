@@ -1,4 +1,4 @@
-const CACHE_NAME = 'chevruta-cache-v1';
+const CACHE_NAME = 'chevruta-cache-v2';
 const URLS_TO_CACHE = [
     '/',
     '/index.html',
@@ -17,14 +17,29 @@ self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then((cache) => {
-                console.log('Opened cache');
+                console.log('Opened cache v2');
                 return cache.addAll(URLS_TO_CACHE);
             })
     );
 });
 
 self.addEventListener('activate', (event) => {
-    event.waitUntil(self.clients.claim());
+    event.waitUntil(
+        Promise.all([
+            self.clients.claim(),
+            // Clean up old caches
+            caches.keys().then((cacheNames) => {
+                return Promise.all(
+                    cacheNames.map((cacheName) => {
+                        if (cacheName !== CACHE_NAME) {
+                            console.log('Deleting old cache:', cacheName);
+                            return caches.delete(cacheName);
+                        }
+                    })
+                );
+            })
+        ])
+    );
 });
 
 self.addEventListener('fetch', (event) => {
