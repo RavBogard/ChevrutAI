@@ -18,6 +18,7 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
     const [mobileChatOpen, setMobileChatOpen] = useState(false);
 
     // Undo/Redo enabled sourcesList with localStorage persistence
+    // Fresh Start: Do not load from localStorage on init
     const {
         state: sourcesList,
         setState: setSourcesList,
@@ -25,29 +26,11 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
         redo: redoSources,
         canUndo,
         canRedo,
-
         resetHistory: _resetHistory
-    } = useUndoRedo(() => {
-        try {
-            const saved = localStorage.getItem('chevruta_sources');
-            const parsed = saved ? JSON.parse(saved) : [];
-            return Array.isArray(parsed) ? parsed : [];
-        } catch { return []; }
-    });
+    } = useUndoRedo(() => []); // Start empty
 
     const [messages, setMessages] = useState(() => {
-        try {
-            const saved = localStorage.getItem('chevruta_messages');
-            if (saved) {
-                const parsed = JSON.parse(saved);
-                return parsed.length > 0 ? parsed : [{
-                    id: 'welcome',
-                    role: 'model',
-                    text: 'Shalom! What kind of text sheet do you want to create together?',
-                    suggestedSources: []
-                }];
-            }
-        } catch { /* Ignore parse errors */ }
+        // Start fresh with welcome message
         return [{
             id: 'welcome',
             role: 'model',
@@ -58,9 +41,8 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
 
     const [isLoading, setIsLoading] = useState(false);
 
-    const [sheetTitle, setSheetTitle] = useState(() => {
-        return localStorage.getItem('chevruta_title') || "New Source Sheet";
-    });
+    // Start with default title
+    const [sheetTitle, setSheetTitle] = useState("New Source Sheet");
 
     // Persist state changes to localStorage
     useEffect(() => {
