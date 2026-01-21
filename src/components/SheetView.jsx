@@ -8,6 +8,7 @@ import html2pdf from 'html2pdf.js';
 import { exportToGoogleDoc } from '../services/google';
 // exportToDocx is now dynamically imported to save bundle size
 import { PROMPTS_EN, PROMPTS_HE } from '../data/prompts';
+import { version } from '../../package.json';
 
 import SourceBlock from './sheet/SourceBlock';
 import CustomSourceBlock from './sheet/CustomSourceBlock';
@@ -303,7 +304,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                 </p>
                 <div className="footer-powered">
                     <a href="https://www.sefaria.org" target="_blank" rel="noopener noreferrer">Powered by Sefaria</a>
-                    <Link to="/changelog" className="version-tag"> • v1.1.6</Link>
+                    <Link to="/changelog" className="version-tag"> • v{version}</Link>
                 </div>
                 <div className="footer-legal">
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
