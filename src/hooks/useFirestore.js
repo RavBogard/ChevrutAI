@@ -39,6 +39,8 @@ export const useFirestore = (currentSheetTitle, currentSources, currentMessages)
     }, [currentUser]);
 
     // Autosave Logic
+    const isCreatingRef = useRef(false);
+
     useEffect(() => {
         if (!currentUser) return;
         if (isLoadingRef.current) return; // Skip saving if we are in the middle of loading
@@ -56,10 +58,20 @@ export const useFirestore = (currentSheetTitle, currentSources, currentMessages)
 
         if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
 
+        // Immediate save for new sheets (first edit), standard debounce for updates
+        const delay = (!currentSheetId && !isCreatingRef.current) ? 0 : 2000;
+
+        if (delay === 0) {
+            isCreatingRef.current = true;
+        }
+
         saveTimeoutRef.current = setTimeout(async () => {
             try {
                 // Double check loading state inside timeout
-                if (isLoadingRef.current) return;
+                if (isLoadingRef.current) {
+                    isCreatingRef.current = false;
+                    return;
+                }
 
                 const sheetData = {
                     title: currentSheetTitle,
@@ -86,8 +98,10 @@ export const useFirestore = (currentSheetTitle, currentSources, currentMessages)
             } catch (error) {
                 console.error("Autosave failed:", error);
                 // Maybe show toast? Don't spam user though.
+            } finally {
+                isCreatingRef.current = false;
             }
-        }, 2000); // 2 second debounce
+        }, delay);
 
         return () => clearTimeout(saveTimeoutRef.current);
     }, [currentUser, currentSheetTitle, currentSources, currentMessages, currentSheetId]);

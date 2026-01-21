@@ -11,6 +11,13 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.7 <span className="version-date">January 21, 2026</span></h2>
+                    <ul>
+                        <li><strong>Immediate Autosave</strong> – New sheets now save immediately when you add your first content, ensuring your work is always safe.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.6 <span className="version-date">January 20, 2026</span></h2>
                     <ul>
                         <li><strong>Bilingual Highlighting</strong> – Hovering over a paragraph in one language now highlights the corresponding paragraph in the other language.</li>
