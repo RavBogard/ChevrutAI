@@ -118,11 +118,15 @@ export const useFirestore = (currentSheetTitle, currentSources, currentMessages)
                 setCurrentSheetId(id);
 
                 // Allow state to settle before re-enabling autosave
+                // Allow state to settle before re-enabling autosave
                 setTimeout(() => {
                     isLoadingRef.current = false;
                 }, 500);
                 return true;
             }
+
+            // If sheet doesn't exist (new sheet), we must also reset loading
+            isLoadingRef.current = false;
         } catch (error) {
             showToast("Failed to load sheet", "error");
             console.error(error);

@@ -168,7 +168,7 @@ export async function exportToGoogleDoc(sheetTitle, sources) {
     });
 
     htmlContent += `
-        <div class="footer">Created with Chevruta.AI (chevruta.ai)</div>
+        <div class="footer">Created with Chevruta.AI</div>
       </body>
     </html>
     `;
