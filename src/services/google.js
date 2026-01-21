@@ -74,10 +74,20 @@ function getToken() {
     });
 }
 
-// Helper to strip HTML tags
-function stripHtml(html) {
+// Helper to sanitize HTML but keep formatting
+function sanitizeHtml(html) {
     if (!html) return "";
-    return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ');
+    // Remove scripts, styles, and other dangerous/unwanted tags, but keep formatting
+    // Simple approach: unescape entities that might be double escaped, then cleanup.
+    // Actually, Sefaria text usually comes as valid HTML (e.g. <small>, <i>, <b>).
+    // We just want to remove big block tags if they break our table, but <div> or <p> inside a cell is usually fine.
+    // For now, let's just allow everything but remove any potential scripts or iframes for safety (though unlikely from Sefaria).
+
+    // A simple regex to strip ONLY script/iframe/object tags to be somewhat safe
+    return html
+        .replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gim, "")
+        .replace(/<iframe\b[^>]*>([\s\S]*?)<\/iframe>/gim, "")
+        .replace(/&nbsp;/g, ' '); // Replace nbsp with space for better wrapping in Docs
 }
 
 export async function exportToGoogleDoc(sheetTitle, sources) {
@@ -94,14 +104,19 @@ export async function exportToGoogleDoc(sheetTitle, sources) {
       <head>
         <meta charset="utf-8">
         <style>
-          body { font-family: 'Arial', sans-serif; font-size: 11pt; color: #000; }
-          .title { text-align: center; color: #111827; font-size: 24pt; font-weight: bold; margin-bottom: 20px; }
-          .footer { text-align: center; font-size: 10pt; color: #666; margin-top: 30px; border-top: 1px solid #eee; padding-top: 10px; }
-          .citation { text-align: center; color: #1d4ed8; font-size: 14pt; font-weight: bold; margin-top: 25px; margin-bottom: 10px; text-decoration: none; }
+          body { font-family: 'Merriweather', 'Georgia', serif; font-size: 11pt; color: #000; }
+          .title { text-align: center; color: #111827; font-size: 24pt; font-weight: bold; margin-bottom: 20px; font-family: 'Merriweather', 'Georgia', serif; }
+          .footer { text-align: center; font-size: 10pt; color: #666; margin-top: 30px; border-top: 1px solid #eee; padding-top: 10px; font-family: 'Arial', sans-serif; }
+          .citation { text-align: center; color: #1d4ed8; font-size: 14pt; font-weight: bold; margin-top: 25px; margin-bottom: 10px; text-decoration: none; font-family: 'Merriweather', 'Georgia', serif; }
           table { width: 100%; border-collapse: collapse; margin-bottom: 20px; table-layout: fixed; }
           td { vertical-align: top; padding: 12px; border: 1px solid #e5e7eb; }
-          .hebrew { font-family: 'Times New Roman', serif; font-size: 15pt; text-align: right; direction: rtl; line-height: 1.5; width: 50%; }
-          .english { font-family: 'Arial', sans-serif; font-size: 11pt; text-align: left; direction: ltr; line-height: 1.5; width: 50%; }
+          .hebrew { font-family: 'Heebo', 'Arial', sans-serif; font-size: 15pt; text-align: right; direction: rtl; line-height: 1.5; width: 50%; }
+          .english { font-family: 'Merriweather', 'Georgia', serif; font-size: 11pt; text-align: left; direction: ltr; line-height: 1.5; width: 50%; }
+          
+          /* Ensure formatting tags look right */
+          small { opacity: 0.7; font-size: 0.8em; }
+          b, strong { font-weight: bold; }
+          i, em { font-style: italic; }
         </style>
       </head>
       <body>
@@ -110,15 +125,15 @@ export async function exportToGoogleDoc(sheetTitle, sources) {
 
     sources.forEach(source => {
         if (source.type === 'header') {
-            htmlContent += `<div style="font-size: 18pt; font-weight: bold; margin-top: 30px; margin-bottom: 15px; border-bottom: 2px solid #ccc; padding-bottom: 5px;">${stripHtml(source.english)}</div>`;
+            htmlContent += `<div style="font-size: 18pt; font-weight: bold; margin-top: 30px; margin-bottom: 15px; border-bottom: 2px solid #ccc; padding-bottom: 5px;">${sanitizeHtml(source.english)}</div>`;
         } else if (source.type === 'custom') {
             if (source.title) {
-                htmlContent += `<div style="font-size: 14pt; font-weight: bold; margin-top: 20px; margin-bottom: 10px;">${stripHtml(source.title)}</div>`;
+                htmlContent += `<div style="font-size: 14pt; font-weight: bold; margin-top: 20px; margin-bottom: 10px;">${sanitizeHtml(source.title)}</div>`;
             }
-            htmlContent += `<div style="font-size: 11pt; margin-bottom: 20px; line-height: 1.5;">${source.english}</div>`; // custom text might have html from editable content
+            htmlContent += `<div style="font-size: 11pt; margin-bottom: 20px; line-height: 1.5;">${sanitizeHtml(source.english)}</div>`;
         } else {
             // Default Sefaria Source
-            htmlContent += `<div class="citation">${stripHtml(source.citation)}</div>`;
+            htmlContent += `<div class="citation">${sanitizeHtml(source.citation)}</div>`;
 
             const mode = source.viewMode || 'bilingual';
 
@@ -126,8 +141,8 @@ export async function exportToGoogleDoc(sheetTitle, sources) {
                 htmlContent += `
                 <table>
                   <tr>
-                    <td class="english">${stripHtml(source.english)}</td>
-                    <td class="hebrew">${stripHtml(source.hebrew)}</td>
+                    <td class="english">${sanitizeHtml(source.english)}</td>
+                    <td class="hebrew">${sanitizeHtml(source.hebrew)}</td>
                   </tr>
                 </table>
                 `;
@@ -135,7 +150,7 @@ export async function exportToGoogleDoc(sheetTitle, sources) {
                 htmlContent += `
                 <table>
                   <tr>
-                    <td class="english" style="width: 100%; text-align: left; direction: ltr;">${stripHtml(source.english)}</td>
+                    <td class="english" style="width: 100%; text-align: left; direction: ltr;">${sanitizeHtml(source.english)}</td>
                   </tr>
                 </table>
                 `;
@@ -143,7 +158,7 @@ export async function exportToGoogleDoc(sheetTitle, sources) {
                 htmlContent += `
                 <table>
                   <tr>
-                    <td class="hebrew" style="width: 100%; text-align: right; direction: rtl;">${stripHtml(source.hebrew)}</td>
+                    <td class="hebrew" style="width: 100%; text-align: right; direction: rtl;">${sanitizeHtml(source.hebrew)}</td>
                   </tr>
                 </table>
                 `;

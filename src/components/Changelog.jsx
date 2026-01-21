@@ -11,6 +11,14 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.8 <span className="version-date">January 21, 2026</span></h2>
+                    <ul>
+                        <li><strong>Google Docs Formatting</strong> – Text formatting like bold and italics is now preserved when exporting to Google Docs.</li>
+                        <li><strong>Export Fonts</strong> – Exports now use the app's signature fonts (Merriweather & Heebo) instead of default Arial.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.7 <span className="version-date">January 21, 2026</span></h2>
                     <ul>
                         <li><strong>Immediate Autosave</strong> – New sheets now save immediately when you add your first content, ensuring your work is always safe.</li>
