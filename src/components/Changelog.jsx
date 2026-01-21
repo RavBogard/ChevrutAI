@@ -11,6 +11,14 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.9 <span className="version-date">January 21, 2026</span></h2>
+                    <ul>
+                        <li><strong>Autosave Fix</strong> – Fixed an issue where new sheets weren't autosaving immediately.</li>
+                        <li><strong>Clean Exporter</strong> – Simplified the footer in exported Google Docs.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.8 <span className="version-date">January 21, 2026</span></h2>
                     <ul>
                         <li><strong>Google Docs Formatting</strong> – Text formatting like bold and italics is now preserved when exporting to Google Docs.</li>
