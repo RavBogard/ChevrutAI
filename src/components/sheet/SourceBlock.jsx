@@ -5,7 +5,6 @@ import EditableContent from './EditableContent';
 const SourceBlock = ({ source, onRemove, onUpdate, dragHandleProps, onRefine }) => {
     const viewMode = source.viewMode || 'bilingual';
     const [loadingVersion, setLoadingVersion] = useState(false);
-    const [loadingVersion, setLoadingVersion] = useState(false);
 
     const handleVersionChange = async (e) => {
         const newTitle = e.target.value;
