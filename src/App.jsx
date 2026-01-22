@@ -1,6 +1,7 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
+import './styles/LayoutFixes.css';
 
 // Lazy load components for performance
 const HomeView = lazy(() => import('./components/home/HomeView'));

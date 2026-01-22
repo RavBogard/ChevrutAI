@@ -1,0 +1,81 @@
+/* 
+   Critical Layout Fixes 
+   Isolated here to ensure precedence and valid application.
+*/
+
+/* 1. Saving Indicator - Pull out of flow to prevent layout jumping */
+.saving-indicator {
+    position: fixed !important;
+    top: 1rem;
+    right: 5rem;
+    /* Left of User Menu */
+    background: rgba(255, 255, 255, 0.9);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: #64748b;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    z-index: 9999 !important;
+    /* Always on top */
+    pointer-events: none;
+    animation: fadeInOut 0.3s ease;
+}
+
+[data-theme='dark'] .saving-indicator {
+    background: rgba(30, 41, 59, 0.9);
+    color: #94a3b8;
+    border-color: #334155;
+}
+
+@keyframes fadeInOut {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 2. Unified Header - Pull out of flow */
+.unified-header {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 64px;
+    z-index: 50 !important;
+    /* High, but below Sidebar (1001) */
+    pointer-events: none;
+    /* Let clicks pass through empty areas to Sidebar */
+}
+
+.unified-header>* {
+    pointer-events: auto;
+    /* Re-enable clicks on buttons */
+}
+
+/* 3. Sheet View - Add padding to clear the absolute header */
+.sheet-view {
+    padding-top: 5rem !important;
+    /* Override App.css */
+}
+
+/* 4. Sidebar - Prevent transition jumping */
+.chat-sidebar-wrapper {
+    transition: none !important;
+}
+
+/* 5. Guest Banner - Overlay to prevent jump (Optional but safer) */
+.guest-banner {
+    position: absolute;
+    top: 64px;
+    /* Below header */
+    left: 0;
+    right: 0;
+    z-index: 40;
+}
