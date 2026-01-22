@@ -5,11 +5,7 @@ import EditableContent from './EditableContent';
 const SourceBlock = ({ source, onRemove, onUpdate, dragHandleProps, onRefine }) => {
     const viewMode = source.viewMode || 'bilingual';
     const [loadingVersion, setLoadingVersion] = useState(false);
-    const [activeSegmentIndex, setActiveSegmentIndex] = useState(null);
-
-    const handleSegmentActive = (index) => {
-        setActiveSegmentIndex(index);
-    };
+    const [loadingVersion, setLoadingVersion] = useState(false);
 
     const handleVersionChange = async (e) => {
         const newTitle = e.target.value;
@@ -105,9 +101,7 @@ const SourceBlock = ({ source, onRemove, onUpdate, dragHandleProps, onRefine }) 
                 ) : (
                     <>
                         {(viewMode === 'bilingual' || viewMode === 'english') && (
-                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
-                                onMouseLeave={() => handleSegmentActive(null)} // Clear when leaving the column
-                            >
+                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                                 {!hasContent(source.en) ? (
                                     <div className="empty-content-msg">No English text available</div>
                                 ) : (
@@ -116,9 +110,6 @@ const SourceBlock = ({ source, onRemove, onUpdate, dragHandleProps, onRefine }) 
                                         dir="ltr"
                                         html={source.en}
                                         onChange={(val) => onUpdate({ en: val })}
-                                        onHoverSegment={handleSegmentActive}
-                                        onFocusSegment={handleSegmentActive}
-                                        highlightedIndex={activeSegmentIndex}
                                     />
                                 )}
                                 <small className="version-label">{source.versionTitle}</small>
@@ -126,9 +117,7 @@ const SourceBlock = ({ source, onRemove, onUpdate, dragHandleProps, onRefine }) 
                         )}
 
                         {(viewMode === 'bilingual' || viewMode === 'hebrew') && (
-                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
-                                onMouseLeave={() => handleSegmentActive(null)}
-                            >
+                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                                 {!hasContent(source.he) ? (
                                     <div className="empty-content-msg">No Hebrew text available</div>
                                 ) : (
@@ -137,9 +126,6 @@ const SourceBlock = ({ source, onRemove, onUpdate, dragHandleProps, onRefine }) 
                                         dir="rtl"
                                         html={source.he}
                                         onChange={(val) => onUpdate({ he: val })}
-                                        onHoverSegment={handleSegmentActive}
-                                        onFocusSegment={handleSegmentActive}
-                                        highlightedIndex={activeSegmentIndex}
                                     />
                                 )}
                             </div>

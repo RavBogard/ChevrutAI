@@ -11,6 +11,13 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.25 <span className="version-date">January 22, 2026</span></h2>
+                    <ul>
+                        <li><strong>Stable Editor</strong> – Simplified the text editor to prevent edits from reverting. The "hover to highlight" feature has been removed to ensure reliability.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.24 <span className="version-date">January 22, 2026</span></h2>
                     <ul>
                         <li><strong>Crash Recovery</strong> – Fixed an issue where older sheets with specific formatting could cause the app to crash.</li>
