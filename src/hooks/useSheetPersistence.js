@@ -297,15 +297,28 @@ export const useSheetPersistence = (urlSheetId) => {
             return;
         }
 
+        // Helper to check if text is empty/missing
+        const isEmptyText = (text) => {
+            if (!text) return true;
+            if (typeof text === 'string') return !text.trim();
+            if (Array.isArray(text)) return text.every(t => !t || (typeof t === 'string' && !t.trim()));
+            return true;
+        };
+
         // Fetch text if needed
         if (!source.he || !source.en) {
             try {
                 const data = await getSefariaText(source.ref);
                 if (data) {
-                    source.he = data.he;
-                    source.en = data.en;
-                    source.versions = data.versions;
-                    source.versionTitle = data.versionTitle;
+                    // Check if BOTH Hebrew and English are empty
+                    if (isEmptyText(data.he) && isEmptyText(data.en)) {
+                        showToast(`Text section not found: ${source.ref}`, 'error');
+                        return;
+                    }
+                    source.he = data.he || null; // Ensure no undefined
+                    source.en = data.en || null;
+                    source.versions = data.versions || [];
+                    source.versionTitle = data.versionTitle || null;
                 } else {
                     showToast(`Could not fetch text for ${source.ref}`, 'error');
                     return;

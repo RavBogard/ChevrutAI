@@ -11,6 +11,14 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.16 <span className="version-date">January 22, 2026</span></h2>
+                    <ul>
+                        <li><strong>Empty Text Prevention</strong> – Sources with missing text sections are no longer added to your sheet.</li>
+                        <li><strong>Firebase Fix</strong> – Resolved data storage errors that caused autosave failures.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.15 <span className="version-date">January 22, 2026</span></h2>
                     <ul>
                         <li><strong>Autosave Hotfix</strong> – Fixed a timing issue in the new autosave system that could cause save failures.</li>

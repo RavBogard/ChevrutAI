@@ -63,19 +63,29 @@ export const saveSheetToFirestore = async (userId, sheetData) => {
         throw new Error('Cannot save sheet: No user ID provided');
     }
 
+    // Sanitize data: remove undefined values which Firebase rejects
+    // JSON.parse(JSON.stringify(obj)) removes undefined and converts them properly
+    const sanitize = (obj) => {
+        try {
+            return JSON.parse(JSON.stringify(obj));
+        } catch {
+            return obj;
+        }
+    };
+
     // Create a reference ID if one doesn't exist, otherwise use existing
     const sheetId = sheetData.id || doc(collection(db, "sheets")).id;
 
     const sheetRef = doc(db, "sheets", sheetId);
 
-    const dataToSave = {
+    const dataToSave = sanitize({
         ...sheetData,
         id: sheetId,
         ownerId: userId,
         updatedAt: serverTimestamp(),
         // If it's new, set createdAt
         ...(sheetData.createdAt ? {} : { createdAt: serverTimestamp() })
-    };
+    });
 
     await setDoc(sheetRef, dataToSave, { merge: true });
     return sheetId;
