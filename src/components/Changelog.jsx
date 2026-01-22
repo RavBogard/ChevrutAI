@@ -11,6 +11,13 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.24 <span className="version-date">January 22, 2026</span></h2>
+                    <ul>
+                        <li><strong>Crash Recovery</strong> – Fixed an issue where older sheets with specific formatting could cause the app to crash.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.23 <span className="version-date">January 22, 2026</span></h2>
                     <ul>
                         <li><strong>Zohar Smarts</strong> – Updated the AI to strictly use Sefaria-compatible Zohar citations (Parasha-based) instead of causing errors with Volume:Page formats.</li>

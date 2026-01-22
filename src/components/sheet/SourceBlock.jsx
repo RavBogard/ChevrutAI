@@ -27,6 +27,14 @@ const SourceBlock = ({ source, onRemove, onUpdate, dragHandleProps, onRefine }) 
         }
     };
 
+    // Safe helper to check for content (handles strings, arrays, etc.)
+    const hasContent = (text) => {
+        if (!text) return false;
+        if (typeof text === 'string') return text.trim().length > 0;
+        if (Array.isArray(text)) return text.length > 0 && text.some(t => t && typeof t === 'string' && t.trim().length > 0);
+        return false;
+    };
+
     return (
         <div className="source-block">
             <div className="source-header">
@@ -100,7 +108,7 @@ const SourceBlock = ({ source, onRemove, onUpdate, dragHandleProps, onRefine }) 
                             <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
                                 onMouseLeave={() => handleSegmentActive(null)} // Clear when leaving the column
                             >
-                                {(!source.en || !source.en.trim()) ? (
+                                {!hasContent(source.en) ? (
                                     <div className="empty-content-msg">No English text available</div>
                                 ) : (
                                     <EditableContent
@@ -121,7 +129,7 @@ const SourceBlock = ({ source, onRemove, onUpdate, dragHandleProps, onRefine }) 
                             <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
                                 onMouseLeave={() => handleSegmentActive(null)}
                             >
-                                {(!source.he || !source.he.trim()) ? (
+                                {!hasContent(source.he) ? (
                                     <div className="empty-content-msg">No Hebrew text available</div>
                                 ) : (
                                     <EditableContent
