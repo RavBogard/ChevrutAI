@@ -19,7 +19,15 @@ const formatSheetForAI = (sources) => {
         } else {
             // Text Source
             output += `${i + 1}. **${s.ref}**\n`;
-            if (s.en) output += `   "${s.en.substring(0, 150)}${s.en.length > 150 ? '...' : ''}"\n`;
+
+            // Safe string conversion
+            let textSnippet = "";
+            if (typeof s.en === 'string') textSnippet = s.en;
+            else if (Array.isArray(s.en)) textSnippet = s.en.join(" ");
+
+            if (textSnippet) {
+                output += `   "${textSnippet.substring(0, 150)}${textSnippet.length > 150 ? '...' : ''}"\n`;
+            }
         }
     });
 
