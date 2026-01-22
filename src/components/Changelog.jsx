@@ -11,6 +11,14 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.34 <span className="version-date">January 22, 2026</span></h2>
+                    <ul>
+                        <li><strong>Fixed "Jump" and Header Issues</strong> – Major layout overhaul to prevent the unified header from pushing the sidebar and causing layout shifts.</li>
+                        <li><strong>Sidebar Close Button</strong> – Resolved layering (z-index) issues that prevented the close button from working on desktop.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.33 <span className="version-date">January 22, 2026</span></h2>
                     <ul>
                         <li><strong>Fixed Sidebar Close Button</strong> – The "X" button is now fully functional and visible.</li>

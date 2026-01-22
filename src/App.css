@@ -505,7 +505,7 @@ h6 {
   color: var(--sheet-text);
   overflow-y: scroll;
   /* Force scrollbar */
-  padding: 2rem 4rem;
+  padding: 5rem 4rem 2rem 4rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2177,7 +2177,7 @@ html[dir="rtl"] .prompt-card {
   border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: none !important;
   position: relative;
   z-index: 1001;
   /* Above Unified Header (900) */
