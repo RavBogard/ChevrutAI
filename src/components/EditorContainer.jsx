@@ -132,31 +132,28 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
     }
 
     return (
-        <div className={`app-container ${chatStarted ? 'chat-active' : 'chat-initial'}`}>
+        <div
+            className="app-shell"
+            data-sidebar-open={isSidebarOpen}
+            style={{
+                '--sidebar-width': `${sidebarWidth}px`
+            }}
+        >
+            {/* Header Area */}
+            <header className="shell-header">
+                <UnifiedHeader
+                    onToggleSidebar={toggleSidebar}
+                    darkMode={darkMode}
+                    toggleDarkMode={toggleDarkMode}
+                    language={language}
+                    toggleLanguage={toggleLanguage}
+                    isSidebarOpen={isSidebarOpen}
+                    isHome={isHomeState}
+                />
+            </header>
 
-            {/* Guest Mode Banner */}
-            {/* Guest Mode Banner */}
-            {!currentUser && sources.length > 0 && <GuestBanner />}
-
-            {/* Saving Indicator */}
-            {isSaving && <SavingIndicator />}
-
-            {/* Unified Sticky Header */}
-            <UnifiedHeader
-                onToggleSidebar={toggleSidebar}
-                darkMode={darkMode}
-                toggleDarkMode={toggleDarkMode}
-                language={language}
-                toggleLanguage={toggleLanguage}
-                isSidebarOpen={isSidebarOpen}
-                isHome={isHomeState}
-            />
-
-            {/* Desktop Sidebar */}
-            <div
-                className={`chat-sidebar-wrapper ${isSidebarOpen ? 'open' : 'closed'} desktop-sidebar`}
-                style={{ width: isSidebarOpen ? sidebarWidth : 0 }}
-            >
+            {/* Sidebar Area */}
+            <aside className="shell-sidebar">
                 <ChatSidebar
                     messages={messages}
                     onSendMessage={handleSendMessage}
@@ -175,79 +172,86 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                     onDeleteSheet={deleteSheet}
                     onNewSheet={handleNewSheet}
                 />
+
+                {/* Resizer inside sidebar area (positioned absolute right) */}
+                {isSidebarOpen && (
+                    <div
+                        className="shell-resizer"
+                        onMouseDown={startResizing}
+                    ></div>
+                )}
+            </aside>
+
+            {/* Main Content Area */}
+            <main className="shell-content">
+                <SheetView
+                    sources={sources}
+                    onRemoveSource={removeSource}
+                    onUpdateSource={updateSource}
+                    onReorder={reorderSources}
+                    onClearSheet={clearSheet}
+                    onUndo={undo}
+                    onRedo={redo}
+                    canUndo={canUndo}
+                    canRedo={canRedo}
+                    language={language}
+                    onSuggestionClick={handleSuggestionClick}
+                    sheetTitle={title}
+                    onTitleChange={setTitle}
+                    onSendMessage={handleSendMessage}
+                    chatStarted={chatStarted}
+                    onAddSource={addSource}
+                    userSheets={userSheets}
+                    onLoadSheet={handleLoadSheet}
+                    darkMode={darkMode}
+                    toggleDarkMode={toggleDarkMode}
+                    toggleLanguage={toggleLanguage}
+                    googleDocId={googleDocId}
+                    googleDocUrl={googleDocUrl}
+                    isSyncing={isSyncing}
+                    onSyncGoogleDoc={syncToLinkedGoogleDoc}
+                    onUnlinkGoogleDoc={unlinkGoogleDoc}
+                    onLinkToGoogleDoc={linkToGoogleDoc}
+                />
+            </main>
+
+            {/* Overlays / Global Elements */}
+            <div className="shell-overlays">
+                {!currentUser && sources.length > 0 && <GuestBanner />}
+                {isSaving && <SavingIndicator />}
             </div>
 
-            {/* Mobile Sidebar Drawer */}
+            {/* Mobile Extras */}
             {mobileChatOpen && (
-                <div className="chat-sidebar-wrapper mobile-drawer open">
-                    <ChatSidebar
-                        messages={messages}
-                        onSendMessage={handleSendMessage}
-                        onAddSource={addSource}
-                        sheetSources={sources}
-                        isLoading={isChatLoading}
-                        isMobileOpen={true}
-                        onMobileClose={() => setMobileChatOpen(false)}
-                        onToggleSidebar={() => setMobileChatOpen(false)}
-                        darkMode={darkMode}
-                        toggleDarkMode={toggleDarkMode}
-                        language={language}
-                        userSheets={userSheets}
-                        onLoadSheet={(id) => {
-                            handleLoadSheet(id);
-                            setMobileChatOpen(false);
-                        }}
-                        currentSheetId={currentSheetId}
-                        onDeleteSheet={deleteSheet}
-                        onNewSheet={() => {
-                            handleNewSheet();
-                            setMobileChatOpen(false);
-                        }}
-                    />
-                </div>
-            )}
-
-            {/* Resizer */}
-            {isSidebarOpen && (
-                <div
-                    className="resizer"
-                    onMouseDown={startResizing}
-                ></div>
-            )}
-
-            <SheetView
-                sources={sources}
-                onRemoveSource={removeSource}
-                onUpdateSource={updateSource}
-                onReorder={reorderSources}
-                onClearSheet={clearSheet}
-                onUndo={undo}
-                onRedo={redo}
-                canUndo={canUndo}
-                canRedo={canRedo}
-                language={language}
-                onSuggestionClick={handleSuggestionClick}
-                sheetTitle={title}
-                onTitleChange={setTitle}
-                onSendMessage={handleSendMessage}
-                chatStarted={chatStarted}
-                onAddSource={addSource}
-                userSheets={userSheets}
-                onLoadSheet={handleLoadSheet}
-                darkMode={darkMode}
-                toggleDarkMode={toggleDarkMode}
-                toggleLanguage={toggleLanguage}
-                googleDocId={googleDocId}
-                googleDocUrl={googleDocUrl}
-                isSyncing={isSyncing}
-                onSyncGoogleDoc={syncToLinkedGoogleDoc}
-                onUnlinkGoogleDoc={unlinkGoogleDoc}
-                onLinkToGoogleDoc={linkToGoogleDoc}
-            />
-
-            {/* Mobile Backdrop */}
-            {mobileChatOpen && (
-                <div className="mobile-chat-backdrop" onClick={() => setMobileChatOpen(false)}></div>
+                <>
+                    <div className="chat-sidebar-wrapper mobile-drawer open">
+                        <ChatSidebar
+                            messages={messages}
+                            onSendMessage={handleSendMessage}
+                            onAddSource={addSource}
+                            sheetSources={sources}
+                            isLoading={isChatLoading}
+                            isMobileOpen={true}
+                            onMobileClose={() => setMobileChatOpen(false)}
+                            onToggleSidebar={() => setMobileChatOpen(false)}
+                            darkMode={darkMode}
+                            toggleDarkMode={toggleDarkMode}
+                            language={language}
+                            userSheets={userSheets}
+                            onLoadSheet={(id) => {
+                                handleLoadSheet(id);
+                                setMobileChatOpen(false);
+                            }}
+                            currentSheetId={currentSheetId}
+                            onDeleteSheet={deleteSheet}
+                            onNewSheet={() => {
+                                handleNewSheet();
+                                setMobileChatOpen(false);
+                            }}
+                        />
+                    </div>
+                    <div className="mobile-chat-backdrop" onClick={() => setMobileChatOpen(false)}></div>
+                </>
             )}
         </div>
     );
