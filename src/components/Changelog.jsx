@@ -11,6 +11,13 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.27 <span className="version-date">January 22, 2026</span></h2>
+                    <ul>
+                        <li><strong>Build Fix</strong> – Fixed a duplicate variable declaration that caused the build to fail.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.26 <span className="version-date">January 22, 2026</span></h2>
                     <ul>
                         <li><strong>Under the Hood Polish</strong> – Cleaned up internal code structure, unified branding components, and improved performance stability.</li>
