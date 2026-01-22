@@ -16,7 +16,13 @@ const SheetToolbar = ({
     isExportingGoogle,
     handleExportGoogle,
     handleExportDocx,
-    handleExportPDF
+    handleExportPDF,
+    // Google Docs Sync Props
+    googleDocId,
+    googleDocUrl,
+    isSyncing,
+    onSyncGoogleDoc,
+    onUnlinkGoogleDoc
 }) => {
     return (
         <div className="sheet-toolbar" data-html2canvas-ignore="true">
@@ -77,6 +83,12 @@ const SheetToolbar = ({
                     handleExportDocx={handleExportDocx}
                     handleExportPDF={handleExportPDF}
                     onClearSheet={onClearSheet}
+                    // Google Docs sync
+                    googleDocId={googleDocId}
+                    googleDocUrl={googleDocUrl}
+                    isSyncing={isSyncing}
+                    onSyncGoogleDoc={onSyncGoogleDoc}
+                    onUnlinkGoogleDoc={onUnlinkGoogleDoc}
                 />
             </div>
         </div>
@@ -84,3 +96,4 @@ const SheetToolbar = ({
 };
 
 export default SheetToolbar;
+

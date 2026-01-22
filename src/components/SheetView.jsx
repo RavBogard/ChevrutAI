@@ -48,7 +48,7 @@ const SortableSourceItem = ({ source, id, onRemove, onUpdate, onRefine }) => {
     );
 };
 
-const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClearSheet, onUndo, onRedo, canUndo, canRedo, language, onSuggestionClick, sheetTitle, onTitleChange, onSendMessage, chatStarted, onAddSource, darkMode, toggleDarkMode, toggleLanguage }) => {
+const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClearSheet, onUndo, onRedo, canUndo, canRedo, language, onSuggestionClick, sheetTitle, onTitleChange, onSendMessage, chatStarted, onAddSource, darkMode, toggleDarkMode, toggleLanguage, googleDocId, googleDocUrl, isSyncing, onSyncGoogleDoc, onUnlinkGoogleDoc, onLinkToGoogleDoc }) => {
     // eslint-disable-next-line no-unused-vars
     const { currentUser } = useAuth();
     const sensors = useSensors(
@@ -125,18 +125,26 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
         setIsExportingGoogle(true);
         setExportUrl(null); // Reset previous url
         try {
-            const formattedSources = sources.map(s => ({
-                type: s.type || 'sefaria',
-                title: s.title,
-                citation: s.ref,
-                hebrew: Array.isArray(s.he) ? s.he.join('\n') : s.he,
-                english: Array.isArray(s.en) ? s.en.join('\n') : s.en,
-                viewMode: s.viewMode || 'bilingual'
-            }));
-            const url = await exportToGoogleDoc(sheetTitle, formattedSources);
-            setExportUrl(url); // Show link
-            // Try to open also, but if blocked, user has link
-            window.open(url, '_blank', 'noopener,noreferrer');
+            // If we have onLinkToGoogleDoc prop, use it (saves doc ID for sync)
+            if (onLinkToGoogleDoc) {
+                const url = await onLinkToGoogleDoc();
+                setExportUrl(url);
+                window.open(url, '_blank', 'noopener,noreferrer');
+            } else {
+                // Fallback to direct export (no sync support)
+                const formattedSources = sources.map(s => ({
+                    type: s.type || 'sefaria',
+                    title: s.title,
+                    citation: s.ref,
+                    hebrew: Array.isArray(s.he) ? s.he.join('\n') : s.he,
+                    english: Array.isArray(s.en) ? s.en.join('\n') : s.en,
+                    viewMode: s.viewMode || 'bilingual'
+                }));
+                const result = await exportToGoogleDoc(sheetTitle, formattedSources);
+                const url = result.documentUrl || result;
+                setExportUrl(url);
+                window.open(url, '_blank', 'noopener,noreferrer');
+            }
         } catch (error) {
             console.error("Discovered Error During Export:", error);
             alert("Export failed. Please check if you enabled pop-ups and configured the Google Cloud Console correctly.");
@@ -206,6 +214,11 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                         handleExportGoogle={handleExportGoogle}
                         handleExportDocx={handleExportDocx}
                         handleExportPDF={handleExportPDF}
+                        googleDocId={googleDocId}
+                        googleDocUrl={googleDocUrl}
+                        isSyncing={isSyncing}
+                        onSyncGoogleDoc={onSyncGoogleDoc}
+                        onUnlinkGoogleDoc={onUnlinkGoogleDoc}
                     />
 
                     {exportUrl && (

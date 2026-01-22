@@ -11,6 +11,13 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.18 <span className="version-date">January 22, 2026</span></h2>
+                    <ul>
+                        <li><strong>Google Docs Sync</strong> – After exporting to Google Docs, you can now sync your changes without creating a new document.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.17 <span className="version-date">January 22, 2026</span></h2>
                     <ul>
                         <li><strong>Hasidic Text Citations</strong> – The AI assistant now correctly suggests Sfat Emet and other Hasidic texts with valid section numbers.</li>

@@ -47,7 +47,15 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
         // Sheet management
         loadSheet,
         createNewSheet,
-        deleteSheet
+        deleteSheet,
+
+        // Google Docs sync
+        googleDocId,
+        googleDocUrl,
+        isSyncing,
+        linkToGoogleDoc,
+        syncToLinkedGoogleDoc,
+        unlinkGoogleDoc
     } = useSheetPersistence(sheetId);
 
     // --- Sidebar & Resizing Logic ---
@@ -256,6 +264,12 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                 darkMode={darkMode}
                 toggleDarkMode={toggleDarkMode}
                 toggleLanguage={toggleLanguage}
+                googleDocId={googleDocId}
+                googleDocUrl={googleDocUrl}
+                isSyncing={isSyncing}
+                onSyncGoogleDoc={syncToLinkedGoogleDoc}
+                onUnlinkGoogleDoc={unlinkGoogleDoc}
+                onLinkToGoogleDoc={linkToGoogleDoc}
             />
 
             {/* Mobile Backdrop */}

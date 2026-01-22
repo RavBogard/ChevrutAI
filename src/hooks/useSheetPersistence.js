@@ -9,6 +9,7 @@ import {
 import { useToast } from '../components/Toast';
 import { getSefariaText } from '../services/sefaria';
 import { sendGeminiMessage } from '../services/ai';
+import { exportToGoogleDoc, syncToGoogleDoc } from '../services/google';
 
 /**
  * Unified hook for sheet state management and persistence.
@@ -47,6 +48,12 @@ export const useSheetPersistence = (urlSheetId) => {
 
     // Chat loading state
     const [isChatLoading, setIsChatLoading] = useState(false);
+
+    // Google Docs sync state
+    const [googleDocId, setGoogleDocId] = useState(null);
+    const [googleDocUrl, setGoogleDocUrl] = useState(null);
+    const [lastSyncedAt, setLastSyncedAt] = useState(null);
+    const [isSyncing, setIsSyncing] = useState(false);
 
     // ========== REFS FOR LATEST STATE (Avoids stale closures) ==========
     const latestDataRef = useRef({ title, sources, messages });
@@ -157,6 +164,10 @@ export const useSheetPersistence = (urlSheetId) => {
                     setCurrentSheetId(urlSheetId);
                     setIsPersisted(true);
                     setIsDirty(false);
+                    // Load Google Docs link info
+                    setGoogleDocId(sheet.googleDocId || null);
+                    setGoogleDocUrl(sheet.googleDocUrl || null);
+                    setLastSyncedAt(sheet.lastSyncedAt || null);
                 } else {
                     // New sheet - use URL ID as canonical ID
                     setCurrentSheetId(urlSheetId);
@@ -458,6 +469,102 @@ export const useSheetPersistence = (urlSheetId) => {
         }
     }, [showToast]);
 
+    // ========== GOOGLE DOCS SYNC ==========
+    const linkToGoogleDoc = useCallback(async () => {
+        setIsSyncing(true);
+        try {
+            // Format sources for Google Docs export
+            const formattedSources = sources.map(s => ({
+                type: s.type || 'sefaria',
+                title: s.title,
+                citation: s.ref,
+                hebrew: Array.isArray(s.he) ? s.he.join('\n') : s.he,
+                english: Array.isArray(s.en) ? s.en.join('\n') : s.en,
+                viewMode: s.viewMode || 'bilingual'
+            }));
+
+            const { documentId, documentUrl } = await exportToGoogleDoc(title, formattedSources);
+            setGoogleDocId(documentId);
+            setGoogleDocUrl(documentUrl);
+            setLastSyncedAt(new Date());
+
+            // Save the link to Firestore
+            if (currentSheetId && currentUser) {
+                await saveSheetToFirestore(currentUser.uid, {
+                    id: currentSheetId,
+                    googleDocId: documentId,
+                    googleDocUrl: documentUrl,
+                    lastSyncedAt: new Date()
+                });
+            }
+
+            showToast('Exported and linked to Google Docs!', 'success');
+            return documentUrl;
+        } catch (error) {
+            console.error('Failed to export to Google Docs:', error);
+            showToast('Failed to export to Google Docs', 'error');
+            throw error;
+        } finally {
+            setIsSyncing(false);
+        }
+    }, [title, sources, currentSheetId, currentUser, showToast]);
+
+    const syncToLinkedGoogleDoc = useCallback(async () => {
+        if (!googleDocId) {
+            showToast('No linked Google Doc. Export first.', 'error');
+            return;
+        }
+
+        setIsSyncing(true);
+        try {
+            // Format sources for Google Docs export
+            const formattedSources = sources.map(s => ({
+                type: s.type || 'sefaria',
+                title: s.title,
+                citation: s.ref,
+                hebrew: Array.isArray(s.he) ? s.he.join('\n') : s.he,
+                english: Array.isArray(s.en) ? s.en.join('\n') : s.en,
+                viewMode: s.viewMode || 'bilingual'
+            }));
+
+            await syncToGoogleDoc(googleDocId, title, formattedSources);
+            setLastSyncedAt(new Date());
+
+            // Update sync time in Firestore
+            if (currentSheetId && currentUser) {
+                await saveSheetToFirestore(currentUser.uid, {
+                    id: currentSheetId,
+                    lastSyncedAt: new Date()
+                });
+            }
+
+            showToast('Synced to Google Docs!', 'success');
+        } catch (error) {
+            console.error('Failed to sync to Google Docs:', error);
+            showToast('Sync failed. The Google Doc may have been deleted.', 'error');
+        } finally {
+            setIsSyncing(false);
+        }
+    }, [googleDocId, title, sources, currentSheetId, currentUser, showToast]);
+
+    const unlinkGoogleDoc = useCallback(async () => {
+        setGoogleDocId(null);
+        setGoogleDocUrl(null);
+        setLastSyncedAt(null);
+
+        // Remove link from Firestore
+        if (currentSheetId && currentUser) {
+            await saveSheetToFirestore(currentUser.uid, {
+                id: currentSheetId,
+                googleDocId: null,
+                googleDocUrl: null,
+                lastSyncedAt: null
+            });
+        }
+
+        showToast('Unlinked from Google Docs', 'success');
+    }, [currentSheetId, currentUser, showToast]);
+
     // ========== RETURN VALUES ==========
     return {
         // Sheet content
@@ -495,6 +602,15 @@ export const useSheetPersistence = (urlSheetId) => {
         // Sheet management
         loadSheet,
         createNewSheet,
-        deleteSheet
+        deleteSheet,
+
+        // Google Docs sync
+        googleDocId,
+        googleDocUrl,
+        lastSyncedAt,
+        isSyncing,
+        linkToGoogleDoc,
+        syncToLinkedGoogleDoc,
+        unlinkGoogleDoc
     };
 };

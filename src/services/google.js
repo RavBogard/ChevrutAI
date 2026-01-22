@@ -1,7 +1,10 @@
+// Google Docs Integration Service
+// Handles OAuth, export, and sync to Google Docs
 
 const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const DISCOVERY_DOC = 'https://docs.googleapis.com/$discovery/rest?version=v1';
-const SCOPES = 'https://www.googleapis.com/auth/drive.file';
+// Using full drive scope for sync functionality
+const SCOPES = 'https://www.googleapis.com/auth/drive';
 
 // Verify scope in console for debugging deployment issues
 console.log('Initializing Google Client with scope:', SCOPES);
@@ -74,30 +77,23 @@ function getToken() {
     });
 }
 
-// Helper to sanitize HTML but keep formatting
+// ========== HTML Generation (Shared) ==========
+
 function sanitizeHtml(html) {
     if (!html) return "";
-    // Remove scripts, styles, and other dangerous/unwanted tags, but keep formatting
-    // Simple approach: unescape entities that might be double escaped, then cleanup.
-    // Actually, Sefaria text usually comes as valid HTML (e.g. <small>, <i>, <b>).
-    // We just want to remove big block tags if they break our table, but <div> or <p> inside a cell is usually fine.
-    // For now, let's just allow everything but remove any potential scripts or iframes for safety (though unlikely from Sefaria).
-
-    // A simple regex to strip ONLY script/iframe/object tags to be somewhat safe
     return html
         .replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gim, "")
         .replace(/<iframe\b[^>]*>([\s\S]*?)<\/iframe>/gim, "")
-        .replace(/&nbsp;/g, ' '); // Replace nbsp with space for better wrapping in Docs
+        .replace(/&nbsp;/g, ' ');
 }
 
-export async function exportToGoogleDoc(sheetTitle, sources) {
-    if (!gapiInited || !gisInited) {
-        await initGoogleClient();
-    }
-
-    await getToken();
-
-    // 1. Build The Beautiful HTML Content
+/**
+ * Generates HTML content for a source sheet
+ * @param {string} sheetTitle - The sheet title
+ * @param {Array} sources - Array of source objects
+ * @returns {string} HTML content
+ */
+function generateHtmlContent(sheetTitle, sources) {
     let htmlContent = `
     <!DOCTYPE html>
     <html>
@@ -112,8 +108,6 @@ export async function exportToGoogleDoc(sheetTitle, sources) {
           td { vertical-align: top; padding: 12px; border: 1px solid #e5e7eb; }
           .hebrew { font-family: 'Heebo', 'Arial', sans-serif; font-size: 15pt; text-align: right; direction: rtl; line-height: 1.5; width: 50%; }
           .english { font-family: 'Merriweather', 'Georgia', serif; font-size: 11pt; text-align: left; direction: ltr; line-height: 1.5; width: 50%; }
-          
-          /* Ensure formatting tags look right */
           small { opacity: 0.7; font-size: 0.8em; }
           b, strong { font-weight: bold; }
           i, em { font-style: italic; }
@@ -163,7 +157,6 @@ export async function exportToGoogleDoc(sheetTitle, sources) {
                 </table>
                 `;
             }
-
         }
     });
 
@@ -173,15 +166,16 @@ export async function exportToGoogleDoc(sheetTitle, sources) {
     </html>
     `;
 
-    // 2. Prepare Multipart Upload for Drive API
+    return htmlContent;
+}
+
+/**
+ * Builds multipart request body for Drive API
+ */
+function buildMultipartBody(metadata, htmlContent) {
     const boundary = '-------314159265358979323846';
     const delimiter = "\r\n--" + boundary + "\r\n";
     const close_delim = "\r\n--" + boundary + "--";
-
-    const metadata = {
-        name: sheetTitle || 'Chevruta Source Sheet',
-        mimeType: 'application/vnd.google-apps.document'
-    };
 
     const multipartRequestBody =
         delimiter +
@@ -192,7 +186,33 @@ export async function exportToGoogleDoc(sheetTitle, sources) {
         htmlContent +
         close_delim;
 
-    // 3. Send Request to Drive API (upload endpoint)
+    return { body: multipartRequestBody, boundary };
+}
+
+// ========== Export Functions ==========
+
+/**
+ * Creates a NEW Google Doc with the source sheet content
+ * @param {string} sheetTitle - Sheet title
+ * @param {Array} sources - Source data
+ * @returns {Promise<{documentId: string, documentUrl: string}>}
+ */
+export async function exportToGoogleDoc(sheetTitle, sources) {
+    if (!gapiInited || !gisInited) {
+        await initGoogleClient();
+    }
+
+    await getToken();
+
+    const htmlContent = generateHtmlContent(sheetTitle, sources);
+
+    const metadata = {
+        name: sheetTitle || 'Chevruta Source Sheet',
+        mimeType: 'application/vnd.google-apps.document'
+    };
+
+    const { body, boundary } = buildMultipartBody(metadata, htmlContent);
+
     const response = await window.gapi.client.request({
         path: '/upload/drive/v3/files',
         method: 'POST',
@@ -200,9 +220,80 @@ export async function exportToGoogleDoc(sheetTitle, sources) {
         headers: {
             'Content-Type': 'multipart/related; boundary="' + boundary + '"'
         },
-        body: multipartRequestBody
+        body: body
     });
 
     const documentId = response.result.id;
-    return `https://docs.google.com/document/d/${documentId}/edit`;
+    const documentUrl = `https://docs.google.com/document/d/${documentId}/edit`;
+
+    return { documentId, documentUrl };
+}
+
+/**
+ * Updates an EXISTING Google Doc with new content
+ * @param {string} documentId - The Google Doc ID to update
+ * @param {string} sheetTitle - Sheet title
+ * @param {Array} sources - Source data
+ * @returns {Promise<{success: boolean}>}
+ */
+export async function syncToGoogleDoc(documentId, sheetTitle, sources) {
+    if (!documentId) {
+        throw new Error('No document ID provided for sync');
+    }
+
+    if (!gapiInited || !gisInited) {
+        await initGoogleClient();
+    }
+
+    await getToken();
+
+    const htmlContent = generateHtmlContent(sheetTitle, sources);
+
+    const metadata = {
+        name: sheetTitle || 'Chevruta Source Sheet',
+        mimeType: 'application/vnd.google-apps.document'
+    };
+
+    const { body, boundary } = buildMultipartBody(metadata, htmlContent);
+
+    // Use PATCH to update existing file
+    await window.gapi.client.request({
+        path: `/upload/drive/v3/files/${documentId}`,
+        method: 'PATCH',
+        params: { uploadType: 'multipart' },
+        headers: {
+            'Content-Type': 'multipart/related; boundary="' + boundary + '"'
+        },
+        body: body
+    });
+
+    return { success: true };
+}
+
+/**
+ * Checks if a Google Doc still exists and is accessible
+ * @param {string} documentId - The Google Doc ID
+ * @returns {Promise<boolean>}
+ */
+export async function checkGoogleDocExists(documentId) {
+    if (!documentId) return false;
+
+    try {
+        if (!gapiInited || !gisInited) {
+            await initGoogleClient();
+        }
+
+        await getToken();
+
+        const response = await window.gapi.client.request({
+            path: `/drive/v3/files/${documentId}`,
+            method: 'GET',
+            params: { fields: 'id,name,trashed' }
+        });
+
+        return response.result && !response.result.trashed;
+    } catch (error) {
+        console.error('Error checking Google Doc:', error);
+        return false;
+    }
 }
