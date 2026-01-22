@@ -11,6 +11,13 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.40 <span className="version-date">January 22, 2026</span></h2>
+                    <ul>
+                        <li><strong>Polished Sidebar Layout</strong> – The Sidebar now spans the detailed full height of the viewing window, placing its logo and controls correctly at the top-left rather than awkwardly underneath the main header.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.39 <span className="version-date">January 22, 2026</span></h2>
                     <ul>
                         <li><strong>Structural Refactor (CSS Grid)</strong> – Completely rewrote the application layout engine. The app now uses a modern CSS Grid "Shell" that physically isolates the Header, Sidebar, and Content areas. This permanently eliminates layout shifting bugs.</li>
