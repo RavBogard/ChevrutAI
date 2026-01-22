@@ -65,7 +65,9 @@ body {
   font-family: var(--font-ui);
   -webkit-font-smoothing: antialiased;
   /* Crisp text */
+  /* Crisp text */
   transition: background-color 0.3s, color 0.3s;
+  scrollbar-gutter: stable;
 }
 
 h1,
@@ -77,6 +79,15 @@ h6 {
   font-family: var(--font-english-serif);
   /* Use the loved serif for ALL headings */
   font-weight: 700;
+}
+
+.header-branding {
+  transition: opacity 0.3s ease;
+}
+
+.header-branding.hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .app-container {

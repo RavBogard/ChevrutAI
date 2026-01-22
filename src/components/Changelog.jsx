@@ -11,6 +11,13 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.30 <span className="version-date">January 22, 2026</span></h2>
+                    <ul>
+                        <li><strong>UI Polish</strong> – Fixed layout "jumping" during chat and corrected logo visibility on the homepage.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.29 <span className="version-date">January 22, 2026</span></h2>
                     <ul>
                         <li><strong>Hotfix</strong> – Fixed a crash when using Smart Context with complex Sefaria texts (array handling).</li>

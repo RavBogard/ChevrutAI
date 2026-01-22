@@ -61,7 +61,7 @@ const UnifiedHeader = ({
 
                 {/* Persistent Branding (Visible when sidebar closed AND NOT on home screen) */}
                 <Logo
-                    className="header-branding"
+                    className={`header-branding ${(isSidebarOpen || isHome) ? 'hidden' : ''}`}
                     onClick={() => {
                         window.location.hash = '#/';
                         window.location.reload();
