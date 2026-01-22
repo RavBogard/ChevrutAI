@@ -190,9 +190,24 @@ export const useSheetPersistence = (urlSheetId) => {
     }, [urlSheetId, currentSheetId, isPersisted, showToast]);
 
     // ========== AUTOSAVE LOGIC ==========
+    // Use refs for values we need in the timeout but don't want to trigger effect
+    const currentUserRef = useRef(currentUser);
+    const isLoadingRefAuto = useRef(isLoading);
+
     useEffect(() => {
-        // Skip if not logged in or still loading
-        if (!currentUser || isLoading) return;
+        currentUserRef.current = currentUser;
+    }, [currentUser]);
+
+    useEffect(() => {
+        isLoadingRefAuto.current = isLoading;
+    }, [isLoading]);
+
+    useEffect(() => {
+        // Skip if not logged in
+        if (!currentUser) return;
+
+        // Skip during initial load
+        if (isLoading) return;
 
         // Check if there's real content
         const data = latestDataRef.current;
@@ -213,8 +228,13 @@ export const useSheetPersistence = (urlSheetId) => {
         const delay = isPersisted ? 2000 : 0;
 
         saveTimeoutRef.current = setTimeout(async () => {
+            // Re-check conditions using REFS (not stale closure values)
             if (!mountedRef.current) return;
-            if (isLoading) return;
+            if (isLoadingRefAuto.current) return;
+            if (!currentUserRef.current) {
+                console.log('Skipping autosave: No user logged in');
+                return;
+            }
 
             // Use the LATEST data from ref, not stale closure
             const dataToSave = latestDataRef.current;
@@ -234,7 +254,7 @@ export const useSheetPersistence = (urlSheetId) => {
                     messages: dataToSave.messages
                 };
 
-                await saveSheetToFirestore(currentUser.uid, sheetData);
+                await saveSheetToFirestore(currentUserRef.current.uid, sheetData);
 
                 if (!mountedRef.current) return;
 
@@ -265,7 +285,9 @@ export const useSheetPersistence = (urlSheetId) => {
                 clearTimeout(saveTimeoutRef.current);
             }
         };
-    }, [currentUser, title, sources, messages, isPersisted, isLoading, currentSheetId, urlSheetId, showToast]);
+        // NOTE: Reduced dependencies - we use refs for currentUser and isLoading
+        // to prevent spurious effect re-runs
+    }, [title, sources, messages, isPersisted, currentSheetId, urlSheetId, showToast, currentUser, isLoading]);
 
     // ========== SOURCE MANAGEMENT ==========
     const addSource = useCallback(async (source) => {

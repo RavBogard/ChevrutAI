@@ -11,6 +11,13 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.15 <span className="version-date">January 22, 2026</span></h2>
+                    <ul>
+                        <li><strong>Autosave Hotfix</strong> – Fixed a timing issue in the new autosave system that could cause save failures.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.14 <span className="version-date">January 22, 2026</span></h2>
                     <ul>
                         <li><strong>Major Autosave Overhaul</strong> – Completely rebuilt the saving system to fix persistent autosave failures. Your work is now saved reliably.</li>
