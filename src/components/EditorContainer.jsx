@@ -77,7 +77,7 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
         if (isDesktop && !isSidebarOpen && messages.length > 1) {
             setIsSidebarOpen(true);
         }
-    }, [messages, isSidebarOpen, setIsSidebarOpen]);
+    }, [messages, setIsSidebarOpen]);
 
     // --- Event Handlers ---
     const handleSendMessage = (text) => {

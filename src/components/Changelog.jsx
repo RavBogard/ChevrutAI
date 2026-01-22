@@ -11,6 +11,13 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.36 <span className="version-date">January 22, 2026</span></h2>
+                    <ul>
+                        <li><strong>Fixed Persistent Sidebar Re-opening</strong> – Solved the issue where the sidebar would "fight" you and immediately reopen after being closed.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.35 <span className="version-date">January 22, 2026</span></h2>
                     <ul>
                         <li><strong>Fixed "Saving..." Layout Shift</strong> – Identified and fixed the root cause of the "jumping" layout. The saving indicator was pushing the layout every time it appeared. It is now floating (absolute) and non-intrusive.</li>
