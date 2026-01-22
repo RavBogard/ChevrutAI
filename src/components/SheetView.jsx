@@ -300,7 +300,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
 
             <footer className="sheet-footer">
                 <p className="footer-attribution">
-                    A Project of <strong>Rabbi Daniel Bogard</strong>
+                    A Project of <a href="https://danielbogard.com" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}><strong>Rabbi Daniel Bogard</strong></a>
                 </p>
                 <div className="footer-powered">
                     <a href="https://www.sefaria.org" target="_blank" rel="noopener noreferrer">Powered by Sefaria</a>
