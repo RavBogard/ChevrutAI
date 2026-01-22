@@ -75,6 +75,35 @@ const SheetToolbar = ({
             {/* Group 3: Export & Actions */}
             <div className="toolbar-group action-group">
                 <ShareButton />
+
+                {/* Sync Button - Only shows when linked to Google Doc */}
+                {googleDocId && (
+                    <button
+                        className="sync-google-btn"
+                        onClick={onSyncGoogleDoc}
+                        disabled={isSyncing}
+                        title={`Sync to linked Google Doc`}
+                    >
+                        {isSyncing ? (
+                            <>
+                                <svg className="sync-icon spinning" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path>
+                                    <path d="M21 3v5h-5"></path>
+                                </svg>
+                                Syncing...
+                            </>
+                        ) : (
+                            <>
+                                <svg className="sync-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path>
+                                    <path d="M21 3v5h-5"></path>
+                                </svg>
+                                Sync
+                            </>
+                        )}
+                    </button>
+                )}
+
                 <ExportMenu
                     showExportMenu={showExportMenu}
                     setShowExportMenu={setShowExportMenu}
@@ -83,7 +112,7 @@ const SheetToolbar = ({
                     handleExportDocx={handleExportDocx}
                     handleExportPDF={handleExportPDF}
                     onClearSheet={onClearSheet}
-                    // Google Docs sync
+                    // Google Docs sync - for unlink only now
                     googleDocId={googleDocId}
                     googleDocUrl={googleDocUrl}
                     isSyncing={isSyncing}
@@ -96,4 +125,3 @@ const SheetToolbar = ({
 };
 
 export default SheetToolbar;
-

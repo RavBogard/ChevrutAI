@@ -3282,3 +3282,72 @@ html[dir="rtl"] .prompt-card {
     /* Visible on mobile */
   }
 }
+
+/* ========================================= */
+/* Google Sync Button Styles                  */
+/* ========================================= */
+.sync-google-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #ffffff;
+  color: #1a73e8;
+  border: 1px solid #dadce0;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3);
+  margin-right: 0.5rem;
+}
+
+.sync-google-btn:hover:not(:disabled) {
+  background-color: #f8faff;
+  box-shadow: 0 1px 3px rgba(60, 64, 67, 0.3);
+  color: #174ea6;
+}
+
+.sync-google-btn:active:not(:disabled) {
+  background-color: #f1f3f4;
+  box-shadow: inset 0 1px 2px rgba(60, 64, 67, 0.1);
+}
+
+.sync-google-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+  box-shadow: none;
+  background-color: #f1f3f4;
+  color: #80868b;
+}
+
+[data-theme='dark'] .sync-google-btn {
+  background-color: #303134;
+  color: #8ab4f8;
+  border-color: #5f6368;
+}
+
+[data-theme='dark'] .sync-google-btn:hover:not(:disabled) {
+  background-color: #3c4043;
+}
+
+.sync-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.sync-icon.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

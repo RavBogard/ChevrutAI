@@ -11,6 +11,13 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.19 <span className="version-date">January 22, 2026</span></h2>
+                    <ul>
+                        <li><strong>One-Click Sync</strong> – Added a dedicated "Sync to Google Drive" button in the toolbar for faster updates.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.18 <span className="version-date">January 22, 2026</span></h2>
                     <ul>
                         <li><strong>Google Docs Sync</strong> – After exporting to Google Docs, you can now sync your changes without creating a new document.</li>
