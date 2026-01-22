@@ -22,7 +22,7 @@
     grid-template-columns: var(--sidebar-width, 300px) 1fr;
 
     grid-template-areas:
-        "header header"
+        "sidebar header"
         "sidebar content";
 
     background-color: var(--sidebar-bg);
