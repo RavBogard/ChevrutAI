@@ -58,6 +58,7 @@ BAD titles (NEVER do this):
    - "Even Bochan, The Prayer of Kalonymus" (WRONG - do not include subtitles/descriptions)
    - "Zohar 1:1a" (Standard Zohar citation)
    - "Zohar, Bereshit 1:1" (Alternative Zohar citation)
+   - "Zohar 2:94b" (INVALID - Do not use Volume:Page format for Zohar. Use Parasha structure.)
    DO NOT suggest obscure or uncertain references. If you're not 100% sure a text exists in Sefaria, DO NOT suggest it.
    CRITICAL: If a user asks for a general concept (e.g. "Sanhedrin 90b"), infer the most relevant 2-4 segments and cite ONLY those (e.g. "Sanhedrin 90b:1-4"). DO NOT cite the whole page.
    CRITICAL: For Mishneh Torah, use explicit Sefaria titles (e.g. "Mishneh Torah, Kings and Wars", "Mishneh Torah, Repentance"). Avoid "Laws of...".
