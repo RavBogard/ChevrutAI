@@ -11,6 +11,14 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.20 <span className="version-date">January 22, 2026</span></h2>
+                    <ul>
+                        <li><strong>Critical Crash Fix</strong> – Resolved a bug where complex text sources (like Zohar) would crash the app and lock you out. We also added an "Emergency Reset" button just in case.</li>
+                        <li><strong>Smarter Sefaria Search</strong> – Improved fuzzy search to handle typos (e.g., "Kosef Mishneh") and better find commentaries like "Radbaz on Mishneh Torah".</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.19 <span className="version-date">January 22, 2026</span></h2>
                     <ul>
                         <li><strong>One-Click Sync</strong> – Added a dedicated "Sync to Google Drive" button in the toolbar for faster updates.</li>

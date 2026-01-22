@@ -56,6 +56,8 @@ BAD titles (NEVER do this):
    - "Mishneh Torah, Laws of Murder 1:9" (WRONG - do not use "Laws of")
    - "Even Bochan 28:1" (CORRECT - just Book + Chapter:Verse)
    - "Even Bochan, The Prayer of Kalonymus" (WRONG - do not include subtitles/descriptions)
+   - "Zohar 1:1a" (Standard Zohar citation)
+   - "Zohar, Bereshit 1:1" (Alternative Zohar citation)
    DO NOT suggest obscure or uncertain references. If you're not 100% sure a text exists in Sefaria, DO NOT suggest it.
    CRITICAL: If a user asks for a general concept (e.g. "Sanhedrin 90b"), infer the most relevant 2-4 segments and cite ONLY those (e.g. "Sanhedrin 90b:1-4"). DO NOT cite the whole page.
    CRITICAL: For Mishneh Torah, use explicit Sefaria titles (e.g. "Mishneh Torah, Kings and Wars", "Mishneh Torah, Repentance"). Avoid "Laws of...".
@@ -132,7 +134,7 @@ export default async function handler(req, res) {
 
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({
-            model: 'gemini-3-flash-preview', // Correcting strict model name from previous working code
+            model: 'gemini-1.5-flash', // Updated to a stable version
             systemInstruction: SYSTEM_INSTRUCTION,
             generationConfig: { responseMimeType: "application/json" }
         });

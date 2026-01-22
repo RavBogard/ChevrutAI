@@ -100,7 +100,7 @@ const SourceBlock = ({ source, onRemove, onUpdate, dragHandleProps, onRefine }) 
                             <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
                                 onMouseLeave={() => handleSegmentActive(null)} // Clear when leaving the column
                             >
-                                {(!source.en || (Array.isArray(source.en) && source.en.every(s => !s || !s.trim())) || (!Array.isArray(source.en) && !source.en.trim())) ? (
+                                {(!source.en || !source.en.trim()) ? (
                                     <div className="empty-content-msg">No English text available</div>
                                 ) : (
                                     <EditableContent
@@ -121,7 +121,7 @@ const SourceBlock = ({ source, onRemove, onUpdate, dragHandleProps, onRefine }) 
                             <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
                                 onMouseLeave={() => handleSegmentActive(null)}
                             >
-                                {(!source.he || (Array.isArray(source.he) && source.he.every(s => !s || !s.trim())) || (!Array.isArray(source.he) && !source.he.trim())) ? (
+                                {(!source.he || !source.he.trim()) ? (
                                     <div className="empty-content-msg">No Hebrew text available</div>
                                 ) : (
                                     <EditableContent

@@ -2,29 +2,46 @@ const BASE_URL = "https://www.sefaria.org/api/texts";
 const NAME_BASE_URL = "https://www.sefaria.org/api/name";
 
 /**
+ * Recursively flattens and joins text arrays into a single string.
+ * Handles Sefaria's complex nested array structure.
+ * @param {string|Array} text 
+ * @returns {string}
+ */
+const normalizeText = (text) => {
+    if (!text) return "";
+    if (typeof text === 'string') return text;
+    if (Array.isArray(text)) {
+        return text.map(normalizeText).join(" ").trim();
+    }
+    return String(text);
+};
+
+/**
  * Tries to resolve a fuzzy or incorrect ref to a canonical Sefaria Ref using the Name API.
  * @param {string} ref 
  * @returns {Promise<string|null>} The corrected ref or null
  */
 const resolveSefariaRef = async (ref) => {
     try {
+        // CLEANUP: Handle usage of "on" which implies commentary (e.g. "Rashi on Genesis")
+        // The API often prefers "Rashi on Genesis" or "Rashi, Genesis"
+        // But for "Kosef Mishneh on..." -> "Kesef Mishneh on..."
+
         let term = ref;
-        // Instead of splitting by comma, we try to separate the 'Book Name' from the 'Citation'
-        // We look for the start of the number sequence at the end of the string
-        // e.g. "Kedushat Levi, Bereshit, Vayera 1:1" -> term: "Kedushat Levi, Bereshit, Vayera", citation: "1:1"
+        // Strip citation numbers to get the book/author name
         const numberMatch = ref.match(/(\s+\d+[.:]?.*)$/);
+        let citation = "";
 
         if (numberMatch) {
-            // Everything before the numbers is the candidate text name
             term = ref.substring(0, numberMatch.index).trim();
+            citation = numberMatch[1];
         } else {
-            // If no numbers found, use the whole string (trimmed)
-            // This is better than the previous aggressive comma splitting which broke titles like "Sfat Emet, Deuteronomy..."
             term = ref.trim();
         }
 
         const encoded = encodeURIComponent(term);
-        const response = await fetch(`${NAME_BASE_URL}/${encoded}?limit=5`);
+        // Increase limit to catch typos better
+        const response = await fetch(`${NAME_BASE_URL}/${encoded}?limit=20`);
         if (!response.ok) return null;
 
         const data = await response.json();
@@ -35,12 +52,11 @@ const resolveSefariaRef = async (ref) => {
                 .map(obj => obj.key);
 
             if (candidates.length > 0) {
-                // Heuristic: Find the "Best Match" candidate instead of just taking the first one
-                // We tokenize the search term and the candidate keys to find the most overlap
+                // Heuristic: Find the "Best Match"
                 const tokenize = (str) => str.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(/\s+/).filter(Boolean);
                 const termTokens = tokenize(term);
 
-                // Simple Levenshtein distance for fuzzy string matching
+                // Simple Levenshtein distance
                 const levenshtein = (a, b) => {
                     const matrix = [];
                     for (let i = 0; i <= b.length; i++) matrix[i] = [i];
@@ -66,48 +82,81 @@ const resolveSefariaRef = async (ref) => {
 
                 for (const candidate of candidates) {
                     const candidateTokens = tokenize(candidate);
-
-                    // Count how many term tokens "match" candidate tokens
-                    // We allow a match if the token is exact OR if it's very close (levenshtein <= 1 or 2 depending on length)
                     let overlap = 0;
 
                     for (const tToken of termTokens) {
                         const matchFound = candidateTokens.some(cToken => {
                             if (cToken === tToken) return true;
-                            // For short words (len < 4), strict equality. 
-                            // For len >= 4, allow distance of 1 (e.g. "sfat" vs "sefat" is dist 1)
-                            if (tToken.length >= 4 && cToken.length >= 4) {
-                                return levenshtein(tToken, cToken) <= 1;
+                            // Allow fuzzy token match
+                            if (tToken.length >= 3 && cToken.length >= 3) {
+                                const dist = levenshtein(tToken, cToken);
+                                return dist <= 2; // Allow 2 edits for longer words
                             }
                             return false;
                         });
                         if (matchFound) overlap++;
                     }
 
-                    // Prioritize higher overlap
+                    // CRITICAL: If input has "on", we MUST prioritize candidates with "on"
+                    // "Kosef Mishneh on..." vs "Mishneh Torah..."
+                    const termHasOn = term.includes(" on ");
+                    const candHasOn = candidate.includes(" on ");
+
+                    if (termHasOn && candHasOn) {
+                        overlap += 3; // Huge bonus for matching structure
+                    } else if (termHasOn && !candHasOn) {
+                        overlap -= 2; // Penalty for losing the commentary aspect
+                    }
+
                     if (overlap > maxOverlap) {
                         maxOverlap = overlap;
                         bestCandidate = candidate;
                     } else if (overlap === maxOverlap) {
-                        // Tie-breaking: pick closer length match
-                        if (Math.abs(candidateTokens.length - termTokens.length) < Math.abs(tokenize(bestCandidate).length - termTokens.length)) {
+                        // Tie-breaker: closer length
+                        if (Math.abs(candidate.length - term.length) < Math.abs(bestCandidate.length - term.length)) {
                             bestCandidate = candidate;
                         }
                     }
                 }
 
-                // Try to reconstruct the ref with the canonical title
-                const numberMatch = ref.match(/(\s+\d+[.:]?.*)$/);
-                if (numberMatch) {
-                    return `${bestCandidate}${numberMatch[1]}`;
+                // Check if our "best" candidate is actually reasonably close. 
+                // If the overlap is 0 and terms are different, it might be a bad guess.
+                if (maxOverlap === 0 && termTokens.length > 0) {
+                    // Last ditch: check direct substring inclusion
+                    const lowerCand = bestCandidate.toLowerCase();
+                    const lowerTerm = term.toLowerCase();
+                    if (!lowerCand.includes(lowerTerm) && !lowerTerm.includes(lowerCand)) {
+                        return null; // Don't guess wildly
+                    }
                 }
-                // If no numbers, just return the book
-                return bestCandidate;
+
+                if (bestCandidate) {
+                    return `${bestCandidate}${citation}`;
+                }
             }
         }
+
+        // FALLBACK: If we have commas, try searching just the first part
+        // e.g. "Radbaz on Mishneh Torah, Gifts to the Poor" -> Search "Radbaz on Mishneh Torah"
+        // Then append the rest of the original ref
+        if (term.includes(',')) {
+            const parts = term.split(',');
+            const baseTerm = parts[0].trim();
+            // Ensure we aren't infinite looping or searching empty
+            if (baseTerm && baseTerm !== term && baseTerm.length > 5) {
+                // Try resolving just the base
+                const resolvedBase = await resolveSefariaRef(baseTerm);
+                if (resolvedBase) {
+                    // Re-attach the rest: ", Gifts to the Poor" + citation
+                    // Careful: resolvedBase might have its own numbers or suffix
+                    const rest = term.substring(baseTerm.length) + citation;
+                    return `${resolvedBase}${rest}`;
+                }
+            }
+        }
+
         return null;
     } catch (e) {
-        // Silent fail
         return null;
     }
 };
@@ -122,13 +171,12 @@ export const getSefariaTextByVersion = async (ref, versionTitle) => {
     try {
         const encodedRef = encodeURIComponent(ref);
         const encodedTitle = encodeURIComponent(versionTitle);
-        // Using context=0 to match our block style
         const response = await fetch(`${BASE_URL}/${encodedRef}?context=0&version=en|${encodedTitle}`);
 
         if (!response.ok) return null;
 
         const data = await response.json();
-        return data.text; // Returns the English text for this version
+        return normalizeText(data.text);
     } catch (error) {
         return null;
     }
@@ -136,21 +184,39 @@ export const getSefariaTextByVersion = async (ref, versionTitle) => {
 
 /**
  * Fetches text from Sefaria API.
- * @param {string} ref - The citation reference (e.g., "Genesis 1:1", "Rashi on Genesis 1:1").
- * @returns {Promise<object|null>} - The text object or null if failed.
+ * 
+ * Includes:
+ * - Retry logic
+ * - Fuzzy reference resolution
+ * - Data normalization (flattening nested arrays)
+ * 
+ * @param {string} ref 
+ * @returns {Promise<object|null>}
  */
 export const getSefariaText = async (ref) => {
     try {
         const fetchRef = async (citationRef) => {
             const encodedRef = encodeURIComponent(citationRef);
-            const response = await fetch(`${BASE_URL}/${encodedRef}?context=0`);
-            if (!response.ok) return null;
-            return await response.json();
+            // Simple retry logic
+            let retries = 2;
+            while (retries >= 0) {
+                try {
+                    const response = await fetch(`${BASE_URL}/${encodedRef}?context=0`);
+                    if (response.ok) return await response.json();
+                    if (response.status === 404) return { error: "Not found" }; // Don't retry 404s
+                    if (response.status === 400) return { error: "Bad request" };
+                } catch (e) {
+                    if (retries === 0) throw e;
+                }
+                retries--;
+                await new Promise(r => setTimeout(r, 500)); // Backoff
+            }
+            return null;
         };
 
         let data = await fetchRef(ref);
 
-        // If direct fetch failed, try to recover using Name API
+        // Recovery: Try Name API if direct fetch failed
         if (!data || data.error) {
             const resolvedRef = await resolveSefariaRef(ref);
             if (resolvedRef && resolvedRef !== ref) {
@@ -162,38 +228,30 @@ export const getSefariaText = async (ref) => {
             return null;
         }
 
-        let hebrewText = data.he;
-        let englishText = data.text;
+        // CRITICAL FIX: Normalize text data to ensure it's always a string
+        let hebrewText = normalizeText(data.he);
+        let englishText = normalizeText(data.text);
+
         let versionTitle = data.versionTitle;
         let canonicalRef = data.ref || ref;
 
-        // Filter for available English versions
+        // Fallback for missing English
         const enVersions = data.versions ? data.versions.filter(v => v.language === 'en') : [];
-
-        // FALLBACK LOGIC: If default English text is empty/missing, try to fetch the first available English version
-        const isEnglishEmpty = !englishText || (Array.isArray(englishText) && englishText.every(s => !s || !s.trim())) || (typeof englishText === 'string' && !englishText.trim());
-
-        if (isEnglishEmpty && enVersions.length > 0) {
-            // Iterate through ALL available English versions until we find one with actual text
+        if (!englishText && enVersions.length > 0) {
             for (const version of enVersions) {
                 const candidateTitle = version.versionTitle;
                 const fallbackText = await getSefariaTextByVersion(canonicalRef, candidateTitle);
 
-                // Check if this fallback text is actually valid/non-empty
-                const isValidFallback = fallbackText &&
-                    ((Array.isArray(fallbackText) && fallbackText.some(s => s && s.trim())) ||
-                        (typeof fallbackText === 'string' && fallbackText.trim()));
-
-                if (isValidFallback) {
+                if (fallbackText) {
                     englishText = fallbackText;
                     versionTitle = candidateTitle;
-                    break; // Stop looking, we found one!
+                    break;
                 }
             }
         }
 
         return {
-            ref: canonicalRef, // The canonical reference
+            ref: canonicalRef,
             he: hebrewText,
             en: englishText,
             categories: data.categories,
