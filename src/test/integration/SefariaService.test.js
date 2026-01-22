@@ -4,17 +4,37 @@ import { getSefariaText } from '../../services/sefaria';
 describe('Sefaria Service Integration', () => {
     // Tests for "Crash & Delete" prevention (Deeply nested text arrays)
     it('flattens nested text arrays (Zohar style)', async () => {
-        // Zohar texts often come as [["Text..."], ["Text..."]] or deeper
-        // We simulate this by mocking the fetch if we can't hit real API, 
-        // but for integration we'll try real API if allowed, or trust our logic normalization.
-        // Let's rely on the Real API for this test suite as "System Integration"
+        // Mock a complex Zohar-like response
+        const checkRef = "Zohar, Mock 1:1";
+        const mockResponse = {
+            ref: checkRef,
+            he: [["Deep Text", ["Nested"]], "Top Level"], // Complex nested structure
+            text: ["English Text", ["More English"]],
+            versionTitle: "Mock Version"
+        };
 
-        const result = await getSefariaText("Zohar, 1.15a.1"); // Known complex text
-        expect(result).not.toBeNull();
-        expect(typeof result.he).toBe('string');
-        expect(typeof result.en).toBe('string');
-        // valid checks
-        expect(result.ref).toBeDefined();
+        // Spy on fetch
+        const originalFetch = global.fetch;
+        global.fetch = async () => ({
+            ok: true,
+            json: async () => mockResponse
+        });
+
+        try {
+            const result = await getSefariaText(checkRef);
+
+            expect(result).not.toBeNull();
+            expect(typeof result.he).toBe('string');
+            expect(result.he).toContain("Deep Text");
+            expect(result.he).toContain("Nested");
+            expect(result.he).toContain("Top Level");
+
+            // Should be space joined
+            expect(result.he).toBe("Deep Text Nested Top Level");
+        } finally {
+            // Restore fetch
+            global.fetch = originalFetch;
+        }
     });
 
     // Tests for "Missing Texts" (Fuzzy Search Typos)

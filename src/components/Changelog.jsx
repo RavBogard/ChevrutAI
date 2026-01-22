@@ -11,6 +11,13 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.22 <span className="version-date">January 22, 2026</span></h2>
+                    <ul>
+                        <li><strong>Safe Guest Mode</strong> – Your work is now automatically saved to your browser even if you aren't signed in, preventing data loss if the page reloads.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.21 <span className="version-date">January 22, 2026</span></h2>
                     <ul>
                         <li><strong>Model Configuration</strong> – Restored correct Gemini model configuration (Gemini 3 Flash Preview).</li>

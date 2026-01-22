@@ -136,69 +136,88 @@ export const useSheetPersistence = (urlSheetId) => {
         return () => unsubscribe();
     }, [currentUser]);
 
-    // ========== LOAD SHEET FROM URL ==========
+    // ========== LOAD SHEET FROM URL OR LOCAL STORAGE ==========
     useEffect(() => {
-        if (!urlSheetId) return;
+        const initSheet = async () => {
+            // 1. Try URL ID (Firestore)
+            if (urlSheetId) {
+                // If we already have this sheet loaded, skip
+                if (currentSheetId === urlSheetId && isPersisted) return;
 
-        const loadFromUrl = async () => {
-            // If we already have this sheet loaded, skip
-            if (currentSheetId === urlSheetId && isPersisted) return;
+                setIsLoading(true);
+                try {
+                    const sheet = await getSheetFromFirestore(urlSheetId);
+                    if (!mountedRef.current) return;
 
-            setIsLoading(true);
-            try {
-                const sheet = await getSheetFromFirestore(urlSheetId);
-                if (!mountedRef.current) return;
+                    if (sheet) {
+                        // Sheet exists in DB
+                        setTitle(sheet.title || 'Untitled Source Sheet');
+                        setSources(sheet.sources || []);
+                        setMessages(sheet.messages || [{
+                            id: 'welcome',
+                            role: 'model',
+                            text: 'Shalom! What kind of text sheet do you want to create together?',
+                            suggestedSources: []
+                        }]);
+                        setSourcesHistory([sheet.sources || []]);
+                        setHistoryIndex(0);
+                        setCurrentSheetId(urlSheetId);
+                        setIsPersisted(true);
+                        setIsDirty(false);
+                        setGoogleDocId(sheet.googleDocId || null);
+                        setGoogleDocUrl(sheet.googleDocUrl || null);
+                        setLastSyncedAt(sheet.lastSyncedAt || null);
+                        return;
+                    }
+                } catch (error) {
+                    console.error('Failed to load sheet from DB:', error);
+                } finally {
+                    if (mountedRef.current) setIsLoading(false);
+                }
+            }
 
-                if (sheet) {
-                    // Sheet exists in DB
-                    setTitle(sheet.title || 'Untitled Source Sheet');
-                    setSources(sheet.sources || []);
-                    setMessages(sheet.messages || [{
-                        id: 'welcome',
-                        role: 'model',
-                        text: 'Shalom! What kind of text sheet do you want to create together?',
-                        suggestedSources: []
-                    }]);
-                    setSourcesHistory([sheet.sources || []]);
-                    setHistoryIndex(0);
-                    setCurrentSheetId(urlSheetId);
-                    setIsPersisted(true);
-                    setIsDirty(false);
-                    // Load Google Docs link info
-                    setGoogleDocId(sheet.googleDocId || null);
-                    setGoogleDocUrl(sheet.googleDocUrl || null);
-                    setLastSyncedAt(sheet.lastSyncedAt || null);
-                } else {
-                    // New sheet - use URL ID as canonical ID
-                    setCurrentSheetId(urlSheetId);
-                    setIsPersisted(false);
-                    setIsDirty(false);
-                    // Reset to defaults
-                    setTitle('New Source Sheet');
-                    setSources([]);
-                    setMessages([{
-                        id: 'welcome',
-                        role: 'model',
-                        text: 'Shalom! What kind of text sheet do you want to create together?',
-                        suggestedSources: []
-                    }]);
-                    setSourcesHistory([[]]);
-                    setHistoryIndex(0);
+            // 2. Fallback: Load from Local Storage (Guest Mode)
+            // If no URL ID, or URL ID failed/didn't exist, check local storage
+            // But only if we are NOT logged in (or we treat LS as guest cache)
+            // Ideally, recover guest session if no URL ID provided
+            if (!urlSheetId && !currentUser) {
+                try {
+                    const localSources = localStorage.getItem('chevruta_sources');
+                    const localMessages = localStorage.getItem('chevruta_messages');
+                    const localTitle = localStorage.getItem('chevruta_title');
+
+                    if (localSources) {
+                        const parsedSources = JSON.parse(localSources);
+                        setSources(parsedSources);
+                        setSourcesHistory([parsedSources]);
+                    }
+                    if (localMessages) setMessages(JSON.parse(localMessages));
+                    if (localTitle) setTitle(localTitle);
+
+                    setIsPersisted(false); // Local storage is not "Persisted" to DB
+                } catch (e) {
+                    console.error("Failed to load from local storage", e);
                 }
-            } catch (error) {
-                console.error('Failed to load sheet:', error);
-                if (mountedRef.current) {
-                    showToast('Failed to load sheet', 'error');
-                }
-            } finally {
-                if (mountedRef.current) {
-                    setIsLoading(false);
-                }
+            } else if (urlSheetId) {
+                // Initializing a NEW sheet from a specific URL ID (which wasn't in DB)
+                setCurrentSheetId(urlSheetId);
+                setIsPersisted(false);
+                setIsDirty(false);
+                setTitle('New Source Sheet');
+                setSources([]);
+                setMessages([{
+                    id: 'welcome',
+                    role: 'model',
+                    text: 'Shalom! What kind of text sheet do you want to create together?',
+                    suggestedSources: []
+                }]);
+                setSourcesHistory([[]]);
+                setHistoryIndex(0);
             }
         };
 
-        loadFromUrl();
-    }, [urlSheetId, currentSheetId, isPersisted, showToast]);
+        initSheet();
+    }, [urlSheetId, currentSheetId, isPersisted, currentUser]);
 
     // ========== AUTOSAVE LOGIC ==========
     // Use refs for values we need in the timeout but don't want to trigger effect
@@ -242,13 +261,24 @@ export const useSheetPersistence = (urlSheetId) => {
             // Re-check conditions using REFS (not stale closure values)
             if (!mountedRef.current) return;
             if (isLoadingRefAuto.current) return;
-            if (!currentUserRef.current) {
-                console.log('Skipping autosave: No user logged in');
-                return;
-            }
 
             // Use the LATEST data from ref, not stale closure
             const dataToSave = latestDataRef.current;
+
+            // GUEST MODE: Save to LocalStorage
+            if (!currentUserRef.current) {
+                try {
+                    localStorage.setItem('chevruta_sources', JSON.stringify(dataToSave.sources));
+                    localStorage.setItem('chevruta_messages', JSON.stringify(dataToSave.messages));
+                    localStorage.setItem('chevruta_title', dataToSave.title);
+                    console.log('Saved to LocalStorage (Guest Mode)');
+                    setIsDirty(false); // Mark clean
+                } catch (e) {
+                    console.error("Failed to save to local storage", e);
+                }
+                return;
+            }
+
             const sheetIdToUse = currentSheetId || urlSheetId;
 
             if (!sheetIdToUse) {
