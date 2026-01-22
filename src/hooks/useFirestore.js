@@ -11,6 +11,8 @@ export const useFirestore = (currentSheetTitle, currentSources, currentMessages)
     // Initially null until saved.
     const [currentSheetId, setCurrentSheetId] = useState(null);
     const [userSheets, setUserSheets] = useState([]);
+    // Track if the sheet has been saved to DB at least once to determine debounce behavior
+    const [isPersisted, setIsPersisted] = useState(false);
 
     // Autosave timer
     const saveTimeoutRef = useRef(null);
@@ -58,8 +60,9 @@ export const useFirestore = (currentSheetTitle, currentSources, currentMessages)
 
         if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
 
-        // Immediate save for new sheets (first edit), standard debounce for updates
-        const delay = (!currentSheetId && !isCreatingRef.current) ? 0 : 2000;
+        // Immediate save for new sheets (first edit), standard debounce for updates.
+        // We use isPersisted to determine if it's "new" in terms of DB existence.
+        const delay = (!isPersisted && !isCreatingRef.current) ? 0 : 2000;
 
         if (delay === 0) {
             isCreatingRef.current = true;
@@ -88,6 +91,9 @@ export const useFirestore = (currentSheetTitle, currentSources, currentMessages)
 
                 const savedId = await saveSheetToFirestore(currentUser.uid, sheetData);
 
+                // Mark as persisted after successful save
+                setIsPersisted(true);
+
                 if (!currentSheetId && savedId) {
                     setCurrentSheetId(savedId);
                     // Update URL without reload (optional, for later routing)
@@ -104,7 +110,7 @@ export const useFirestore = (currentSheetTitle, currentSources, currentMessages)
         }, delay);
 
         return () => clearTimeout(saveTimeoutRef.current);
-    }, [currentUser, currentSheetTitle, currentSources, currentMessages, currentSheetId]);
+    }, [currentUser, currentSheetTitle, currentSources, currentMessages, currentSheetId, isPersisted]);
 
     // Function to manually load a sheet
     const loadSheet = async (id, setSources, setMessages, setTitle) => {
@@ -116,6 +122,7 @@ export const useFirestore = (currentSheetTitle, currentSources, currentMessages)
                 setMessages(sheet.messages || []);
                 setTitle(sheet.title || "Untitled Source Sheet");
                 setCurrentSheetId(id);
+                setIsPersisted(true); // It exists in DB
 
                 // Allow state to settle before re-enabling autosave
                 // Allow state to settle before re-enabling autosave
@@ -127,6 +134,7 @@ export const useFirestore = (currentSheetTitle, currentSources, currentMessages)
 
             // If sheet doesn't exist (new sheet), we must also reset loading
             isLoadingRef.current = false;
+            setIsPersisted(false); // It does NOT exist
         } catch (error) {
             showToast("Failed to load sheet", "error");
             console.error(error);
@@ -138,6 +146,7 @@ export const useFirestore = (currentSheetTitle, currentSources, currentMessages)
     const createNewSheet = () => {
         isLoadingRef.current = true;
         setCurrentSheetId(null);
+        setIsPersisted(false);
         window.history.replaceState(null, '', '#/');
         setTimeout(() => {
             isLoadingRef.current = false;

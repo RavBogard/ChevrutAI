@@ -29,21 +29,52 @@ const resolveSefariaRef = async (ref) => {
 
         const data = await response.json();
 
-        // Look for best match in completion_objects
         if (data.completion_objects && data.completion_objects.length > 0) {
             const candidates = data.completion_objects
                 .filter(obj => obj.type === 'ref' || obj.type === 'Index')
                 .map(obj => obj.key);
 
             if (candidates.length > 0) {
+                // Heuristic: Find the "Best Match" candidate instead of just taking the first one
+                // We tokenize the search term and the candidate keys to find the most overlap
+                const tokenize = (str) => str.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(/\s+/).filter(Boolean);
+                const termTokens = tokenize(term);
+
+                let bestCandidate = candidates[0];
+                let maxOverlap = -1;
+                // Prefer shorter keys when overlaps are equal (e.g. "Tanya" vs "Tanya, Iggeret HaKodesh")
+                // UNLESS the term has more words.
+
+                for (const candidate of candidates) {
+                    const candidateTokens = tokenize(candidate);
+                    // Count how many term tokens appear in the candidate
+                    const overlap = termTokens.filter(t => candidateTokens.includes(t)).length;
+
+                    // Prioritize higher overlap
+                    // If overlaps are equal, we might prefer the one that is closer in length to the original term
+                    if (overlap > maxOverlap) {
+                        maxOverlap = overlap;
+                        bestCandidate = candidate;
+                    } else if (overlap === maxOverlap) {
+                        // Tie-breaking:
+                        // If the candidate is "Tanya" (len 1) and term is "Tanya Likutei" (len 2)
+                        // And "Tanya Likutei..." (len 3) has same overlap (2)
+                        // We want the one that captures the specificity best.
+                        // Actually, just picking the one with the highest overlap ratio to term length is usually good.
+                        // Let's stick to a simple length tie-breaker: if overlap is same, pick the one with closer token count?
+                        if (Math.abs(candidateTokens.length - termTokens.length) < Math.abs(tokenize(bestCandidate).length - termTokens.length)) {
+                            bestCandidate = candidate;
+                        }
+                    }
+                }
+
                 // Try to reconstruct the ref with the canonical title
-                // Find where the numbers start in the original ref
-                const numberMatch = ref.match(/(\d+[.:].*)$/);
+                const numberMatch = ref.match(/(\s+\d+[.:]?.*)$/);
                 if (numberMatch) {
-                    return `${candidates[0]} ${numberMatch[1]}`;
+                    return `${bestCandidate}${numberMatch[1]}`;
                 }
                 // If no numbers, just return the book
-                return candidates[0];
+                return bestCandidate;
             }
         }
         return null;
