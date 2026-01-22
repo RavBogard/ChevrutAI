@@ -86,8 +86,10 @@
 .shell-overlays {
     position: fixed;
     top: 0;
-    left: 0;
-    width: 100%;
+    left: var(--sidebar-width, 0px);
+    /* Start after sidebar */
+    width: calc(100% - var(--sidebar-width, 0px));
+    /* occupy remaining width only */
     height: 0;
     /* Don't block clicks */
     z-index: 9000;
