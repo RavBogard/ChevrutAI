@@ -59,7 +59,9 @@ export const subscribeToAuth = (callback) => {
 
 // Save or Update a Sheet
 export const saveSheetToFirestore = async (userId, sheetData) => {
-    if (!userId) return;
+    if (!userId) {
+        throw new Error('Cannot save sheet: No user ID provided');
+    }
 
     // Create a reference ID if one doesn't exist, otherwise use existing
     const sheetId = sheetData.id || doc(collection(db, "sheets")).id;

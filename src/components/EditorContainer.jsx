@@ -1,83 +1,59 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { useToast } from './Toast';
-import { useFirestore } from '../hooks/useFirestore';
-import { useSheetManager } from '../hooks/useSheetManager';
-import { useChat } from '../hooks/useChat';
+import { useSheetPersistence } from '../hooks/useSheetPersistence';
 import { useResizableSidebar } from '../hooks/useResizableSidebar';
 import SheetView from './SheetView';
 import ChatSidebar from './ChatSidebar';
 import UnifiedHeader from './UnifiedHeader';
 
-// Wrapper to pass params to logic
 const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage }) => {
     const { sheetId } = useParams();
     const navigate = useNavigate();
     const { currentUser } = useAuth();
-    // eslint-disable-next-line no-unused-vars
-    const { showToast } = useToast();
 
-    // --- State Management Hooks ---
+    // --- Unified State Management ---
     const {
-        sourcesList,
-        setSourcesList,
-        sheetTitle,
-        setSheetTitle,
-        undoSources,
-        redoSources,
+        // Sheet content
+        title,
+        setTitle,
+        sources,
+        messages,
+
+        // Source management
+        addSource,
+        removeSource,
+        updateSource,
+        reorderSources,
+        clearSheet,
+
+        // Undo/Redo
+        undo,
+        redo,
         canUndo,
         canRedo,
-        handleAddSource,
-        handleRemoveSource,
-        handleUpdateSource,
-        handleReorder,
-        clearSheet
-    } = useSheetManager();
 
-    const {
-        messages,
-        setMessages,
-        isLoading,
-        handleSendMessage: _handleSendMessage
-    } = useChat();
+        // Chat
+        sendMessage,
+        isChatLoading,
 
-    // Wrapper to pass title state to chat for auto-titling
-    const handleSendMessage = (text) => {
-        _handleSendMessage(text, sheetTitle, setSheetTitle);
-    };
-
-    // --- Firestore Sync ---
-    const {
-        userSheets,
-        loadSheet,
+        // Persistence state
         currentSheetId,
-        setCurrentSheetId,
-        deleteSheet,
-        isDirty, // Get dirty state
-        isSaving // Get saving state (optional, can be used for UI indicator)
-    } = useFirestore(sheetTitle, sourcesList, messages);
+        userSheets,
+        isDirty,
+        isSaving,
+        isLoading,
 
-    // Sync URL ID with System
-    useEffect(() => {
-        if (!sheetId) return;
-        if (sheetId !== currentSheetId) {
-            // Always try to load from Firestore first. If it doesn't exist, treat as new sheet.
-            loadSheet(sheetId, setSourcesList, setMessages, setSheetTitle).then((loaded) => {
-                if (!loaded) {
-                    // Sheet doesn't exist in Firestore, treat as new sheet
-                    setCurrentSheetId(sheetId);
-                }
-            });
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [sheetId]);
+        // Sheet management
+        loadSheet,
+        createNewSheet,
+        deleteSheet
+    } = useSheetPersistence(sheetId);
 
     // --- Sidebar & Resizing Logic ---
     const {
         sidebarWidth,
         isSidebarOpen,
-        isResizing,
         startResizing,
         toggleSidebar,
         mobileChatOpen,
@@ -85,16 +61,18 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
         setIsSidebarOpen
     } = useResizableSidebar();
 
-    // Auto-open sidebar only when chat starts (desktop only)
+    // Auto-open sidebar when chat starts (desktop only)
     useEffect(() => {
         const isDesktop = window.innerWidth > 768;
-        if (isDesktop && !isSidebarOpen) {
-            if (messages.length > 1) {
-                setIsSidebarOpen(true);
-            }
+        if (isDesktop && !isSidebarOpen && messages.length > 1) {
+            setIsSidebarOpen(true);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [messages]);
+    }, [messages, isSidebarOpen, setIsSidebarOpen]);
+
+    // --- Event Handlers ---
+    const handleSendMessage = (text) => {
+        sendMessage(text);
+    };
 
     const handleSuggestionClick = (text) => {
         handleSendMessage(text);
@@ -105,50 +83,84 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
         }
     };
 
+    const handleLoadSheet = async (id) => {
+        const loaded = await loadSheet(id);
+        if (loaded) {
+            navigate(`/sheet/${id}`);
+        }
+    };
 
+    const handleNewSheet = () => {
+        const newId = Date.now().toString();
+        createNewSheet(newId);
+        navigate(`/sheet/${newId}`);
+    };
 
-    // --- UX SAFETY FEATURES ---
-
-    // 1. Unsaved Changes Warning
+    // --- UX Safety: Unsaved Changes Warning ---
     useEffect(() => {
         const handleBeforeUnload = (e) => {
-            // Only warn if we are ACTUALLY dirty
             if (isDirty) {
                 e.preventDefault();
-                e.returnValue = ''; // Trigger browser warning
+                e.returnValue = '';
             }
         };
         window.addEventListener('beforeunload', handleBeforeUnload);
         return () => window.removeEventListener('beforeunload', handleBeforeUnload);
     }, [isDirty]);
 
-    // 2. Logo Logic
-    // "Home" is when we have no sources AND we haven't really started chatting (just welcome msg)
-    const isHomeState = sourcesList.length === 0 && messages.length <= 1;
+    // --- Derived State ---
+    const isHomeState = sources.length === 0 && messages.length <= 1;
+    const chatStarted = messages.length > 1;
+
+    // --- Loading State ---
+    if (isLoading) {
+        return (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                Loading...
+            </div>
+        );
+    }
 
     return (
-        <div className={`app-container ${messages.length > 1 ? 'chat-active' : 'chat-initial'}`}>
+        <div className={`app-container ${chatStarted ? 'chat-active' : 'chat-initial'}`}>
 
             {/* Guest Mode Banner */}
-            {!currentUser && sourcesList.length > 0 && (
+            {!currentUser && sources.length > 0 && (
                 <div style={{
                     position: 'fixed',
                     top: 0,
                     left: 0,
                     width: '100%',
-                    background: '#fff7ed', // orange-50
-                    color: '#c2410c', // orange-700
+                    background: '#fff7ed',
+                    color: '#c2410c',
                     textAlign: 'center',
                     padding: '4px',
                     fontSize: '0.8rem',
-                    zIndex: 2000, // Above everything
+                    zIndex: 2000,
                     borderBottom: '1px solid #fed7aa'
                 }}>
                     Guest Mode: Changes are not saved to an account. Sign in to save.
                 </div>
             )}
 
-            {/* Unified Sticky Header (Mobile & Desktop) */}
+            {/* Saving Indicator */}
+            {isSaving && (
+                <div style={{
+                    position: 'fixed',
+                    bottom: '1rem',
+                    right: '1rem',
+                    background: 'rgba(0,0,0,0.7)',
+                    color: 'white',
+                    padding: '0.5rem 1rem',
+                    borderRadius: '4px',
+                    fontSize: '0.8rem',
+                    zIndex: 2000
+                }}>
+                    Saving...
+                </div>
+            )}
+
+            {/* Unified Sticky Header */}
             <UnifiedHeader
                 onToggleSidebar={toggleSidebar}
                 darkMode={darkMode}
@@ -156,10 +168,10 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                 language={language}
                 toggleLanguage={toggleLanguage}
                 isSidebarOpen={isSidebarOpen}
-                isHome={isHomeState} // <-- Calculated logic passed down
+                isHome={isHomeState}
             />
 
-            {/* Sidebar Wrapper for Desktop */}
+            {/* Desktop Sidebar */}
             <div
                 className={`chat-sidebar-wrapper ${isSidebarOpen ? 'open' : 'closed'} desktop-sidebar`}
                 style={{ width: isSidebarOpen ? sidebarWidth : 0 }}
@@ -167,31 +179,32 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                 <ChatSidebar
                     messages={messages}
                     onSendMessage={handleSendMessage}
-                    onAddSource={handleAddSource}
-                    sheetSources={sourcesList}
-                    isLoading={isLoading}
-                    isMobileOpen={false} // Desktop doesn't use this prop
+                    onAddSource={addSource}
+                    sheetSources={sources}
+                    isLoading={isChatLoading}
+                    isMobileOpen={false}
                     onMobileClose={() => { }}
                     onToggleSidebar={toggleSidebar}
                     darkMode={darkMode}
                     toggleDarkMode={toggleDarkMode}
                     language={language}
                     userSheets={userSheets}
-                    onLoadSheet={(id) => loadSheet(id, setSourcesList, setMessages, setSheetTitle).then(() => navigate(`/sheet/${id}`))}
+                    onLoadSheet={handleLoadSheet}
                     currentSheetId={currentSheetId}
                     onDeleteSheet={deleteSheet}
+                    onNewSheet={handleNewSheet}
                 />
             </div>
 
             {/* Mobile Sidebar Drawer */}
             {mobileChatOpen && (
-                <div className={`chat-sidebar-wrapper mobile-drawer open`}>
+                <div className="chat-sidebar-wrapper mobile-drawer open">
                     <ChatSidebar
                         messages={messages}
                         onSendMessage={handleSendMessage}
-                        onAddSource={handleAddSource}
-                        sheetSources={sourcesList}
-                        isLoading={isLoading}
+                        onAddSource={addSource}
+                        sheetSources={sources}
+                        isLoading={isChatLoading}
                         isMobileOpen={true}
                         onMobileClose={() => setMobileChatOpen(false)}
                         onToggleSidebar={() => setMobileChatOpen(false)}
@@ -200,12 +213,15 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                         language={language}
                         userSheets={userSheets}
                         onLoadSheet={(id) => {
-                            loadSheet(id, setSourcesList, setMessages, setSheetTitle);
-                            navigate(`/sheet/${id}`);
+                            handleLoadSheet(id);
                             setMobileChatOpen(false);
                         }}
                         currentSheetId={currentSheetId}
                         onDeleteSheet={deleteSheet}
+                        onNewSheet={() => {
+                            handleNewSheet();
+                            setMobileChatOpen(false);
+                        }}
                     />
                 </div>
             )}
@@ -219,24 +235,24 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
             )}
 
             <SheetView
-                sources={sourcesList}
-                onRemoveSource={handleRemoveSource}
-                onUpdateSource={handleUpdateSource}
-                onReorder={handleReorder}
+                sources={sources}
+                onRemoveSource={removeSource}
+                onUpdateSource={updateSource}
+                onReorder={reorderSources}
                 onClearSheet={clearSheet}
-                onUndo={undoSources}
-                onRedo={redoSources}
+                onUndo={undo}
+                onRedo={redo}
                 canUndo={canUndo}
                 canRedo={canRedo}
                 language={language}
                 onSuggestionClick={handleSuggestionClick}
-                sheetTitle={sheetTitle}
-                onTitleChange={setSheetTitle}
+                sheetTitle={title}
+                onTitleChange={setTitle}
                 onSendMessage={handleSendMessage}
-                chatStarted={messages.length > 1}
-                onAddSource={handleAddSource}
+                chatStarted={chatStarted}
+                onAddSource={addSource}
                 userSheets={userSheets}
-                onLoadSheet={(id) => loadSheet(id, setSourcesList, setMessages, setSheetTitle).then(() => navigate(`/sheet/${id}`))}
+                onLoadSheet={handleLoadSheet}
                 darkMode={darkMode}
                 toggleDarkMode={toggleDarkMode}
                 toggleLanguage={toggleLanguage}
