@@ -1,12 +1,39 @@
-// src/services/ai.js
+/**
+ * Formats the source sheet into a structured Markdown-like context for the AI.
+ * Distinguishes between Section Headers, Texts, and Notes.
+ * @param {Array} sources 
+ * @returns {string}
+ */
+const formatSheetForAI = (sources) => {
+    if (!sources || sources.length === 0) return "The user has an empty source sheet.";
+
+    let output = "## Current Sheet Structure\n\n";
+    let sectionCount = 0;
+
+    sources.forEach((s, i) => {
+        if (s.type === 'header') {
+            sectionCount++;
+            output += `\n### Section ${sectionCount}: ${s.en || s.he || '(Untitled Section)'}\n`;
+        } else if (s.type === 'custom') {
+            output += `> Note: ${s.en}\n`;
+        } else {
+            // Text Source
+            output += `${i + 1}. **${s.ref}**\n`;
+            if (s.en) output += `   "${s.en.substring(0, 150)}${s.en.length > 150 ? '...' : ''}"\n`;
+        }
+    });
+
+    return output;
+};
 
 /**
  * Sends a message to the Google Gemini API.
  * @param {string} userText - The user's input message.
  * @param {Array} messageHistory - Previous messages for context.
+ * @param {Array} sheetSources - The current list of sources on the sheet.
  * @returns {Promise<Object>} - The API response object.
  */
-export const sendGeminiMessage = async (userText, messageHistory) => {
+export const sendGeminiMessage = async (userText, messageHistory, sheetSources = []) => {
     try {
         // Filter and format history
         let history = messageHistory
@@ -18,17 +45,16 @@ export const sendGeminiMessage = async (userText, messageHistory) => {
                 parts: [{ text: m.text }]
             }));
 
-        // If history is empty but we have a welcome message in state, 
-        // strictly speaking we might want to include it, 
-        // but often the system prompt handles the "persona".
-        // For now, we trust the UI state passed in.
+        // Generate Context
+        const sheetContext = formatSheetForAI(sheetSources);
 
         const response = await fetch('/api/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 message: userText,
-                history: history
+                history: history,
+                context: sheetContext // Send structured context
             })
         });
 

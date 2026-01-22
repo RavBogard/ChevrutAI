@@ -404,7 +404,7 @@ export const useSheetPersistence = (urlSheetId) => {
 
         setIsChatLoading(true);
         try {
-            const data = await sendGeminiMessage(text, [...messages, userMsg]);
+            const data = await sendGeminiMessage(text, [...messages, userMsg], sources);
 
             // Auto-title if still default
             if (data.suggested_title && title === 'New Source Sheet') {
