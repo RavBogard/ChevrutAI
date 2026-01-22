@@ -41,6 +41,21 @@
     align-items: center;
 }
 
+/* Force UnifiedHeader to behave within the grid cell */
+.shell-header .unified-header {
+    position: static !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: auto !important;
+    top: auto !important;
+    left: auto !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    /* Let parent handle border */
+    background: transparent !important;
+    /* Let parent handle bg */
+}
+
 .shell-sidebar {
     grid-area: sidebar;
     position: relative;

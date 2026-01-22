@@ -11,6 +11,13 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.43 <span className="version-date">January 22, 2026</span></h2>
+                    <ul>
+                        <li><strong>Fixed Header/Sidebar Conflict</strong> – Applied aggressive layout resets to the Header component to force it to stay within its assigned grid area, ensuring it can never overlap or block the Sidebar's controls.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.42 <span className="version-date">January 22, 2026</span></h2>
                     <ul>
                         <li><strong>Fixed Unclickable Sidebar Buttons</strong> – Resolved an issue where the "Guest Mode" banner layer was invisibly overlapping the sidebar, preventing clicks on the Close, Logo, and New Sheet buttons.</li>
