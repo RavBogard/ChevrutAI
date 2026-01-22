@@ -172,6 +172,8 @@ h6 {
   gap: 1.5rem;
   min-height: 0;
   /* Critical for flex overflow scrolling */
+  overflow-y: scroll;
+  /* Force scrollbar */
   scrollbar-gutter: stable;
 }
 
@@ -501,7 +503,8 @@ h6 {
   flex: 1;
   background-color: var(--sheet-bg);
   color: var(--sheet-text);
-  overflow-y: auto;
+  overflow-y: scroll;
+  /* Force scrollbar */
   padding: 2rem 4rem;
   display: flex;
   flex-direction: column;
