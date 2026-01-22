@@ -11,6 +11,13 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.37 <span className="version-date">January 22, 2026</span></h2>
+                    <ul>
+                        <li><strong>Layout Fixes Applied</strong> – Re-applied the critical CSS fixes for the Header and Saving Indicator that were missing in the previous build. Layout stability is now guaranteed.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.36 <span className="version-date">January 22, 2026</span></h2>
                     <ul>
                         <li><strong>Fixed Persistent Sidebar Re-opening</strong> – Solved the issue where the sidebar would "fight" you and immediately reopen after being closed.</li>
