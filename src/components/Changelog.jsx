@@ -11,6 +11,14 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.13 <span className="version-date">January 22, 2026</span></h2>
+                    <ul>
+                        <li><strong>Autosave Robustness</strong> – Improved connection reliability and fixed false "unsaved changes" warnings.</li>
+                        <li><strong>Smart Spelling Search</strong> – "Sfat Emet" and other texts with variable spellings now resolve correctly.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.12 <span className="version-date">January 22, 2026</span></h2>
                     <ul>
                         <li><strong>Autosave Fix</strong> – Fixed a bug where new sheets weren't saving immediately to the database.</li>

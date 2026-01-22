@@ -40,28 +40,56 @@ const resolveSefariaRef = async (ref) => {
                 const tokenize = (str) => str.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(/\s+/).filter(Boolean);
                 const termTokens = tokenize(term);
 
+                // Simple Levenshtein distance for fuzzy string matching
+                const levenshtein = (a, b) => {
+                    const matrix = [];
+                    for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+                    for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+                    for (let i = 1; i <= b.length; i++) {
+                        for (let j = 1; j <= a.length; j++) {
+                            if (b.charAt(i - 1) === a.charAt(j - 1)) {
+                                matrix[i][j] = matrix[i - 1][j - 1];
+                            } else {
+                                matrix[i][j] = Math.min(
+                                    matrix[i - 1][j - 1] + 1,
+                                    matrix[i][j - 1] + 1,
+                                    matrix[i - 1][j] + 1
+                                );
+                            }
+                        }
+                    }
+                    return matrix[b.length][a.length];
+                };
+
                 let bestCandidate = candidates[0];
                 let maxOverlap = -1;
-                // Prefer shorter keys when overlaps are equal (e.g. "Tanya" vs "Tanya, Iggeret HaKodesh")
-                // UNLESS the term has more words.
 
                 for (const candidate of candidates) {
                     const candidateTokens = tokenize(candidate);
-                    // Count how many term tokens appear in the candidate
-                    const overlap = termTokens.filter(t => candidateTokens.includes(t)).length;
+
+                    // Count how many term tokens "match" candidate tokens
+                    // We allow a match if the token is exact OR if it's very close (levenshtein <= 1 or 2 depending on length)
+                    let overlap = 0;
+
+                    for (const tToken of termTokens) {
+                        const matchFound = candidateTokens.some(cToken => {
+                            if (cToken === tToken) return true;
+                            // For short words (len < 4), strict equality. 
+                            // For len >= 4, allow distance of 1 (e.g. "sfat" vs "sefat" is dist 1)
+                            if (tToken.length >= 4 && cToken.length >= 4) {
+                                return levenshtein(tToken, cToken) <= 1;
+                            }
+                            return false;
+                        });
+                        if (matchFound) overlap++;
+                    }
 
                     // Prioritize higher overlap
-                    // If overlaps are equal, we might prefer the one that is closer in length to the original term
                     if (overlap > maxOverlap) {
                         maxOverlap = overlap;
                         bestCandidate = candidate;
                     } else if (overlap === maxOverlap) {
-                        // Tie-breaking:
-                        // If the candidate is "Tanya" (len 1) and term is "Tanya Likutei" (len 2)
-                        // And "Tanya Likutei..." (len 3) has same overlap (2)
-                        // We want the one that captures the specificity best.
-                        // Actually, just picking the one with the highest overlap ratio to term length is usually good.
-                        // Let's stick to a simple length tie-breaker: if overlap is same, pick the one with closer token count?
+                        // Tie-breaking: pick closer length match
                         if (Math.abs(candidateTokens.length - termTokens.length) < Math.abs(tokenize(bestCandidate).length - termTokens.length)) {
                             bestCandidate = candidate;
                         }

@@ -53,7 +53,9 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
         loadSheet,
         currentSheetId,
         setCurrentSheetId,
-        deleteSheet
+        deleteSheet,
+        isDirty, // Get dirty state
+        isSaving // Get saving state (optional, can be used for UI indicator)
     } = useFirestore(sheetTitle, sourcesList, messages);
 
     // Sync URL ID with System
@@ -110,14 +112,15 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
     // 1. Unsaved Changes Warning
     useEffect(() => {
         const handleBeforeUnload = (e) => {
-            if (sourcesList.length > 0) {
+            // Only warn if we are ACTUALLY dirty
+            if (isDirty) {
                 e.preventDefault();
                 e.returnValue = ''; // Trigger browser warning
             }
         };
         window.addEventListener('beforeunload', handleBeforeUnload);
         return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-    }, [sourcesList]);
+    }, [isDirty]);
 
     // 2. Logo Logic
     // "Home" is when we have no sources AND we haven't really started chatting (just welcome msg)

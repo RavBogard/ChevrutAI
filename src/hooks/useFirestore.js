@@ -13,6 +13,9 @@ export const useFirestore = (currentSheetTitle, currentSources, currentMessages)
     const [userSheets, setUserSheets] = useState([]);
     // Track if the sheet has been saved to DB at least once to determine debounce behavior
     const [isPersisted, setIsPersisted] = useState(false);
+    // Track active saving/loading states
+    const [isSaving, setIsSaving] = useState(false);
+    const [isDirty, setIsDirty] = useState(false);
 
     // Autosave timer
     const saveTimeoutRef = useRef(null);
@@ -58,6 +61,9 @@ export const useFirestore = (currentSheetTitle, currentSources, currentMessages)
             return;
         }
 
+        // Content changed => Mark as Dirty
+        setIsDirty(true);
+
         if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
 
         // Immediate save for new sheets (first edit), standard debounce for updates.
@@ -76,6 +82,8 @@ export const useFirestore = (currentSheetTitle, currentSources, currentMessages)
                     return;
                 }
 
+                setIsSaving(true); // START SAVING
+
                 const sheetData = {
                     title: currentSheetTitle,
                     sources: currentSources,
@@ -93,6 +101,7 @@ export const useFirestore = (currentSheetTitle, currentSources, currentMessages)
 
                 // Mark as persisted after successful save
                 setIsPersisted(true);
+                setIsDirty(false); // CLEAN
 
                 if (!currentSheetId && savedId) {
                     setCurrentSheetId(savedId);
@@ -103,9 +112,10 @@ export const useFirestore = (currentSheetTitle, currentSources, currentMessages)
                 console.log("Autosaved sheet:", savedId);
             } catch (error) {
                 console.error("Autosave failed:", error);
-                // Maybe show toast? Don't spam user though.
+                showToast("Autosave failed! Please check connection.", "error");
             } finally {
                 isCreatingRef.current = false;
+                setIsSaving(false); // DONE SAVING
             }
         }, delay);
 
@@ -168,6 +178,8 @@ export const useFirestore = (currentSheetTitle, currentSources, currentMessages)
         loadSheet,
         createNewSheet,
         deleteSheet,
-        setCurrentSheetId // Exported so App can set it if loading from URL
+        setCurrentSheetId, // Exported so App can set it if loading from URL
+        isSaving,
+        isDirty
     };
 };
