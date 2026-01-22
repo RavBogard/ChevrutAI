@@ -16,6 +16,12 @@ const LoadingFallback = () => (
   </div>
 );
 
+// Generate new sheet ID (stable during render)
+const NewSheetRedirect = () => {
+  const [id] = useState(() => Date.now().toString());
+  return <Navigate to={`/sheet/${id}`} replace />;
+};
+
 function App() {
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem('theme') === 'dark';
@@ -30,12 +36,6 @@ function App() {
 
   const [language, setLanguage] = useState('en');
   const toggleLanguage = () => setLanguage(prev => prev === 'en' ? 'he' : 'en');
-
-  // Generate new sheet ID (stable during render)
-  const NewSheetRedirect = () => {
-    const [id] = useState(() => Date.now().toString());
-    return <Navigate to={`/sheet/${id}`} replace />;
-  };
 
   return (
     <Router>

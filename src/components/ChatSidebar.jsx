@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router-dom';
+import Logo from './common/Logo';
 
 const ChatSidebar = ({
     messages,
@@ -130,8 +131,7 @@ const ChatSidebar = ({
                         </svg>
                     </button>
 
-                    <div
-                        style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-start', fontFamily: 'var(--font-english-serif)', gap: '1px', cursor: 'pointer' }}
+                    <Logo
                         onClick={() => {
                             localStorage.removeItem('chevruta_sources');
                             localStorage.removeItem('chevruta_messages');
@@ -139,12 +139,7 @@ const ChatSidebar = ({
                             window.location.hash = '#/';
                             window.location.reload();
                         }}
-                        title="Go to home"
-                    >
-                        <span style={{ fontSize: '2rem', fontWeight: '700', color: 'var(--sheet-text)', letterSpacing: '-0.02em' }}>Chevruta</span>
-                        <span style={{ fontSize: '2rem', fontWeight: '700', background: 'linear-gradient(135deg, #8b5cf6 0%, #f97316 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>.AI</span>
-                        <span style={{ fontSize: '1.3rem', background: 'linear-gradient(135deg, #8b5cf6 0%, #f97316 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginLeft: '4px', transform: 'translateY(-6px)' }}>✦</span>
-                    </div>
+                    />
 
                     <button
                         className="new-chat-btn-sidebar"

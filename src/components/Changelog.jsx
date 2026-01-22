@@ -11,6 +11,13 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.26 <span className="version-date">January 22, 2026</span></h2>
+                    <ul>
+                        <li><strong>Under the Hood Polish</strong> – Cleaned up internal code structure, unified branding components, and improved performance stability.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.25 <span className="version-date">January 22, 2026</span></h2>
                     <ul>
                         <li><strong>Stable Editor</strong> – Simplified the text editor to prevent edits from reverting. The "hover to highlight" feature has been removed to ensure reliability.</li>

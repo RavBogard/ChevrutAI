@@ -6,6 +6,8 @@ import { useResizableSidebar } from '../hooks/useResizableSidebar';
 import SheetView from './SheetView';
 import ChatSidebar from './ChatSidebar';
 import UnifiedHeader from './UnifiedHeader';
+import GuestBanner from './common/GuestBanner';
+import SavingIndicator from './common/SavingIndicator';
 
 const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage }) => {
     const { sheetId } = useParams();
@@ -133,40 +135,11 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
         <div className={`app-container ${chatStarted ? 'chat-active' : 'chat-initial'}`}>
 
             {/* Guest Mode Banner */}
-            {!currentUser && sources.length > 0 && (
-                <div style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    background: '#fff7ed',
-                    color: '#c2410c',
-                    textAlign: 'center',
-                    padding: '4px',
-                    fontSize: '0.8rem',
-                    zIndex: 2000,
-                    borderBottom: '1px solid #fed7aa'
-                }}>
-                    Guest Mode: Changes are not saved to an account. Sign in to save.
-                </div>
-            )}
+            {/* Guest Mode Banner */}
+            {!currentUser && sources.length > 0 && <GuestBanner />}
 
             {/* Saving Indicator */}
-            {isSaving && (
-                <div style={{
-                    position: 'fixed',
-                    bottom: '1rem',
-                    right: '1rem',
-                    background: 'rgba(0,0,0,0.7)',
-                    color: 'white',
-                    padding: '0.5rem 1rem',
-                    borderRadius: '4px',
-                    fontSize: '0.8rem',
-                    zIndex: 2000
-                }}>
-                    Saving...
-                </div>
-            )}
+            {isSaving && <SavingIndicator />}
 
             {/* Unified Sticky Header */}
             <UnifiedHeader

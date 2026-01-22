@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import UserMenu from './auth/UserMenu';
+import Logo from './common/Logo';
 
 const UnifiedHeader = ({
     onToggleSidebar,
@@ -59,26 +60,18 @@ const UnifiedHeader = ({
                 </button>
 
                 {/* Persistent Branding (Visible when sidebar closed AND NOT on home screen) */}
-                <div
+                <Logo
                     className="header-branding"
-                    style={{
-                        opacity: (isSidebarOpen || isHome) ? 0 : 1,
-                        transition: 'opacity 0.3s ease',
-                        pointerEvents: (isSidebarOpen || isHome) ? 'none' : 'auto',
-                        display: 'flex',
-                        alignItems: 'center',
-                        fontFamily: 'var(--font-english-serif)',
-                        cursor: 'pointer'
-                    }}
                     onClick={() => {
                         window.location.hash = '#/';
                         window.location.reload();
                     }}
-                >
-                    <span style={{ fontSize: '1.5rem', fontWeight: '700', color: 'var(--sheet-text)', letterSpacing: '-0.02em' }}>Chevruta</span>
-                    <span style={{ fontSize: '1.5rem', fontWeight: '700', background: 'linear-gradient(135deg, #8b5cf6 0%, #f97316 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>.AI</span>
-                    <span style={{ fontSize: '1rem', background: 'linear-gradient(135deg, #8b5cf6 0%, #f97316 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginLeft: '3px', transform: 'translateY(-4px)' }}>✦</span>
-                </div>
+                    style={{
+                        opacity: (isSidebarOpen || isHome) ? 0 : 1,
+                        transition: 'opacity 0.3s ease',
+                        pointerEvents: (isSidebarOpen || isHome) ? 'none' : 'auto'
+                    }}
+                />
             </div>
 
             {/* Right: Controls Group */}
