@@ -11,6 +11,13 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.32 <span className="version-date">January 22, 2026</span></h2>
+                    <ul>
+                        <li><strong>Layout Stability II</strong> – Applied advanced scrollbar stabilization to the chat and sheet views to prevent inner-container shifts.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.31 <span className="version-date">January 22, 2026</span></h2>
                     <ul>
                         <li><strong>Layout Stability</strong> – Fixed the page jump when chat messages appear.</li>
