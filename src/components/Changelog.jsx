@@ -11,6 +11,14 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.31 <span className="version-date">January 22, 2026</span></h2>
+                    <ul>
+                        <li><strong>Layout Stability</strong> – Fixed the page jump when chat messages appear.</li>
+                        <li><strong>Header Polish</strong> – Addressed the logo visibility on the homepage.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.30 <span className="version-date">January 22, 2026</span></h2>
                     <ul>
                         <li><strong>UI Polish</strong> – Fixed layout "jumping" during chat and corrected logo visibility on the homepage.</li>

@@ -66,11 +66,6 @@ const UnifiedHeader = ({
                         window.location.hash = '#/';
                         window.location.reload();
                     }}
-                    style={{
-                        opacity: (isSidebarOpen || isHome) ? 0 : 1,
-                        transition: 'opacity 0.3s ease',
-                        pointerEvents: (isSidebarOpen || isHome) ? 'none' : 'auto'
-                    }}
                 />
             </div>
 
