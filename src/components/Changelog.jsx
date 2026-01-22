@@ -11,6 +11,13 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.17 <span className="version-date">January 22, 2026</span></h2>
+                    <ul>
+                        <li><strong>Hasidic Text Citations</strong> – The AI assistant now correctly suggests Sfat Emet and other Hasidic texts with valid section numbers.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.16 <span className="version-date">January 22, 2026</span></h2>
                     <ul>
                         <li><strong>Empty Text Prevention</strong> – Sources with missing text sections are no longer added to your sheet.</li>

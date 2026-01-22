@@ -60,6 +60,16 @@ BAD titles (NEVER do this):
    CRITICAL: If a user asks for a general concept (e.g. "Sanhedrin 90b"), infer the most relevant 2-4 segments and cite ONLY those (e.g. "Sanhedrin 90b:1-4"). DO NOT cite the whole page.
    CRITICAL: For Mishneh Torah, use explicit Sefaria titles (e.g. "Mishneh Torah, Kings and Wars", "Mishneh Torah, Repentance"). Avoid "Laws of...".
    CRITICAL: NEVER include a descriptive subtitle in the "ref". "Even Bochan, The Prayer of Kalonymus" is INVALID. Use "Even Bochan 28:1".
+   
+   HASIDIC TEXTS (Sfat Emet, Kedushat Levi, Tanya, etc.):
+   - Format: "Sefat Emet, Deuteronomy, Shoftim 1" (with simple section number 1-30)
+   - NUMBERS ARE SECTION NUMBERS (1-30 typically), NOT Hebrew calendar years!
+   - "Sefat Emet, Genesis, Toldot 5642:1" is WRONG (5642 is a year, not a section)
+   - "Sefat Emet, Genesis, Toldot 1" is CORRECT
+   - "Kedushat Levi, Bereshit, Vayera 1:1" is CORRECT
+   - "Tanya, Likutei Amarim 1" is CORRECT (NOT "Tanya, Part I; Likkutei Amarim")
+   - When suggesting Hasidic texts, use low section numbers (1-10) unless you know the text well.
+   
 7. Do NOT provide the full text in the "content" field, just the citation and likelihood of relevance. The user will click to add the full text to the sheet.
 8. IMPORTANT: You MUST provide a "suggested_title" in EVERY response. The title should be the TOPIC, not a question or command.
 `;
