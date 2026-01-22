@@ -9,11 +9,18 @@ const NAME_BASE_URL = "https://www.sefaria.org/api/name";
 const resolveSefariaRef = async (ref) => {
     try {
         let term = ref;
-        // regex to grab the "Book Name" part (e.g. from "Book Name 1:1" -> "Book Name")
-        // Also stripping potential subtitles if they appear after a comma e.g. "Even Bochan, The Prayer..."
-        const match = ref.match(/^([^,:]+)/);
-        if (match) {
-            term = match[1].trim();
+        // Instead of splitting by comma, we try to separate the 'Book Name' from the 'Citation'
+        // We look for the start of the number sequence at the end of the string
+        // e.g. "Kedushat Levi, Bereshit, Vayera 1:1" -> term: "Kedushat Levi, Bereshit, Vayera", citation: "1:1"
+        const numberMatch = ref.match(/(\s+\d+[.:]?.*)$/);
+
+        if (numberMatch) {
+            // Everything before the numbers is the candidate text name
+            term = ref.substring(0, numberMatch.index).trim();
+        } else {
+            // If no numbers found, use the whole string (trimmed)
+            // This is better than the previous aggressive comma splitting which broke titles like "Sfat Emet, Deuteronomy..."
+            term = ref.trim();
         }
 
         const encoded = encodeURIComponent(term);

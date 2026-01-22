@@ -11,6 +11,13 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.11 <span className="version-date">January 22, 2026</span></h2>
+                    <ul>
+                        <li><strong>Hasidic Texts Fix</strong> – Improved the text fetching logic to correctly handle complex book titles like Kedushat Levi, Sfat Emet, and Tanya.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.9 <span className="version-date">January 21, 2026</span></h2>
                     <ul>
                         <li><strong>Autosave Fix</strong> – Fixed an issue where new sheets weren't autosaving immediately.</li>
