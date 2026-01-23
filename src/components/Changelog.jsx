@@ -11,6 +11,13 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.2.1 <span className="version-date">January 22, 2026</span></h2>
+                    <ul>
+                        <li><strong>Hotfix</strong> – Fixed a crash when loading the chat interface caused by a deployment error.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.2.0 <span className="version-date">January 22, 2026</span></h2>
                     <ul>
                         <li><strong>Streaming AI</strong> – Chat responses now stream in real-time, making the experience feel instant and conversational.</li>
