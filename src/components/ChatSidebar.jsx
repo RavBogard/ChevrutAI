@@ -1,4 +1,19 @@
-import React, { useState, useRef, useEffect } from 'react';
+import SkeletonLoader from './common/SkeletonLoader';
+
+// ... (inside the loop or logic)
+
+{
+    isLoading && (
+        <div className="message model">
+            <div className="message-content" style={{ width: '100%' }}>
+                <SkeletonLoader count={3} />
+                <div className="typing-indicator-text" style={{ marginTop: '8px', fontSize: '0.85rem', opacity: 0.7 }}>
+                    Thinking...
+                </div>
+            </div>
+        </div>
+    )
+}
 import ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router-dom';
 import Logo from './common/Logo';
@@ -226,13 +241,13 @@ const ChatSidebar = ({
                             </div>
                         ))}
                         {isLoading && (
-                            <div className="loading-indicator">
-                                <div className="typing-dots">
-                                    <div className="typing-dot"></div>
-                                    <div className="typing-dot"></div>
-                                    <div className="typing-dot"></div>
+                            <div className="message model">
+                                <div className="message-content" style={{ width: '100%' }}>
+                                    <SkeletonLoader count={3} />
+                                    <div className="typing-indicator-text" style={{ marginTop: '8px', fontSize: '0.85rem', opacity: 0.7 }}>
+                                        Thinking...
+                                    </div>
                                 </div>
-                                <span>Searching Sefaria for relevant texts...</span>
                             </div>
                         )}
                         <div ref={messagesEndRef} />

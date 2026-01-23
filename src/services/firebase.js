@@ -63,14 +63,21 @@ export const saveSheetToFirestore = async (userId, sheetData) => {
         throw new Error('Cannot save sheet: No user ID provided');
     }
 
-    // Sanitize data: remove undefined values which Firebase rejects
-    // JSON.parse(JSON.stringify(obj)) removes undefined and converts them properly
+    // Sanitize data recursively to remove undefined values
     const sanitize = (obj) => {
-        try {
-            return JSON.parse(JSON.stringify(obj));
-        } catch {
-            return obj;
+        if (obj === null || obj === undefined) return null;
+        if (typeof obj !== 'object') return obj;
+        if (Array.isArray(obj)) {
+            return obj.map(sanitize).filter(item => item !== undefined);
         }
+
+        const result = {};
+        for (const [key, value] of Object.entries(obj)) {
+            if (value !== undefined) {
+                result[key] = sanitize(value);
+            }
+        }
+        return result;
     };
 
     // Create a reference ID if one doesn't exist, otherwise use existing

@@ -105,15 +105,17 @@ export const useSheetPersistence = (urlSheetId, isExplicitlyNew) => {
         if (historyIndex > 0) {
             setHistoryIndex(i => i - 1);
             setSources(sourcesHistory[historyIndex - 1]);
+            showToast('Undo successful');
         }
-    }, [historyIndex, sourcesHistory]);
+    }, [historyIndex, sourcesHistory, showToast]);
 
     const redo = useCallback(() => {
         if (historyIndex < sourcesHistory.length - 1) {
             setHistoryIndex(i => i + 1);
             setSources(sourcesHistory[historyIndex + 1]);
+            showToast('Redo successful');
         }
-    }, [historyIndex, sourcesHistory]);
+    }, [historyIndex, sourcesHistory, showToast]);
 
     const canUndo = historyIndex > 0;
     const canRedo = historyIndex < sourcesHistory.length - 1;
@@ -427,34 +429,55 @@ export const useSheetPersistence = (urlSheetId, isExplicitlyNew) => {
         const userMsg = { id: Date.now().toString(), role: 'user', text };
         setMessages(prev => [...prev, userMsg]);
 
+        // Create placeholder for bot message immediately
+        const botMsgId = (Date.now() + 1).toString();
+        const initialBotMsg = {
+            id: botMsgId,
+            role: 'model',
+            text: '', // Start empty
+            suggestedSources: []
+        };
+
+        setMessages(prev => [...prev, initialBotMsg]);
         setIsChatLoading(true);
+
         try {
-            const data = await sendGeminiMessage(text, [...messages, userMsg], sources);
+            // Callback to update the *specific* bot message in state as chunks arrive
+            const handleChunk = (currentText) => {
+                setMessages(prev => prev.map(msg =>
+                    msg.id === botMsgId
+                        ? { ...msg, text: currentText }
+                        : msg
+                ));
+            };
+
+            const data = await sendGeminiMessage(text, [...messages, userMsg], sources, handleChunk);
 
             // Auto-title if still default
             if (data.suggested_title && title === 'New Source Sheet') {
                 setTitle(data.suggested_title);
             }
 
-            const botMessage = {
-                id: Date.now().toString(),
-                role: 'model',
-                text: data.content || data.text || '',
-                suggestedSources: data.suggested_sources || []
-            };
-
+            // Final update with sources
             if (mountedRef.current) {
-                setMessages(prev => [...prev, botMessage]);
+                setMessages(prev => prev.map(msg =>
+                    msg.id === botMsgId
+                        ? {
+                            ...msg,
+                            text: data.content, // Ensure final clean text
+                            suggestedSources: data.suggested_sources || []
+                        }
+                        : msg
+                ));
             }
         } catch (error) {
             console.error('Chat error:', error);
             if (mountedRef.current) {
-                setMessages(prev => [...prev, {
-                    id: Date.now().toString(),
-                    role: 'model',
-                    text: "I'm having trouble connecting right now. Please try again.",
-                    suggestedSources: []
-                }]);
+                setMessages(prev => prev.map(msg =>
+                    msg.id === botMsgId
+                        ? { ...msg, text: "I'm having trouble connecting right now. Please try again." }
+                        : msg
+                ));
             }
         } finally {
             if (mountedRef.current) {

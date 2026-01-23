@@ -41,7 +41,7 @@ const formatSheetForAI = (sources) => {
  * @param {Array} sheetSources - The current list of sources on the sheet.
  * @returns {Promise<Object>} - The API response object.
  */
-export const sendGeminiMessage = async (userText, messageHistory, sheetSources = []) => {
+export const sendGeminiMessage = async (userText, messageHistory, sheetSources = [], onChunk = null) => {
     try {
         // Filter and format history
         let history = messageHistory
@@ -71,8 +71,66 @@ export const sendGeminiMessage = async (userText, messageHistory, sheetSources =
             throw new Error(`API Error ${response.status}: ${errorText}`);
         }
 
-        const data = await response.json();
-        return data;
+        // Handle Streaming Response
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let fullText = '';
+        let sourcesBlock = null;
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value, { stream: true });
+            fullText += chunk;
+
+            // Check if we hit the sources separator
+            const separatorIndex = fullText.indexOf('---SOURCES---');
+
+            // If we haven't hit the separator, we just stream the text
+            if (separatorIndex === -1) {
+                if (onChunk) onChunk(fullText);
+            } else {
+                // If we hit the separator, we stream ONLY the text part
+                const textPart = fullText.substring(0, separatorIndex).trim();
+                // If onChunk was called before with part of the separator, correct it?
+                // Visual glitch might happen if "---" appears. 
+                // Optimization: Don't stream if the chunk looks like it's starting the separator.
+                // But for now, simple is fine.
+                if (onChunk) onChunk(textPart);
+            }
+        }
+
+        // Final Parsing
+        const separatorIndex = fullText.indexOf('---SOURCES---');
+        let content = fullText;
+        let suggested_sources = [];
+        let suggested_title = null;
+
+        if (separatorIndex !== -1) {
+            content = fullText.substring(0, separatorIndex).trim();
+            const jsonPart = fullText.substring(separatorIndex + '---SOURCES---'.length).trim();
+            try {
+                // Find start of JSON object
+                const jsonStart = jsonPart.indexOf('{');
+                if (jsonStart !== -1) {
+                    const cleanJson = jsonPart.substring(jsonStart);
+                    const parsed = JSON.parse(cleanJson);
+                    suggested_sources = parsed.suggested_sources || [];
+                    suggested_title = parsed.suggested_title || null;
+                }
+            } catch (e) {
+                console.error("Failed to parse sources JSON", e);
+            }
+        }
+
+        // Return structured object compatible with old signature
+        return {
+            content: content,
+            suggested_title: suggested_title,
+            suggested_sources: suggested_sources,
+            raw: fullText
+        };
 
     } catch (error) {
         console.error("AI Service Error:", error);

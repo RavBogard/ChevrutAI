@@ -11,6 +11,16 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.2.0 <span className="version-date">January 22, 2026</span></h2>
+                    <ul>
+                        <li><strong>Streaming AI</strong> – Chat responses now stream in real-time, making the experience feel instant and conversational.</li>
+                        <li><strong>Visual Overhaul</strong> – Introduced a refined UI with tighter typography, softer dark mode, and a tactile "paper" texture for the source sheet.</li>
+                        <li><strong>UX Polish</strong> – Added modern skeleton loading screens and immediate "toast" feedback for Undo/Redo actions.</li>
+                        <li><strong>Performance</strong> – Optimized backend data handling for smoother saving and loading.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.46 <span className="version-date">January 22, 2026</span></h2>
                     <ul>
                         <li><strong>Homepage Load Optimization</strong> – Optimized the startup sequence to instantly load a new sheet without checking the database, eliminating the initial white flash.</li>

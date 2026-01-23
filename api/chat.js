@@ -142,10 +142,11 @@ export default async function handler(req, res) {
         }
 
         const genAI = new GoogleGenerativeAI(apiKey);
+        const modelVersion = process.env.GEMINI_MODEL_VERSION || 'gemini-3-flash-preview';
         const model = genAI.getGenerativeModel({
-            model: 'gemini-3-flash-preview', // Reverted per user instruction
-            systemInstruction: SYSTEM_INSTRUCTION,
-            generationConfig: { responseMimeType: "application/json" }
+            model: modelVersion,
+            systemInstruction: SYSTEM_INSTRUCTION
+            // generationConfig: { responseMimeType: "application/json" } // Removed for streaming mix
         });
 
         const chat = model.startChat({
@@ -157,11 +158,25 @@ export default async function handler(req, res) {
             ? `[SYSTEM: The user has provided the current sheet structure below. Use this to understand their lesson plan.]\n\n${context}\n\n[USER MESSAGE]: ${message}`
             : message;
 
-        const result = await chat.sendMessage(finalMessage);
-        const response = await result.response;
-        const text = response.text();
+        const result = await chat.sendMessageStream(finalMessage);
 
-        return res.status(200).send(text);
+        // return res.status(200).send(text); // OLD
+
+        // Set headers for streaming
+        res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+        res.setHeader('Transfer-Encoding', 'chunked');
+
+        try {
+            for await (const chunk of result.stream) {
+                const chunkText = chunk.text();
+                res.write(chunkText);
+            }
+            res.end();
+        } catch (streamError) {
+            console.error("Stream Error:", streamError);
+            res.write(JSON.stringify({ error: "Stream failed" }));
+            res.end();
+        }
 
     } catch (error) {
         console.error("Gemini API Error:", error);
