@@ -2,14 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 
 const EditableContent = ({ html, className, onChange, dir }) => {
     const [displayHtml, setDisplayHtml] = useState("");
-    const isInternalUpdate = useRef(false);
 
     useEffect(() => {
-        if (isInternalUpdate.current) {
-            isInternalUpdate.current = false;
-            return;
-        }
-
         if (!html) {
             setDisplayHtml("");
             return;
@@ -36,7 +30,6 @@ const EditableContent = ({ html, className, onChange, dir }) => {
         if (val !== html) {
             onChange(val);
         }
-        isInternalUpdate.current = true;
     };
 
     return (
