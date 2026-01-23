@@ -11,6 +11,13 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.46 <span className="version-date">January 22, 2026</span></h2>
+                    <ul>
+                        <li><strong>Homepage Load Optimization</strong> – Optimized the startup sequence to instantly load a new sheet without checking the database, eliminating the initial white flash.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.45 <span className="version-date">January 22, 2026</span></h2>
                     <ul>
                         <li><strong>Fixed Navigation Flashing</strong> – Implemented a stricter navigation system that forces a fresh start when switching sheets, completely eliminating the brief flash of old content.</li>

@@ -19,7 +19,7 @@ import { exportToGoogleDoc, syncToGoogleDoc } from '../services/google';
  * - Robust error handling and loading state management
  * - Proper cleanup on unmount
  */
-export const useSheetPersistence = (urlSheetId) => {
+export const useSheetPersistence = (urlSheetId, isExplicitlyNew) => {
     const { currentUser } = useAuth();
     const { showToast } = useToast();
 
@@ -44,7 +44,11 @@ export const useSheetPersistence = (urlSheetId) => {
     const [isPersisted, setIsPersisted] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [isDirty, setIsDirty] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
+
+    // Initialize loading state:
+    // If explicitly new, we are NOT loading (we are ready immediately).
+    // Otherwise, assume loading until verified.
+    const [isLoading, setIsLoading] = useState(!isExplicitlyNew);
 
     // Chat loading state
     const [isChatLoading, setIsChatLoading] = useState(false);
@@ -139,6 +143,27 @@ export const useSheetPersistence = (urlSheetId) => {
     // ========== LOAD SHEET FROM URL OR LOCAL STORAGE ==========
     useEffect(() => {
         const initSheet = async () => {
+            // 0. Optimization: If explicitly new, skip DB check
+            if (isExplicitlyNew) {
+                if (currentSheetId === urlSheetId) return; // Already init?
+
+                setCurrentSheetId(urlSheetId);
+                setIsPersisted(false);
+                setIsDirty(false);
+                setTitle('New Source Sheet');
+                setSources([]);
+                setMessages([{
+                    id: 'welcome',
+                    role: 'model',
+                    text: 'Shalom! What kind of text sheet do you want to create together?',
+                    suggestedSources: []
+                }]);
+                setSourcesHistory([[]]);
+                setHistoryIndex(0);
+                setIsLoading(false); // Ensure loading is off
+                return;
+            }
+
             // 1. Try URL ID (Firestore)
             if (urlSheetId) {
                 // If we already have this sheet loaded, skip
@@ -217,7 +242,7 @@ export const useSheetPersistence = (urlSheetId) => {
         };
 
         initSheet();
-    }, [urlSheetId, currentSheetId, isPersisted, currentUser]);
+    }, [urlSheetId, currentSheetId, isPersisted, currentUser, isExplicitlyNew]);
 
     // ========== AUTOSAVE LOGIC ==========
     // Use refs for values we need in the timeout but don't want to trigger effect

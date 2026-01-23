@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useSheetPersistence } from '../hooks/useSheetPersistence';
 import { useResizableSidebar } from '../hooks/useResizableSidebar';
@@ -12,7 +12,11 @@ import SavingIndicator from './common/SavingIndicator';
 const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage }) => {
     const { sheetId } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
     const { currentUser } = useAuth();
+
+    // Check if we are redirected from a "New Sheet" action
+    const isExplicitlyNew = location.state?.isNew;
 
     // --- Unified State Management ---
     const {
@@ -58,7 +62,7 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
         linkToGoogleDoc,
         syncToLinkedGoogleDoc,
         unlinkGoogleDoc
-    } = useSheetPersistence(sheetId);
+    } = useSheetPersistence(sheetId, isExplicitlyNew);
 
     // --- Sidebar & Resizing Logic ---
     const {

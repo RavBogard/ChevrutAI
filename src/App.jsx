@@ -28,7 +28,7 @@ const LoadingFallback = () => (
 // Generate new sheet ID (stable during render)
 const NewSheetRedirect = () => {
   const [id] = useState(() => Date.now().toString());
-  return <Navigate to={`/sheet/${id}`} replace />;
+  return <Navigate to={`/sheet/${id}`} replace state={{ isNew: true }} />;
 };
 
 function App() {
