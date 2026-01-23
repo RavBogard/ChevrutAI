@@ -11,6 +11,13 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.2.3 <span className="version-date">January 23, 2026</span></h2>
+                    <ul>
+                        <li><strong>Investigation</strong> – Completed deep-dive into Zohar text fetching issues and prepared a comprehensive fix plan.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.2.2 <span className="version-date">January 22, 2026</span></h2>
                     <ul>
                         <li><strong>Patch</strong> – Auto-corrects chat formatting if the AI replies with raw JSON instead of text.</li>
