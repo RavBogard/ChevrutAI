@@ -76,6 +76,7 @@ export const sendGeminiMessage = async (userText, messageHistory, sheetSources =
         const decoder = new TextDecoder();
         let fullText = '';
         let sourcesBlock = null;
+        let isJsonLike = false; // Flag to detect if model is ignoring instructions and outputting JSON
 
         while (true) {
             const { done, value } = await reader.read();
@@ -84,20 +85,25 @@ export const sendGeminiMessage = async (userText, messageHistory, sheetSources =
             const chunk = decoder.decode(value, { stream: true });
             fullText += chunk;
 
+            // Check for JSON-like start (heuristic)
+            if (fullText.length < 50 && (fullText.trim().startsWith('{') || fullText.trim().startsWith('```json'))) {
+                isJsonLike = true;
+            }
+
             // Check if we hit the sources separator
             const separatorIndex = fullText.indexOf('---SOURCES---');
 
-            // If we haven't hit the separator, we just stream the text
+            // If we haven't hit the separator...
             if (separatorIndex === -1) {
-                if (onChunk) onChunk(fullText);
+                // ONLY stream to UI if it doesn't look like raw JSON
+                // This prevents the user from seeing "{ "content": ..."
+                if (!isJsonLike && onChunk) {
+                    onChunk(fullText);
+                }
             } else {
                 // If we hit the separator, we stream ONLY the text part
                 const textPart = fullText.substring(0, separatorIndex).trim();
-                // If onChunk was called before with part of the separator, correct it?
-                // Visual glitch might happen if "---" appears. 
-                // Optimization: Don't stream if the chunk looks like it's starting the separator.
-                // But for now, simple is fine.
-                if (onChunk) onChunk(textPart);
+                if (!isJsonLike && onChunk) onChunk(textPart);
             }
         }
 
@@ -108,10 +114,10 @@ export const sendGeminiMessage = async (userText, messageHistory, sheetSources =
         let suggested_title = null;
 
         if (separatorIndex !== -1) {
+            // Standard NEW Format logic
             content = fullText.substring(0, separatorIndex).trim();
             const jsonPart = fullText.substring(separatorIndex + '---SOURCES---'.length).trim();
             try {
-                // Find start of JSON object
                 const jsonStart = jsonPart.indexOf('{');
                 if (jsonStart !== -1) {
                     const cleanJson = jsonPart.substring(jsonStart);
@@ -121,6 +127,31 @@ export const sendGeminiMessage = async (userText, messageHistory, sheetSources =
                 }
             } catch (e) {
                 console.error("Failed to parse sources JSON", e);
+            }
+        } else {
+            // Fallback: Check if the WHOLE text was JSON (Legacy/Glitched format)
+            try {
+                // Try to parse fullText directly (or cleaned of markdown blocks)
+                let textToParse = fullText.trim();
+                if (textToParse.startsWith('```json')) {
+                    textToParse = textToParse.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+                } else if (textToParse.startsWith('```')) {
+                    textToParse = textToParse.replace(/^```\s*/, '').replace(/\s*```$/, '');
+                }
+
+                if (textToParse.startsWith('{')) {
+                    const parsed = JSON.parse(textToParse);
+                    if (parsed.content) {
+                        content = parsed.content;
+                        // Since we suppressed streaming, onChunk was never called. 
+                        // We must rely on the caller using the returned 'content' to update final UI.
+                    }
+                    if (parsed.suggested_sources) suggested_sources = parsed.suggested_sources;
+                    if (parsed.suggested_title) suggested_title = parsed.suggested_title;
+                }
+            } catch (e) {
+                // Not JSON, just plain text without separator.
+                // Content is already fullText.
             }
         }
 
