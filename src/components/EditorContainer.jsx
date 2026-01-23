@@ -61,7 +61,11 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
         isSyncing,
         linkToGoogleDoc,
         syncToLinkedGoogleDoc,
-        unlinkGoogleDoc
+        unlinkGoogleDoc,
+
+        disambiguationState,
+        resolveDisambiguation,
+        cancelDisambiguation
     } = useSheetPersistence(sheetId, isExplicitlyNew);
 
     // --- Sidebar & Resizing Logic ---
@@ -216,6 +220,9 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                     onSyncGoogleDoc={syncToLinkedGoogleDoc}
                     onUnlinkGoogleDoc={unlinkGoogleDoc}
                     onLinkToGoogleDoc={linkToGoogleDoc}
+                    disambiguationState={disambiguationState}
+                    onResolveDisambiguation={resolveDisambiguation}
+                    onCancelDisambiguation={cancelDisambiguation}
                 />
             </main>
 

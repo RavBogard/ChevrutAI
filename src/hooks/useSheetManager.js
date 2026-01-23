@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useUndoRedo } from './useUndoRedo';
 import { useToast } from '../components/Toast';
-import { getSefariaText } from '../services/sefaria';
+import { getSefariaText, searchSefariaText } from '../services/sefaria';
 
 export const useSheetManager = (initialTitle = "New Source Sheet") => {
     const { showToast } = useToast();
@@ -27,6 +27,14 @@ export const useSheetManager = (initialTitle = "New Source Sheet") => {
         localStorage.setItem('chevruta_title', sheetTitle);
     }, [sheetTitle]);
 
+    // State for disambiguation modal
+    const [disambiguationState, setDisambiguationState] = useState({
+        isOpen: false,
+        originalRef: '',
+        options: [],
+        pendingSource: null
+    });
+
     const handleAddSource = async (source) => {
         // Skip fetching text for custom notes and headers
         if (source.type === 'custom' || source.type === 'header') {
@@ -36,17 +44,60 @@ export const useSheetManager = (initialTitle = "New Source Sheet") => {
 
         if (!source.he || !source.en) {
             const data = await getSefariaText(source.ref);
-            if (data) {
+
+            if (data && !data.error) {
+                // Success path
                 source.he = data.he;
                 source.en = data.en;
+                source.ref = data.ref || source.ref; // Update ref if Sefaria canonicalized it
                 source.versions = data.versions;
                 source.versionTitle = data.versionTitle;
+                setSourcesList(prev => [...prev, source]);
             } else {
-                showToast(`Could not fetch text for ${source.ref}`, "error");
+                // Failure path - Try to search for alternatives
+                console.log("Fetch failed directly, searching for alternatives for:", source.ref);
+                const searchResults = await searchSefariaText(source.ref);
+
+                if (searchResults && searchResults.length > 0) {
+                    // Trigger modal
+                    setDisambiguationState({
+                        isOpen: true,
+                        originalRef: source.ref,
+                        options: searchResults,
+                        pendingSource: source
+                    });
+                } else {
+                    // No fallback found either
+                    const msg = data && data.error ? data.error : "Could not fetch text";
+                    showToast(`${msg} for ${source.ref}`, "error");
+                }
                 return;
             }
+        } else {
+            // Already has text (dragged/pasted?)
+            setSourcesList(prev => [...prev, source]);
         }
-        setSourcesList(prev => [...prev, source]);
+    };
+
+    const resolveDisambiguation = async (selectedOption) => {
+        if (!disambiguationState.pendingSource) return;
+
+        // The user selected an option from the search results
+        // We need to fetch the FULL text for this specific option to ensure we get clean data
+        // (Search results sometimes have snippets)
+
+        const newSource = { ...disambiguationState.pendingSource };
+        newSource.ref = selectedOption.ref;
+
+        // Close modal immediately
+        setDisambiguationState(prev => ({ ...prev, isOpen: false }));
+
+        // Recursively call add with the new valid ref
+        await handleAddSource(newSource);
+    };
+
+    const cancelDisambiguation = () => {
+        setDisambiguationState(prev => ({ ...prev, isOpen: false, pendingSource: null }));
     };
 
     const handleRemoveSource = (index) => {
@@ -86,6 +137,9 @@ export const useSheetManager = (initialTitle = "New Source Sheet") => {
         handleRemoveSource,
         handleUpdateSource,
         handleReorder,
-        clearSheet
+        clearSheet,
+        disambiguationState,
+        resolveDisambiguation,
+        cancelDisambiguation
     };
 };

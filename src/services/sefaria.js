@@ -182,6 +182,39 @@ export const getSefariaTextByVersion = async (ref, versionTitle) => {
     }
 };
 
+export const searchSefariaText = async (query, book = null) => {
+    try {
+        const encodedQuery = encodeURIComponent(query);
+        let url = `https://www.sefaria.org/api/search-wrapper/text/_search?q=${encodedQuery}&size=5`;
+        if (book) {
+            // Very naive book filter using string matching, might need refinement
+            // Sefaria search API often just takes the query nicely
+        }
+
+        const response = await fetch(url, {
+            method: 'POST',
+            body: JSON.stringify({
+                type: "text"
+            })
+        });
+
+        if (!response.ok) return [];
+
+        const data = await response.json();
+        if (!data.hits || !data.hits.hits) return [];
+
+        return data.hits.hits.map(hit => ({
+            ref: hit._source.ref,
+            he: hit._source.he,
+            en: hit._source.test
+        })).filter(hit => hit.ref); // Ensure we have a ref
+
+    } catch (e) {
+        console.error("Search API Error:", e);
+        return [];
+    }
+};
+
 /**
  * Fetches text from Sefaria API.
  * 
@@ -199,13 +232,25 @@ export const getSefariaText = async (ref) => {
             const encodedRef = encodeURIComponent(citationRef);
             // Simple retry logic
             let retries = 2;
+            let lastError = null;
+
             while (retries >= 0) {
                 try {
                     const response = await fetch(`${BASE_URL}/${encodedRef}?context=0`);
                     if (response.ok) return await response.json();
-                    if (response.status === 404) return { error: "Not found" }; // Don't retry 404s
-                    if (response.status === 400) return { error: "Bad request" };
+                    if (response.status === 404) return { error: "Not found", status: 404 }; // Don't retry 404s
+                    if (response.status === 400) {
+                        const errText = await response.text();
+                        // Sefaria sometimes returns useful error text in 400
+                        try {
+                            const jsonErr = JSON.parse(errText);
+                            return { error: jsonErr.error || "Bad Request", status: 400 };
+                        } catch {
+                            return { error: errText || "Bad Request", status: 400 };
+                        }
+                    }
                 } catch (e) {
+                    lastError = e;
                     if (retries === 0) throw e;
                 }
                 retries--;
@@ -225,7 +270,11 @@ export const getSefariaText = async (ref) => {
         }
 
         if (!data || data.error) {
-            return null;
+            // Return the error object to let the UI know WHY it failed
+            return {
+                error: (data && data.error) ? data.error : "Fetch failed",
+                failedRef: ref
+            };
         }
 
         // CRITICAL FIX: Normalize text data to ensure it's always a string
@@ -262,6 +311,6 @@ export const getSefariaText = async (ref) => {
         };
     } catch (error) {
         console.error("Sefaria API Exception:", error);
-        return null;
+        return { error: "Exception", details: error.message };
     }
 };

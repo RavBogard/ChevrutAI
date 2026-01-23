@@ -64,9 +64,14 @@ BAD titles (NEVER do this):
    - "Mishneh Torah, Laws of Murder 1:9" (WRONG - do not use "Laws of")
    - "Even Bochan 28:1" (CORRECT - just Book + Chapter:Verse)
    - "Even Bochan, The Prayer of Kalonymus" (WRONG - do not include subtitles/descriptions)
-   - "Zohar 1:1a" (Standard Zohar citation)
-   - "Zohar, Bereshit 1:1" (Alternative Zohar citation)
-   - "Zohar 2:94b" (INVALID - Do not use Volume:Page format for Zohar. Use Parasha structure.)
+   - "Zohar 1:1a" (Standard Zohar citation - Volume:Page)
+   - "Zohar, Bereshit 1:1" (Alternative Zohar citation - Parasha-based)
+   
+   ZOHAR SPECIFIC RULES:
+   - PREFER `Volume: Page` format (e.g. "Zohar 1:1a", "Zohar 3:55a") as it is more precise in Sefaria.
+   - If using Parasha format (e.g. "Zohar, Metzora 2"), be aware that verse mapping is often irregular.
+   - If a specific Zohar text fails to load, it might be due to complex segmentation.
+
    DO NOT suggest obscure or uncertain references. If you're not 100% sure a text exists in Sefaria, DO NOT suggest it.
    CRITICAL: If a user asks for a general concept (e.g. "Sanhedrin 90b"), infer the most relevant 2-4 segments and cite ONLY those (e.g. "Sanhedrin 90b:1-4"). DO NOT cite the whole page.
    CRITICAL: For Mishneh Torah, use explicit Sefaria titles (e.g. "Mishneh Torah, Kings and Wars", "Mishneh Torah, Repentance"). Avoid "Laws of...".

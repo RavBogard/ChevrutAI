@@ -7,7 +7,7 @@ import {
     deleteSheetFromFirestore
 } from '../services/firebase';
 import { useToast } from '../components/Toast';
-import { getSefariaText } from '../services/sefaria';
+import { getSefariaText, searchSefariaText } from '../services/sefaria';
 import { sendGeminiMessage } from '../services/ai';
 import { exportToGoogleDoc, syncToGoogleDoc } from '../services/google';
 
@@ -357,6 +357,14 @@ export const useSheetPersistence = (urlSheetId, isExplicitlyNew) => {
         // to prevent spurious effect re-runs
     }, [title, sources, messages, isPersisted, currentSheetId, urlSheetId, showToast, currentUser, isLoading]);
 
+    // State for disambiguation modal
+    const [disambiguationState, setDisambiguationState] = useState({
+        isOpen: false,
+        originalRef: '',
+        options: [],
+        pendingSource: null
+    });
+
     // ========== SOURCE MANAGEMENT ==========
     const addSource = useCallback(async (source) => {
         // Custom notes and headers don't need fetching
@@ -377,27 +385,60 @@ export const useSheetPersistence = (urlSheetId, isExplicitlyNew) => {
         if (!source.he || !source.en) {
             try {
                 const data = await getSefariaText(source.ref);
-                if (data) {
-                    // Check if BOTH Hebrew and English are empty
-                    if (isEmptyText(data.he) && isEmptyText(data.en)) {
-                        showToast(`Text section not found: ${source.ref}`, 'error');
-                        return;
-                    }
-                    source.he = data.he || null; // Ensure no undefined
+
+                // Check if successful
+                if (data && !data.error && (!isEmptyText(data.he) || !isEmptyText(data.en))) {
+                    source.he = data.he || null;
                     source.en = data.en || null;
+                    source.ref = data.ref || source.ref; // Update ref if Sefaria canonicalized it
                     source.versions = data.versions || [];
                     source.versionTitle = data.versionTitle || null;
+                    updateSources(prev => [...prev, source]);
                 } else {
-                    showToast(`Could not fetch text for ${source.ref}`, 'error');
+                    // Fetch failed or returned empty text
+                    console.log("Fetch failed directly, searching for alternatives for:", source.ref);
+                    const searchResults = await searchSefariaText(source.ref);
+
+                    if (searchResults && searchResults.length > 0) {
+                        // Trigger modal
+                        setDisambiguationState({
+                            isOpen: true,
+                            originalRef: source.ref,
+                            options: searchResults,
+                            pendingSource: source
+                        });
+                    } else {
+                        const msg = data && data.error ? data.error : "Could not fetch text";
+                        showToast(`${msg} for ${source.ref}`, 'error');
+                    }
                     return;
                 }
             } catch (error) {
                 showToast(`Could not fetch text for ${source.ref}`, 'error');
                 return;
             }
+        } else {
+            // Already has text
+            updateSources(prev => [...prev, source]);
         }
-        updateSources(prev => [...prev, source]);
     }, [updateSources, showToast]);
+
+    const resolveDisambiguation = useCallback(async (selectedOption) => {
+        if (!disambiguationState.pendingSource) return;
+
+        const newSource = { ...disambiguationState.pendingSource };
+        newSource.ref = selectedOption.ref;
+
+        // Close modal immediately
+        setDisambiguationState(prev => ({ ...prev, isOpen: false, pendingSource: null }));
+
+        // Recursively call add with the new valid ref
+        await addSource(newSource);
+    }, [disambiguationState, addSource]);
+
+    const cancelDisambiguation = useCallback(() => {
+        setDisambiguationState(prev => ({ ...prev, isOpen: false, pendingSource: null }));
+    }, []);
 
     const removeSource = useCallback((index) => {
         updateSources(prev => prev.filter((_, i) => i !== index));
@@ -693,6 +734,11 @@ export const useSheetPersistence = (urlSheetId, isExplicitlyNew) => {
         isSyncing,
         linkToGoogleDoc,
         syncToLinkedGoogleDoc,
-        unlinkGoogleDoc
+        unlinkGoogleDoc,
+
+        // Disambiguation
+        disambiguationState,
+        resolveDisambiguation,
+        cancelDisambiguation
     };
 };

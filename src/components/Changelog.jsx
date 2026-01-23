@@ -11,6 +11,14 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.2.4 <span className="version-date">January 23, 2026</span></h2>
+                    <ul>
+                        <li><strong>Zohar & Text Fixes</strong> – Implemented a smart fallback system. If a specific Zohar (or other) citation fails to load, the app now searches the library and asks "Did you mean...?" to help you find the right text.</li>
+                        <li><strong>AI Smarts</strong> – Updated the AI's citation instructions to prefer reliable Zohar referencing (Volume:Page).</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.2.3 <span className="version-date">January 23, 2026</span></h2>
                     <ul>
                         <li><strong>Investigation</strong> – Completed deep-dive into Zohar text fetching issues and prepared a comprehensive fix plan.</li>

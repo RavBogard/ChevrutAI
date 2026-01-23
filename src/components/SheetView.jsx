@@ -15,6 +15,7 @@ import CustomSourceBlock from './sheet/CustomSourceBlock';
 import SectionHeaderBlock from './sheet/SectionHeaderBlock';
 import SheetToolbar from './sheet/SheetToolbar';
 import UserMenu from './auth/UserMenu';
+import SourceDisambiguationModal from './SourceDisambiguationModal';
 
 const SortableSourceItem = ({ source, id, onRemove, onUpdate, onRefine }) => {
     const {
@@ -48,7 +49,7 @@ const SortableSourceItem = ({ source, id, onRemove, onUpdate, onRefine }) => {
     );
 };
 
-const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClearSheet, onUndo, onRedo, canUndo, canRedo, language, onSuggestionClick, sheetTitle, onTitleChange, onSendMessage, chatStarted, onAddSource, darkMode, toggleDarkMode, toggleLanguage, googleDocId, googleDocUrl, isSyncing, onSyncGoogleDoc, onUnlinkGoogleDoc, onLinkToGoogleDoc }) => {
+const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClearSheet, onUndo, onRedo, canUndo, canRedo, language, onSuggestionClick, sheetTitle, onTitleChange, onSendMessage, chatStarted, onAddSource, darkMode, toggleDarkMode, toggleLanguage, googleDocId, googleDocUrl, isSyncing, onSyncGoogleDoc, onUnlinkGoogleDoc, onLinkToGoogleDoc, disambiguationState, onResolveDisambiguation, onCancelDisambiguation }) => {
     // eslint-disable-next-line no-unused-vars
     const { currentUser } = useAuth();
     const sensors = useSensors(
@@ -323,6 +324,16 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                     <a href="/privacy.html">Privacy Policy</a> • <Link to="/terms">Terms of Service</Link>
                 </div>
             </footer >
+
+            {disambiguationState && (
+                <SourceDisambiguationModal
+                    isOpen={disambiguationState.isOpen}
+                    originalRef={disambiguationState.originalRef}
+                    options={disambiguationState.options}
+                    onSelect={onResolveDisambiguation}
+                    onCancel={onCancelDisambiguation}
+                />
+            )}
         </div >
     );
 };
@@ -355,7 +366,10 @@ SheetView.propTypes = {
     onLoadSheet: PropTypes.func,
     darkMode: PropTypes.bool.isRequired,
     toggleDarkMode: PropTypes.func.isRequired,
-    toggleLanguage: PropTypes.func.isRequired
+    toggleLanguage: PropTypes.func.isRequired,
+    disambiguationState: PropTypes.object,
+    onResolveDisambiguation: PropTypes.func,
+    onCancelDisambiguation: PropTypes.func
 };
 
 export default SheetView;
