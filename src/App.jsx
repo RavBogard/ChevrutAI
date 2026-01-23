@@ -1,5 +1,13 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
-import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
+
+// Wrapper to force remount on sheet ID change
+const KeyedEditorContainer = (props) => {
+  const { sheetId } = useParams();
+  // Using sheetId as key forces a fresh mount when the ID changes
+  return <EditorContainer key={sheetId} {...props} />;
+};
+
 import './App.css';
 import './styles/AppShell.css';
 
@@ -47,11 +55,11 @@ function App() {
             {/* User hated the dashboard. Redirect to editor. */}
             <Route path="/dashboard" element={<Navigate to="/" replace />} />
             <Route path="/sheet/new" element={<NewSheetRedirect />} />
-            {/* Pass props to EditorContainer */}
+            {/* Pass props to EditorContainer via Wrapper */}
             <Route
               path="/sheet/:sheetId"
               element={
-                <EditorContainer
+                <KeyedEditorContainer
                   darkMode={darkMode}
                   toggleDarkMode={toggleDarkMode}
                   language={language}

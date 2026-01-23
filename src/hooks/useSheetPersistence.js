@@ -44,7 +44,7 @@ export const useSheetPersistence = (urlSheetId) => {
     const [isPersisted, setIsPersisted] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [isDirty, setIsDirty] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     // Chat loading state
     const [isChatLoading, setIsChatLoading] = useState(false);
@@ -596,12 +596,16 @@ export const useSheetPersistence = (urlSheetId) => {
     }, [currentSheetId, currentUser, showToast]);
 
     // ========== RETURN VALUES ==========
+    // Derived loading state to prevent flash of stale content during navigation
+    // If urlSheetId changes but we haven't loaded it yet (currentSheetId mismatch), treat as loading
+    const isSwitching = urlSheetId && currentSheetId && urlSheetId !== currentSheetId;
+    const effectiveLoading = isLoading || isSwitching;
+
     return {
-        // Sheet content
-        title,
-        setTitle,
-        sources,
-        messages,
+        // Sheet content - shield with loading state
+        title: effectiveLoading ? 'Loading...' : title,
+        sources: effectiveLoading ? [] : sources,
+        messages: effectiveLoading ? [] : messages,
         setMessages,
 
         // Source management
@@ -627,7 +631,7 @@ export const useSheetPersistence = (urlSheetId) => {
         isPersisted,
         isSaving,
         isDirty,
-        isLoading,
+        isLoading: effectiveLoading,
 
         // Sheet management
         loadSheet,

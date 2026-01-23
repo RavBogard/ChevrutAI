@@ -11,6 +11,21 @@ const Changelog = () => {
                 <p className="legal-subtitle">What's new in Chevruta.AI</p>
 
                 <section className="changelog-section">
+                    <h2>Version 1.1.45 <span className="version-date">January 22, 2026</span></h2>
+                    <ul>
+                        <li><strong>Fixed Navigation Flashing</strong> – Implemented a stricter navigation system that forces a fresh start when switching sheets, completely eliminating the brief flash of old content.</li>
+                        <li><strong>Changelog Scrolling</strong> – Fixed the issue where the changelog and other legal pages couldn't scroll.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
+                    <h2>Version 1.1.44 <span className="version-date">January 22, 2026</span></h2>
+                    <ul>
+                        <li><strong>Fixed Text Reversion</strong> – Resolved a critical bug where editing text (especially English) would revert to the previous version when clicking away. Editing is now stable.</li>
+                    </ul>
+                </section>
+
+                <section className="changelog-section">
                     <h2>Version 1.1.43 <span className="version-date">January 22, 2026</span></h2>
                     <ul>
                         <li><strong>Fixed Header/Sidebar Conflict</strong> – Applied aggressive layout resets to the Header component to force it to stay within its assigned grid area, ensuring it can never overlap or block the Sidebar's controls.</li>
