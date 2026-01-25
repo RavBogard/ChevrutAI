@@ -147,7 +147,7 @@ export default async function handler(req, res) {
         }
 
         const genAI = new GoogleGenerativeAI(apiKey);
-        const modelVersion = process.env.GEMINI_MODEL_VERSION || 'gemini-2.0-flash-exp';
+        const modelVersion = process.env.GEMINI_MODEL_VERSION || 'gemini-3-flash-preview';
         const model = genAI.getGenerativeModel({
             model: modelVersion,
             systemInstruction: SYSTEM_INSTRUCTION
