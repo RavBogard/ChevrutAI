@@ -55,27 +55,7 @@
 <body>
   <div id="root"></div>
 
-  <style>
-    /* Ensure static footer is visible for bots but hidden when App loads */
-    #static-footer {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: white;
-      border-top: 1px solid #eee;
-      z-index: 1000;
-      padding: 10px;
-      text-align: center;
-      font-size: 12px;
-      color: #888;
-    }
 
-    /* Hide the static footer once React renders into #root */
-    #root:not(:empty)~#static-footer {
-      display: none;
-    }
-  </style>
 
   <!-- Static footer for crawlers and verification -->
   <footer id="static-footer">
