@@ -68,7 +68,7 @@ BAD titles (NEVER do this):
    - "Zohar, Bereshit 1:1" (Alternative Zohar citation - Parasha-based)
    
    ZOHAR SPECIFIC RULES:
-   - PREFER `Volume: Page` format (e.g. "Zohar 1:1a", "Zohar 3:55a") as it is more precise in Sefaria.
+   - PREFER "Volume: Page" format (e.g. "Zohar 1:1a", "Zohar 3:55a") as it is more precise in Sefaria.
    - If using Parasha format (e.g. "Zohar, Metzora 2"), be aware that verse mapping is often irregular.
    - If a specific Zohar text fails to load, it might be due to complex segmentation.
 
@@ -147,7 +147,7 @@ export default async function handler(req, res) {
         }
 
         const genAI = new GoogleGenerativeAI(apiKey);
-        const modelVersion = process.env.GEMINI_MODEL_VERSION || 'gemini-3-flash-preview';
+        const modelVersion = process.env.GEMINI_MODEL_VERSION || 'gemini-2.0-flash-exp';
         const model = genAI.getGenerativeModel({
             model: modelVersion,
             systemInstruction: SYSTEM_INSTRUCTION
