@@ -55,12 +55,28 @@
 <body>
   <div id="root"></div>
 
-
+  <style>
+    /* Force static footer to be visible on top of the React app */
+    #static-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #f8f9fa;
+      border-top: 1px solid #ddd;
+      z-index: 9999;
+      padding: 15px;
+      text-align: center;
+      font-size: 14px;
+      color: #333;
+      font-family: sans-serif;
+    }
+  </style>
 
   <!-- Static footer for crawlers and verification -->
   <footer id="static-footer">
-    <a href="https://chevruta.ai/privacy.html" style="color: inherit; text-decoration: none; margin: 0 10px;">Privacy
-      Policy</a>
+    <a href="https://www.chevruta.ai/privacy.html"
+      style="color: inherit; text-decoration: none; margin: 0 10px; font-weight: bold;">Privacy Policy</a>
     <a href="https://chevruta.ai/#/terms" style="color: inherit; text-decoration: none; margin: 0 10px;">Terms of
       Service</a>
   </footer>
