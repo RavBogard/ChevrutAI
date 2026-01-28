@@ -185,29 +185,36 @@ export const getSefariaTextByVersion = async (ref, versionTitle) => {
 export const searchSefariaText = async (query, book = null) => {
     try {
         const encodedQuery = encodeURIComponent(query);
-        let url = `https://www.sefaria.org/api/search-wrapper/text/_search?q=${encodedQuery}&size=5`;
-        if (book) {
-            // Very naive book filter using string matching, might need refinement
-            // Sefaria search API often just takes the query nicely
-        }
+        // Updated to use the working search endpoint
+        let url = `https://www.sefaria.org/api/search/text/_search?q=${encodedQuery}`;
 
         const response = await fetch(url, {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({
-                type: "text"
+                from: 0,
+                size: 5,
+                query: {
+                    match: { "exact": query }
+                }
             })
         });
 
-        if (!response.ok) return [];
+        if (!response.ok) {
+            console.error("Search API returned status:", response.status);
+            return [];
+        }
 
         const data = await response.json();
         if (!data.hits || !data.hits.hits) return [];
 
         return data.hits.hits.map(hit => ({
             ref: hit._source.ref,
-            he: hit._source.he,
-            en: hit._source.test
-        })).filter(hit => hit.ref); // Ensure we have a ref
+            he: hit._source.heRef, // Sefaria uses heRef for the Hebrew title/reference
+            en: hit._source.exact // 'exact' contains the text snippet in the new API
+        })).filter(hit => hit.ref);
 
     } catch (e) {
         console.error("Search API Error:", e);
