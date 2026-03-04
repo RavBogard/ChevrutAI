@@ -11,6 +11,7 @@ import {
     doc,
     setDoc,
     getDoc,
+    getDocs,
     collection,
     query,
     where,
@@ -156,3 +157,36 @@ export const deleteSheetFromFirestore = async (sheetId) => {
     await deleteDoc(docRef);
 };
 
+/**
+ * SHARE-01: Toggle the public/private state of a sheet.
+ * Uses setDoc with merge: true so only the isPublic field is updated.
+ * This prevents a race condition where autosave (which also uses merge: true)
+ * could inadvertently overwrite isPublic if both writes fire simultaneously.
+ *
+ * @param {string} sheetId
+ * @param {boolean} isPublic
+ */
+export const setSheetPublic = async (sheetId, isPublic) => {
+    const sheetRef = doc(db, 'sheets', sheetId);
+    await setDoc(sheetRef, { isPublic }, { merge: true });
+};
+
+/**
+ * SHARE-03 support: One-time fetch of all sheets for a user, ordered by last updated.
+ * Use subscribeToUserSheets for real-time updates in components.
+ * This one-time version is used by SheetLibrary for initial load when
+ * real-time updates are not needed.
+ *
+ * @param {string} userId
+ * @returns {Promise<Array<{id: string, [key: string]: any}>>}
+ */
+export const getUserSheets = async (userId) => {
+    if (!userId) return [];
+    const q = query(
+        collection(db, 'sheets'),
+        where('ownerId', '==', userId),
+        orderBy('updatedAt', 'desc')
+    );
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+};
