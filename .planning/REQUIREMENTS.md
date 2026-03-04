@@ -8,7 +8,7 @@
 ### Data Foundation
 
 - [ ] **DATA-01**: Zustand store replaces `useSheetPersistence` + `SourceSheetContext` as the single source of sheet state
-- [ ] **DATA-02**: Sheet Firestore documents include a `schemaVersion` field; reads apply defensive defaults for missing fields so existing user sheets never break
+- [x] **DATA-02**: Sheet Firestore documents include a `schemaVersion` field; reads apply defensive defaults for missing fields so existing user sheets never break
 - [x] **DATA-03**: Sefaria text normalization handles all array depths (1–3 levels) and edge cases without runtime errors for Talmud, Mishnah, Zohar, and other complex source types
 - [ ] **DATA-04**: Undo/redo works correctly for all sheet mutations (add source, remove source, reorder, edit commentary)
 
@@ -97,7 +97,7 @@
 | AUTH-01 | Phase 1 | Pending |
 | AUTH-02 | Phase 1 | Pending |
 | DATA-01 | Phase 1 | Pending |
-| DATA-02 | Phase 1 | Pending |
+| DATA-02 | Phase 1 | Complete |
 | DATA-03 | Phase 1 | Complete |
 | DATA-04 | Phase 1 | Pending |
 | TYPO-01 | Phase 2 | Pending |
@@ -133,4 +133,4 @@
 
 ---
 *Requirements defined: 2026-03-04*
-*Last updated: 2026-03-04 after 01-01 completion — DATA-03 marked complete*
+*Last updated: 2026-03-04 after 01-03 completion — DATA-02 marked complete*
