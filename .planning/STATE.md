@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-last_updated: "2026-03-04T21:36:00Z"
+last_updated: "2026-03-04T21:45:00Z"
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 20
-  completed_plans: 17
+  completed_plans: 18
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-04)
 
 **Core value:** Rabbi goes from topic to beautiful, print-ready sheet in minutes — with AI helping find sources and fill translation gaps.
-**Current focus:** Phase 5 — AI Translation (Complete) / Phase 6 — Sefaria Bulk Import (Next)
+**Current focus:** Phase 6 — AI Source Suggestions (In Progress)
 
 ## Current Position
 
-Phase: 5 of 6 (AI Translation) — Complete
-Plan: 3 of 3 complete (05-01, 05-02, 05-03 done)
-Status: Phase 5 complete — AI-01, AI-02, AI-05 all satisfied across three plans
-Last activity: 2026-03-04 — Completed 05-03 (DOCX export AI translation label — '[AI Translation] ' prefix in English cell for isAiTranslated sources)
+Phase: 6 of 6 (AI Source Suggestions) — In Progress
+Plan: 1 of 2 complete (06-01 done)
+Status: 06-01 complete — POST /api/suggest endpoint created (AI-03 partially satisfied; 06-02 UI remains)
+Last activity: 2026-03-04 — Completed 06-01 (POST /api/suggest — Gemini JSON mode + sequential Sefaria validation + rate limiter)
 
-Progress: [##############] 85%
+Progress: [###############] 90%
 
 ## Performance Metrics
 
@@ -45,9 +45,10 @@ Progress: [##############] 85%
 | 3 - Core Editor | 4 | 13 min | 3.3 min |
 | 4 - PDF Export & Sharing | 3 | 17 min | 5.7 min |
 | 5 - AI Translation (complete) | 3 | 6 min | 2 min |
+| 6 - AI Source Suggestions (in progress) | 1 of 2 | 4 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 04-03 (12 min), 05-01 (2 min), 05-02 (2 min), 05-03 (2 min)
+- Last 5 plans: 05-01 (2 min), 05-02 (2 min), 05-03 (2 min), 06-01 (4 min)
 - Trend: Fast
 
 *Updated after each plan completion*
@@ -90,6 +91,10 @@ Recent decisions affecting current work:
 - [05-02]: source.en never overwritten by translate flow — Sefaria data provenance preserved; AI writes to aiTranslation/isAiTranslated/aiTranslationMeta
 - [05-03]: formatText called on source.aiTranslation in docxExport (not raw value) — strips HTML from editable field before writing to DOCX cell
 - [05-03]: isAiTranslated === true strict check in docxExport — consistent with SourceBlock.jsx; undefined on old sources evaluates false, no false positives
+- [06-01]: Sequential for-of Sefaria validation (not Promise.all) — Sefaria rate limits are undocumented; sequential is safe from day one
+- [06-01]: responseMimeType: application/json enforces Gemini JSON output; markdown-fence fallback stripping added for older model versions
+- [06-01]: data.text field (not data.en) is Sefaria's English content field — verified against live API 2026-03-04
+- [06-01]: data.error checked after resp.ok — Sefaria returns HTTP 200 with error body for invalid refs; this is the primary validation failure mode
 
 ### Pending Todos
 
@@ -106,5 +111,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-04
-Stopped at: Completed 05-03-PLAN.md (DOCX export AI translation label — AI-02 fully satisfied; Phase 5 AI Translation complete)
+Stopped at: Completed 06-01-PLAN.md (POST /api/suggest endpoint — Gemini JSON mode + sequential Sefaria validation + 20 req/min rate limiter)
 Resume file: None
