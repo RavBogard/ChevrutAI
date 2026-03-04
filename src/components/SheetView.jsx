@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import html2pdf from 'html2pdf.js';
 import { exportToGoogleDoc } from '../services/google';
 // exportToDocx is now dynamically imported to save bundle size
 import { PROMPTS_EN, PROMPTS_HE } from '../data/prompts';
@@ -156,15 +155,10 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
     };
 
     const handleExportPDF = () => {
-        const element = document.getElementById('sheet-export-area');
-        const opt = {
-            margin: [0.5, 0.5],
-            filename: `${sheetTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-        };
-        html2pdf().set(opt).from(element).save();
+        const prevTitle = document.title;
+        document.title = sheetTitle || 'Source Sheet';
+        window.print();
+        document.title = prevTitle;
     };
 
     const handleExportDocx = async () => {
