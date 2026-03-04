@@ -1,8 +1,9 @@
 import React from 'react';
 import { useStoreWithEqualityFn } from 'zustand/traditional';
 import useSheetStore from '../../stores/useSheetStore';
+import ShareButton from '../sheet/ShareButton';
 
-const EditorToolbar = () => {
+const EditorToolbar = ({ sheetId, isPublic, onTogglePublic }) => {
   // Reactive only for button disabled state — temporal store tracks undo/redo history
   const canUndo = useStoreWithEqualityFn(useSheetStore.temporal, (s) => s.pastStates.length > 0);
   const canRedo = useStoreWithEqualityFn(useSheetStore.temporal, (s) => s.futureStates.length > 0);
@@ -89,6 +90,16 @@ const EditorToolbar = () => {
             <path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"/>
           </svg>
         </button>
+      </div>
+
+      <div className="toolbar-divider"></div>
+
+      <div className="toolbar-group action-group">
+        <ShareButton
+          sheetId={sheetId}
+          isPublic={isPublic}
+          onTogglePublic={onTogglePublic}
+        />
       </div>
     </div>
   );

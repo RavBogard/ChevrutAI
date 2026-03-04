@@ -22,7 +22,11 @@ const SheetToolbar = ({
     googleDocUrl,
     isSyncing,
     onSyncGoogleDoc,
-    onUnlinkGoogleDoc
+    onUnlinkGoogleDoc,
+    // Share Props
+    sheetId,
+    isPublic,
+    onTogglePublic
 }) => {
     return (
         <div className="sheet-toolbar" data-html2canvas-ignore="true">
@@ -74,7 +78,11 @@ const SheetToolbar = ({
 
             {/* Group 3: Export & Actions */}
             <div className="toolbar-group action-group">
-                <ShareButton />
+                <ShareButton
+                    sheetId={sheetId}
+                    isPublic={isPublic}
+                    onTogglePublic={onTogglePublic}
+                />
 
                 {/* Sync Button - Only shows when linked to Google Doc */}
                 {googleDocId && (

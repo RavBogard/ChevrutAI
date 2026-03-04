@@ -10,7 +10,8 @@ import {
     getSheetFromFirestore,
     loadSheetWithDefaults,
     subscribeToUserSheets,
-    deleteSheetFromFirestore
+    deleteSheetFromFirestore,
+    setSheetPublic
 } from '../services/firebase';
 import { getSefariaText, searchSefariaText } from '../services/sefaria';
 import { sendGeminiMessage } from '../services/ai';
@@ -66,6 +67,8 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
     const [googleDocUrl, setGoogleDocUrl] = useState(null);
     const [isSyncing, setIsSyncing] = useState(false);
 
+    const [isPublic, setIsPublic] = useState(false);
+
     const [disambiguationState, setDisambiguationState] = useState({
         isOpen: false,
         originalRef: '',
@@ -98,6 +101,7 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
             }]);
             setGoogleDocId(null);
             setGoogleDocUrl(null);
+            setIsPublic(false);
             return;
         }
 
@@ -114,6 +118,7 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                     useSheetStore.temporal.getState().clear();
                     setGoogleDocId(rawDoc.googleDocId || null);
                     setGoogleDocUrl(rawDoc.googleDocUrl || null);
+                    setIsPublic(rawDoc.isPublic ?? false);
                     // Reset messages on sheet load
                     setMessages([{
                         id: 'welcome',
@@ -475,9 +480,18 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
         showToast('Unlinked from Google Docs', 'success');
     }, [currentSheetId, currentUser, showToast]);
 
+    // --- Share / Public Toggle ---
+    const handleTogglePublic = useCallback(async (newValue) => {
+        if (!currentSheetId) return; // Sheet not yet saved — silently no-op
+        await setSheetPublic(currentSheetId, newValue);
+        setIsPublic(newValue);
+    }, [currentSheetId]);
+
     // --- Derived State ---
     const isHomeState = sources.length === 0 && messages.length <= 1;
     const chatStarted = messages.length > 1;
+    const isOwner = !!(currentUser && userSheets.some(s => s.id === currentSheetId));
+    const isReadOnly = !isOwner;
 
     // --- Event Handlers ---
     const handleSendMessage = useCallback((text) => {
@@ -523,40 +537,65 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                 />
             </header>
 
-            {/* Sidebar Area */}
-            <aside className="shell-sidebar">
-                <ChatSidebar
-                    messages={messages}
-                    onSendMessage={handleSendMessage}
-                    onAddSource={addSource}
-                    sheetSources={sources}
-                    isLoading={isChatLoading}
-                    isMobileOpen={false}
-                    onMobileClose={() => { }}
-                    onToggleSidebar={toggleSidebar}
-                    darkMode={darkMode}
-                    toggleDarkMode={toggleDarkMode}
-                    language={language}
-                    userSheets={userSheets}
-                    onLoadSheet={handleLoadSheet}
-                    currentSheetId={currentSheetId}
-                    onDeleteSheet={deleteSheet}
-                    onNewSheet={handleNewSheet}
-                />
+            {/* Sidebar Area — hidden for read-only visitors */}
+            {!isReadOnly && (
+                <aside className="shell-sidebar">
+                    <ChatSidebar
+                        messages={messages}
+                        onSendMessage={handleSendMessage}
+                        onAddSource={addSource}
+                        sheetSources={sources}
+                        isLoading={isChatLoading}
+                        isMobileOpen={false}
+                        onMobileClose={() => { }}
+                        onToggleSidebar={toggleSidebar}
+                        darkMode={darkMode}
+                        toggleDarkMode={toggleDarkMode}
+                        language={language}
+                        userSheets={userSheets}
+                        onLoadSheet={handleLoadSheet}
+                        currentSheetId={currentSheetId}
+                        onDeleteSheet={deleteSheet}
+                        onNewSheet={handleNewSheet}
+                    />
 
-                {/* Resizer inside sidebar area (positioned absolute right) */}
-                {isSidebarOpen && (
-                    <div
-                        className="shell-resizer"
-                        onMouseDown={startResizing}
-                    ></div>
-                )}
-            </aside>
+                    {/* Resizer inside sidebar area (positioned absolute right) */}
+                    {isSidebarOpen && (
+                        <div
+                            className="shell-resizer"
+                            onMouseDown={startResizing}
+                        ></div>
+                    )}
+                </aside>
+            )}
 
             {/* Main Content Area */}
             <main className="shell-content">
-                <SearchPanel />
-                <EditorToolbar />
+                {isReadOnly && (
+                    <div style={{
+                        background: 'var(--bg-secondary, #f0f4f8)',
+                        borderBottom: '1px solid var(--border-color, #e0e0e0)',
+                        padding: '0.5rem 1.5rem',
+                        textAlign: 'center',
+                        fontSize: '0.875rem',
+                        color: 'var(--text-secondary, #666)'
+                    }}>
+                        This sheet is read-only.{' '}
+                        {!currentUser && (
+                            <span>
+                                <a href="#/" style={{ color: 'var(--primary-color)' }}>Log in</a> to edit.
+                            </span>
+                        )}
+                    </div>
+                )}
+                {!isReadOnly && <SearchPanel />}
+                {!isReadOnly && (
+                    <EditorToolbar
+                        sheetId={currentSheetId}
+                        isPublic={isPublic}
+                        onTogglePublic={handleTogglePublic}
+                    />
+                )}
                 <SheetCanvas />
             </main>
 
@@ -566,8 +605,8 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
                 {isSaving && <SavingIndicator />}
             </div>
 
-            {/* Mobile Extras */}
-            {mobileChatOpen && (
+            {/* Mobile Extras — hidden for read-only visitors */}
+            {!isReadOnly && mobileChatOpen && (
                 <>
                     <div className="chat-sidebar-wrapper mobile-drawer open">
                         <ChatSidebar

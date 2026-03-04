@@ -49,7 +49,7 @@ const SortableSourceItem = ({ source, id, onRemove, onUpdate, onRefine }) => {
     );
 };
 
-const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClearSheet, onUndo, onRedo, canUndo, canRedo, language, onSuggestionClick, sheetTitle, onTitleChange, onSendMessage, chatStarted, onAddSource, darkMode, toggleDarkMode, toggleLanguage, googleDocId, googleDocUrl, isSyncing, onSyncGoogleDoc, onUnlinkGoogleDoc, onLinkToGoogleDoc, disambiguationState, onResolveDisambiguation, onCancelDisambiguation }) => {
+const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClearSheet, onUndo, onRedo, canUndo, canRedo, language, onSuggestionClick, sheetTitle, onTitleChange, onSendMessage, chatStarted, onAddSource, darkMode, toggleDarkMode, toggleLanguage, googleDocId, googleDocUrl, isSyncing, onSyncGoogleDoc, onUnlinkGoogleDoc, onLinkToGoogleDoc, disambiguationState, onResolveDisambiguation, onCancelDisambiguation, sheetId, isPublic, onTogglePublic, isReadOnly }) => {
     // eslint-disable-next-line no-unused-vars
     const { currentUser } = useAuth();
     const sensors = useSensors(
@@ -184,7 +184,7 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                 null
             )}
 
-            {chatStarted && (
+            {chatStarted && !isReadOnly && (
                 <header className="sheet-header">
                     {/* Controls moved to UnifiedHeader */}
 
@@ -215,6 +215,9 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                         isSyncing={isSyncing}
                         onSyncGoogleDoc={onSyncGoogleDoc}
                         onUnlinkGoogleDoc={onUnlinkGoogleDoc}
+                        sheetId={sheetId}
+                        isPublic={isPublic}
+                        onTogglePublic={onTogglePublic}
                     />
 
                     {exportUrl && (
@@ -371,7 +374,11 @@ SheetView.propTypes = {
     toggleLanguage: PropTypes.func.isRequired,
     disambiguationState: PropTypes.object,
     onResolveDisambiguation: PropTypes.func,
-    onCancelDisambiguation: PropTypes.func
+    onCancelDisambiguation: PropTypes.func,
+    sheetId: PropTypes.string,
+    isPublic: PropTypes.bool,
+    onTogglePublic: PropTypes.func,
+    isReadOnly: PropTypes.bool
 };
 
 export default SheetView;
