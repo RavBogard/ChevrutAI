@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import UserMenu from './auth/UserMenu';
 import Logo from './common/Logo';
 
@@ -11,6 +13,7 @@ const UnifiedHeader = ({
     isSidebarOpen,
     isHome // Now passed as prop
 }) => {
+    const { currentUser } = useAuth();
     const [isVisible, setIsVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
 
@@ -67,6 +70,18 @@ const UnifiedHeader = ({
                         window.location.reload();
                     }}
                 />
+
+                {/* My Library link — authenticated users only */}
+                {currentUser && (
+                    <Link
+                        to="/library"
+                        className="header-icon-btn"
+                        title="My Sheet Library"
+                        style={{ fontSize: '0.8rem', fontWeight: '500', textDecoration: 'none' }}
+                    >
+                        My Library
+                    </Link>
+                )}
             </div>
 
             {/* Right: Controls Group */}

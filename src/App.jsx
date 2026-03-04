@@ -17,6 +17,7 @@ const Privacy = lazy(() => import('./components/Privacy'));
 const Terms = lazy(() => import('./components/Terms'));
 const Changelog = lazy(() => import('./components/Changelog'));
 const EditorContainer = lazy(() => import('./components/EditorContainer'));
+const SheetLibrary = lazy(() => import('./components/library/SheetLibrary'));
 import ErrorBoundary from './components/ErrorBoundary';
 
 const LoadingFallback = () => (
@@ -70,6 +71,7 @@ function App() {
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/changelog" element={<Changelog />} />
+            <Route path="/library" element={<SheetLibrary />} />
           </Routes>
         </Suspense>
       </ErrorBoundary>
