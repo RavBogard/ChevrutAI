@@ -32,10 +32,10 @@
 
 ### PDF & Print Export
 
-- [ ] **EXPRT-01**: User can export their sheet as a PDF via browser-native `window.print()` + `@media print` CSS (no rasterization — text must be selectable in output)
-- [ ] **EXPRT-02**: Print stylesheet produces correct bilingual column layout with Hebrew RTL preserved in printed output
-- [ ] **EXPRT-03**: Source blocks do not break across pages unnecessarily (CSS `page-break-inside: avoid`)
-- [ ] **EXPRT-04**: Print output omits all editor UI chrome (sidebar, buttons, navigation) — sheet content only
+- [x] **EXPRT-01**: User can export their sheet as a PDF via browser-native `window.print()` + `@media print` CSS (no rasterization — text must be selectable in output)
+- [x] **EXPRT-02**: Print stylesheet produces correct bilingual column layout with Hebrew RTL preserved in printed output
+- [x] **EXPRT-03**: Source blocks do not break across pages unnecessarily (CSS `page-break-inside: avoid`)
+- [x] **EXPRT-04**: Print output omits all editor UI chrome (sidebar, buttons, navigation) — sheet content only
 
 ### Sharing & Library
 
@@ -112,10 +112,10 @@
 | EDIT-06 | Phase 3 | Complete |
 | EDIT-07 | Phase 3 | Complete |
 | EDIT-08 | Phase 3 | Complete |
-| EXPRT-01 | Phase 4 | Pending |
-| EXPRT-02 | Phase 4 | Pending |
-| EXPRT-03 | Phase 4 | Pending |
-| EXPRT-04 | Phase 4 | Pending |
+| EXPRT-01 | Phase 4 | Complete |
+| EXPRT-02 | Phase 4 | Complete |
+| EXPRT-03 | Phase 4 | Complete |
+| EXPRT-04 | Phase 4 | Complete |
 | SHARE-01 | Phase 4 | Complete |
 | SHARE-02 | Phase 4 | Complete |
 | SHARE-03 | Phase 4 | Pending |

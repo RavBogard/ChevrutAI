@@ -43,10 +43,10 @@ Progress: [##########....] 65%
 | 1 - Data Layer Foundation | 5 | 29 min | 6 min |
 | 2 - Hebrew Typography | 3 | 7 min | 2.3 min |
 | 3 - Core Editor | 4 | 13 min | 3.3 min |
-| 4 - PDF Export & Sharing (in progress) | 2 | 1 min | 0.5 min |
+| 4 - PDF Export & Sharing (in progress) | 2 | 5 min | 2.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-01 (3 min), 03-02 (5 min), 03-03 (2 min), 03-04 (3 min), 04-02 (1 min)
+- Last 5 plans: 03-02 (5 min), 03-03 (2 min), 03-04 (3 min), 04-01 (4 min), 04-02 (1 min)
 - Trend: Fast
 
 *Updated after each plan completion*
@@ -70,6 +70,10 @@ Recent decisions affecting current work:
 - [02-01]: Frank Ruhl Libre Variable fallback chain: Variable -> Static -> David (macOS) -> Arial Hebrew -> serif — covers all platforms
 - [03-03]: PointerSensor activationConstraint: { distance: 8 } is the DnD bug fix — original SheetView had no constraint causing drag to steal focus from contentEditable
 - [03-04]: Local state for chat (messages), userSheets, Google Docs, and disambiguation stays in EditorContainer — useSheetStore does not have sendMessage/deleteSheet/userSheets; Phase 4 will migrate or clean up
+- [04-01]: window.print() replaces html2pdf.js — browser-native print preserves Hebrew text selectability; html2pdf.js rasterizes Hebrew as unselectable images with confirmed RTL/nikud bugs
+- [04-01]: overflow:visible !important on both .app-shell and .shell-content in @media print — AppShell.css sets overflow:hidden on both, clipping print content after first viewport
+- [04-01]: page-break-inside:avoid on .sortable-item (block wrapper) not .source-content (flex container) — CSS fragmentation spec: page-break on flex containers is unreliable in Chrome/Firefox
+- [04-01]: document.title swap pattern: set sheetTitle before window.print(), restore after — provides PDF filename hint in browser save dialog
 - [04-02]: allow create uses request.resource.data.ownerId (not resource.data) — on first-time save the document does not exist yet, resource would always fail
 - [04-02]: setSheetPublic uses setDoc merge:true so only isPublic is written — prevents race condition with autosave
 - [04-02]: getUserSheets is one-time getDocs (not onSnapshot) — SheetLibrary does not need real-time updates on initial load
@@ -88,5 +92,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-04
-Stopped at: Completed 04-02-PLAN.md (firestore.rules + setSheetPublic + getUserSheets — SHARE-01, SHARE-02 complete)
+Stopped at: Completed 04-01-PLAN.md (window.print() PDF export, @media print stylesheet — EXPRT-01 through EXPRT-04 complete)
 Resume file: None
