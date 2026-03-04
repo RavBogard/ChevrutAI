@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-03-04)
 ## Current Position
 
 Phase: 1 of 6 (Data Layer Foundation)
-Plan: 4 of 5 complete (01-01, 01-02, 01-03, 01-04 done; 01-05 next)
-Status: In progress
-Last activity: 2026-03-04 — Completed 01-04 (EditorContainer migration to useSheetStore + useAutosave + 6 legacy file deletions, build clean, 43/43 tests)
+Plan: 5 of 5 complete (01-01, 01-02, 01-03, 01-04, 01-05 done — Phase 1 complete)
+Status: Phase 1 complete — ready for Phase 2
+Last activity: 2026-03-04 — Completed 01-05 (AuthContext unit tests for AUTH-01 and AUTH-02, 47/47 tests passing)
 
-Progress: [####░░░░░░] 20%
+Progress: [#####░░░░░] 25%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
+- Total plans completed: 5
 - Average duration: 6 minutes
-- Total execution time: 27 minutes
+- Total execution time: 29 minutes
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1 - Data Layer Foundation | 4 | 27 min | 7 min |
+| 1 - Data Layer Foundation | 5 | 29 min | 6 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2 min), 01-03 (12 min), 01-02 (10 min), 01-04 (3 min)
+- Last 5 plans: 01-01 (2 min), 01-03 (12 min), 01-02 (10 min), 01-04 (3 min), 01-05 (2 min)
 - Trend: Fast
 
 *Updated after each plan completion*
@@ -56,6 +56,8 @@ Recent decisions affecting current work:
 - [01-04]: Messages stay in local useState inside EditorContainer for Phase 1 — store owns only title and sources per research open question #2
 - [01-04]: addSource keeps Sefaria fetch + disambiguation logic in EditorContainer and delegates store.addSource as the final write — async logic stays out of Zustand store
 - [01-04]: useSheetStore.temporal.getState().clear() called on every sheet load to prevent undo history crossing sheet boundaries
+- [01-05]: AuthContext exposes login (wrapping loginWithGoogle) not loginWithGoogle directly in context value — AUTH-01 test asserts typeof login === 'function'
+- [01-05]: Firebase mock pattern for React component tests: vi.mock('../services/firebase') capturing subscribeToAuth callback in module-level variable, reset in beforeEach
 
 ### Pending Todos
 
@@ -71,5 +73,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-04
-Stopped at: Completed 01-04-PLAN.md (EditorContainer migration to useSheetStore + useAutosave) — 01-05 is next
+Stopped at: Completed 01-05-PLAN.md (AuthContext validation tests — Phase 1 complete) — Phase 2 is next
 Resume file: None
