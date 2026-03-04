@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Data Layer Foundation** - Migrate sheet state to Zustand, version Firestore schema, stabilize Sefaria text normalization
 - [x] **Phase 2: Hebrew Typography and Bilingual Layout** - Establish correct Hebrew font rendering and synagogue bilingual column layout
 - [x] **Phase 3: Core Editor Rebuild** - Rebuild the editor panel on top of the stable store and typography
-- [ ] **Phase 4: PDF Export and Public Sharing** - Add print-quality PDF export and public sheet URL sharing
+- [x] **Phase 4: PDF Export and Public Sharing** - Add print-quality PDF export and public sheet URL sharing
 - [ ] **Phase 5: AI Translation** - On-demand AI translation for sources lacking English text
 - [ ] **Phase 6: AI Source Suggestions** - Topic-to-source suggestions via Gemini + Sefaria validation
 
@@ -87,9 +87,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — Replace html2pdf.js with window.print() and add complete @media print stylesheet (EXPRT-01, EXPRT-02, EXPRT-03, EXPRT-04)
-- [ ] 04-02-PLAN.md — Create firestore.rules with public/private read scoping; add setSheetPublic and getUserSheets to firebase.js (SHARE-01, SHARE-02)
-- [ ] 04-03-PLAN.md — Upgrade ShareButton to toggle isPublic; create SheetLibrary component; wire /library route; add read-only mode to EditorContainer (SHARE-01, SHARE-02, SHARE-03, SHARE-04)
+- [x] 04-01-PLAN.md — Replace html2pdf.js with window.print() and add complete @media print stylesheet (EXPRT-01, EXPRT-02, EXPRT-03, EXPRT-04)
+- [x] 04-02-PLAN.md — Create firestore.rules with public/private read scoping; add setSheetPublic and getUserSheets to firebase.js (SHARE-01, SHARE-02)
+- [x] 04-03-PLAN.md — Upgrade ShareButton to toggle isPublic; create SheetLibrary component; wire /library route; add read-only mode to EditorContainer (SHARE-01, SHARE-02, SHARE-03, SHARE-04)
 
 ### Phase 5: AI Translation
 **Goal**: Users can get an AI-generated English translation for any Sefaria source that has no existing translation, with clear attribution

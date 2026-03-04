@@ -8,7 +8,7 @@ progress:
   total_phases: 6
   completed_phases: 3
   total_plans: 20
-  completed_plans: 13
+  completed_plans: 14
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-03-04)
 ## Current Position
 
 Phase: 4 of 6 (PDF Export & Sharing) — In Progress
-Plan: 2 of 5 complete (04-01 done, 04-02 done)
-Status: Phase 4 in progress — 04-02 complete (Firestore rules + setSheetPublic + getUserSheets)
-Last activity: 2026-03-04 — Completed 04-02 (firestore.rules created, setSheetPublic and getUserSheets added to firebase.js)
+Plan: 3 of 5 complete (04-01 done, 04-02 done, 04-03 done)
+Status: Phase 4 in progress — 04-03 complete (Share UI: isPublic toggle, ShareButton, SheetLibrary, /library route, isReadOnly)
+Last activity: 2026-03-04 — Completed 04-03 (ShareButton upgraded, isPublic/isReadOnly in EditorContainer, SheetLibrary created, My Library link in UnifiedHeader)
 
-Progress: [##########....] 65%
+Progress: [###########...] 70%
 
 ## Performance Metrics
 
@@ -43,10 +43,10 @@ Progress: [##########....] 65%
 | 1 - Data Layer Foundation | 5 | 29 min | 6 min |
 | 2 - Hebrew Typography | 3 | 7 min | 2.3 min |
 | 3 - Core Editor | 4 | 13 min | 3.3 min |
-| 4 - PDF Export & Sharing (in progress) | 2 | 5 min | 2.5 min |
+| 4 - PDF Export & Sharing (in progress) | 3 | 17 min | 5.7 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-02 (5 min), 03-03 (2 min), 03-04 (3 min), 04-01 (4 min), 04-02 (1 min)
+- Last 5 plans: 03-03 (2 min), 03-04 (3 min), 04-01 (4 min), 04-02 (1 min), 04-03 (12 min)
 - Trend: Fast
 
 *Updated after each plan completion*
@@ -77,6 +77,10 @@ Recent decisions affecting current work:
 - [04-02]: allow create uses request.resource.data.ownerId (not resource.data) — on first-time save the document does not exist yet, resource would always fail
 - [04-02]: setSheetPublic uses setDoc merge:true so only isPublic is written — prevents race condition with autosave
 - [04-02]: getUserSheets is one-time getDocs (not onSnapshot) — SheetLibrary does not need real-time updates on initial load
+- [04-03]: isPublic placed in EditorContainer local state (not useSheetPersistence which does not exist) — same pattern as googleDocId/isSyncing; initialized from rawDoc.isPublic on sheet load
+- [04-03]: isReadOnly = !isOwner where isOwner checks currentUser + userSheets.some(s => s.id === currentSheetId) — gates entire editor chrome without extra Firestore reads
+- [04-03]: ShareButton wired through EditorToolbar (actual toolbar) not SheetToolbar/SheetView (legacy component not mounted in EditorContainer)
+- [04-03]: SheetLibrary uses subscribeToUserSheets (real-time) for live updates while library is open
 
 ### Pending Todos
 
@@ -92,5 +96,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-04
-Stopped at: Completed 04-01-PLAN.md (window.print() PDF export, @media print stylesheet — EXPRT-01 through EXPRT-04 complete)
+Stopped at: Completed 04-03-PLAN.md (Share UI: isPublic toggle, isReadOnly, SheetLibrary, /library route, My Library link — SHARE-01 through SHARE-04 complete)
 Resume file: None
