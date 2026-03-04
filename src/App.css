@@ -31,8 +31,8 @@
 
   --font-ui: 'Inter', system-ui, -apple-system, sans-serif;
   --font-english-serif: 'Merriweather', 'Georgia', serif;
-  --font-hebrew: 'Heebo', 'Arial Hebrew', sans-serif;
-  /* Modern, highly readable Israeli Hebrew font */
+  --font-hebrew: 'Frank Ruhl Libre Variable', 'Frank Ruhl Libre', 'David', 'Arial Hebrew', serif;
+  /* Phase 2: Frank Ruhl Libre Variable — nikud-safe serif */
 
   --source-bg: #ffffff;
 }
@@ -702,7 +702,7 @@ h6 {
   text-align: right;
   font-size: 1.45rem;
   /* Larger for Siddur-like readability */
-  line-height: 1.6;
+  line-height: 1.9; /* Phase 2: 1.9 minimum for nikud clearance (TYPO-01 requires 1.8+) */
 }
 
 /* Bilingual Segment Highlighting */
