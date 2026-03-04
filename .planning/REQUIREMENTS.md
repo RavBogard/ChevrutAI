@@ -1,0 +1,136 @@
+# Requirements: ChevrutAI — Jewish Text Sheet Maker
+
+**Defined:** 2026-03-04
+**Core Value:** Rabbi goes from topic → beautiful, print-ready sheet in minutes — with AI helping find sources and fill translation gaps.
+
+## v1 Requirements
+
+### Data Foundation
+
+- [ ] **DATA-01**: Zustand store replaces `useSheetPersistence` + `SourceSheetContext` as the single source of sheet state
+- [ ] **DATA-02**: Sheet Firestore documents include a `schemaVersion` field; reads apply defensive defaults for missing fields so existing user sheets never break
+- [ ] **DATA-03**: Sefaria text normalization handles all array depths (1–3 levels) and edge cases without runtime errors for Talmud, Mishnah, Zohar, and other complex source types
+- [ ] **DATA-04**: Undo/redo works correctly for all sheet mutations (add source, remove source, reorder, edit commentary)
+
+### Editor
+
+- [ ] **EDIT-01**: User can search Sefaria by reference or keyword and preview the Hebrew + English text before adding it to the sheet
+- [ ] **EDIT-02**: User can add a Sefaria source to their sheet in two clicks or fewer
+- [ ] **EDIT-03**: User can reorder sheet sources via drag-and-drop
+- [ ] **EDIT-04**: User can remove a source from the sheet
+- [ ] **EDIT-05**: User can insert their own commentary/text block between sources
+- [ ] **EDIT-06**: User can add section headers and visual dividers to structure the sheet
+- [ ] **EDIT-07**: User can set a title for their sheet
+- [ ] **EDIT-08**: Sheet auto-saves to Firestore without user action
+
+### Typography & Layout
+
+- [ ] **TYPO-01**: Hebrew text renders using Frank Ruhl Libre (self-hosted WOFF2), with nikud-safe line-height (minimum 1.8)
+- [ ] **TYPO-02**: Sheet displays Hebrew and English side-by-side in two columns (Hebrew right, English left) — the standard synagogue bilingual format
+- [ ] **TYPO-03**: Hebrew column uses `direction: rtl`; English column uses `direction: ltr`; these are scoped per-column and do not affect the app shell
+- [ ] **TYPO-04**: Sheet preview panel renders the bilingual layout correctly at screen size before export
+
+### PDF & Print Export
+
+- [ ] **EXPRT-01**: User can export their sheet as a PDF via browser-native `window.print()` + `@media print` CSS (no rasterization — text must be selectable in output)
+- [ ] **EXPRT-02**: Print stylesheet produces correct bilingual column layout with Hebrew RTL preserved in printed output
+- [ ] **EXPRT-03**: Source blocks do not break across pages unnecessarily (CSS `page-break-inside: avoid`)
+- [ ] **EXPRT-04**: Print output omits all editor UI chrome (sidebar, buttons, navigation) — sheet content only
+
+### Sharing & Library
+
+- [ ] **SHARE-01**: User can mark a sheet as public, generating a shareable URL accessible without login
+- [ ] **SHARE-02**: Public sheet view is read-only; Firestore security rules scope public reads to `isPublic == true` only (not the entire collection)
+- [ ] **SHARE-03**: User can view all their saved sheets in a library/dashboard
+- [ ] **SHARE-04**: User can search or filter their sheet library by title
+
+### AI Features
+
+- [ ] **AI-01**: User can request AI translation for any source that has an empty English translation field (on-demand per source, not automatic)
+- [ ] **AI-02**: AI-translated text is visually labeled "AI Translation" in both the editor and on printed/exported output
+- [ ] **AI-03**: User can describe a topic and receive a list of suggested Sefaria sources relevant to that topic
+- [ ] **AI-04**: User can add any suggested source directly from the suggestions UI to their sheet
+- [ ] **AI-05**: AI translation prompt explicitly instructs the model to flag Aramaic passages and note uncertainty
+
+### Authentication
+
+- [ ] **AUTH-01**: User can sign in with Google (existing Firebase Google Auth — no changes required)
+- [ ] **AUTH-02**: User session persists across browser refresh
+
+## v2 Requirements
+
+### Authentication
+
+- **AUTH-V2-01**: User can sign up with email and password
+- **AUTH-V2-02**: User can sign in anonymously and build a sheet without an account (not saved)
+
+### Export
+
+- **EXPRT-V2-01**: User can export sheet as DOCX (existing docxExport service — deprioritized in favor of PDF quality)
+- **EXPRT-V2-02**: Server-side PDF generation via Puppeteer for users where browser print dialog UX is insufficient
+
+### AI
+
+- **AI-V2-01**: AI contextualizes selected sources with connecting commentary (shows thematic connections between sources on the sheet)
+- **AI-V2-02**: AI suggests discussion questions for a completed sheet
+
+### Sharing
+
+- **SHARE-V2-01**: User can copy a sheet to create a new editable version
+
+## Out of Scope
+
+| Feature | Reason |
+|---------|--------|
+| Real-time collaborative editing | High complexity; sheet-making is typically a solo activity |
+| Social features (likes, follows, comments) | Not core to the sheet-making value prop |
+| Non-Sefaria text sources | Focus on Sefaria database; scope creep risk |
+| AI auto-drafting full sheets | Religious educators have authentic concerns about AI-generated liturgical content |
+| Paid tiers / billing | Free for everyone in v1 |
+| Mobile native app | Web-first; mobile browser is acceptable |
+| AI chatbot / chevruta mode | Sefaria now has this; not our differentiator |
+
+## Traceability
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| DATA-01 | Phase 1 | Pending |
+| DATA-02 | Phase 1 | Pending |
+| DATA-03 | Phase 1 | Pending |
+| DATA-04 | Phase 1 | Pending |
+| TYPO-01 | Phase 2 | Pending |
+| TYPO-02 | Phase 2 | Pending |
+| TYPO-03 | Phase 2 | Pending |
+| TYPO-04 | Phase 2 | Pending |
+| EDIT-01 | Phase 3 | Pending |
+| EDIT-02 | Phase 3 | Pending |
+| EDIT-03 | Phase 3 | Pending |
+| EDIT-04 | Phase 3 | Pending |
+| EDIT-05 | Phase 3 | Pending |
+| EDIT-06 | Phase 3 | Pending |
+| EDIT-07 | Phase 3 | Pending |
+| EDIT-08 | Phase 3 | Pending |
+| EXPRT-01 | Phase 4 | Pending |
+| EXPRT-02 | Phase 4 | Pending |
+| EXPRT-03 | Phase 4 | Pending |
+| EXPRT-04 | Phase 4 | Pending |
+| SHARE-01 | Phase 4 | Pending |
+| SHARE-02 | Phase 4 | Pending |
+| SHARE-03 | Phase 4 | Pending |
+| SHARE-04 | Phase 4 | Pending |
+| AI-01 | Phase 5 | Pending |
+| AI-02 | Phase 5 | Pending |
+| AI-03 | Phase 6 | Pending |
+| AI-04 | Phase 6 | Pending |
+| AI-05 | Phase 5 | Pending |
+| AUTH-01 | Phase 1 | Pending |
+| AUTH-02 | Phase 1 | Pending |
+
+**Coverage:**
+- v1 requirements: 31 total
+- Mapped to phases: 31
+- Unmapped: 0 ✓
+
+---
+*Requirements defined: 2026-03-04*
+*Last updated: 2026-03-04 after initial definition*
