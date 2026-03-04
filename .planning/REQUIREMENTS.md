@@ -48,8 +48,8 @@
 
 - [x] **AI-01**: User can request AI translation for any source that has an empty English translation field (on-demand per source, not automatic)
 - [x] **AI-02**: AI-translated text is visually labeled "AI Translation" in both the editor and on printed/exported output
-- [ ] **AI-03**: User can describe a topic and receive a list of suggested Sefaria sources relevant to that topic
-- [ ] **AI-04**: User can add any suggested source directly from the suggestions UI to their sheet
+- [x] **AI-03**: User can describe a topic and receive a list of suggested Sefaria sources relevant to that topic
+- [x] **AI-04**: User can add any suggested source directly from the suggestions UI to their sheet
 - [x] **AI-05**: AI translation prompt explicitly instructs the model to flag Aramaic passages and note uncertainty
 
 ### Authentication
@@ -123,8 +123,8 @@
 | AI-01 | Phase 5 | Complete |
 | AI-02 | Phase 5 | Complete |
 | AI-05 | Phase 5 | Complete |
-| AI-03 | Phase 6 | Pending |
-| AI-04 | Phase 6 | Pending |
+| AI-03 | Phase 6 | Complete |
+| AI-04 | Phase 6 | Complete |
 
 **Coverage:**
 - v1 requirements: 31 total

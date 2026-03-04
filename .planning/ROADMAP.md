@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Core Editor Rebuild** - Rebuild the editor panel on top of the stable store and typography
 - [x] **Phase 4: PDF Export and Public Sharing** - Add print-quality PDF export and public sheet URL sharing
 - [x] **Phase 5: AI Translation** - On-demand AI translation for sources lacking English text (completed 2026-03-04)
-- [ ] **Phase 6: AI Source Suggestions** - Topic-to-source suggestions via Gemini + Sefaria validation
+- [x] **Phase 6: AI Source Suggestions** - Topic-to-source suggestions via Gemini + Sefaria validation (completed 2026-03-04)
 
 ## Phase Details
 
@@ -117,8 +117,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 06-01-PLAN.md — Create POST /api/suggest serverless endpoint with Gemini JSON output and sequential Sefaria validation (AI-03)
-- [ ] 06-02-PLAN.md — Build Find Sources tab in ChatSidebar with SuggestPanel, useSuggestions hook, and suggestion card CSS (AI-03, AI-04)
+- [x] 06-01-PLAN.md — Create POST /api/suggest serverless endpoint with Gemini JSON output and sequential Sefaria validation (AI-03)
+- [x] 06-02-PLAN.md — Build Find Sources tab in ChatSidebar with SuggestPanel, useSuggestions hook, and suggestion card CSS (AI-03, AI-04)
 
 ## Progress
 
@@ -130,6 +130,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 1. Data Layer Foundation | 5/5 | Complete | 2026-03-04 |
 | 2. Hebrew Typography and Bilingual Layout | 3/3 | Complete | 2026-03-04 |
 | 3. Core Editor Rebuild | 4/4 | Complete | 2026-03-04 |
-| 4. PDF Export and Public Sharing | 0/3 | Not started | - |
+| 4. PDF Export and Public Sharing | 3/3 | Complete | 2026-03-04 |
 | 5. AI Translation | 3/3 | Complete   | 2026-03-04 |
-| 6. AI Source Suggestions | 0/2 | Not started | - |
+| 6. AI Source Suggestions | 2/2 | Complete | 2026-03-04 |
