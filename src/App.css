@@ -2147,6 +2147,29 @@ html[dir="rtl"] .prompt-card {
   opacity: 1;
 }
 
+/* Divider block */
+.divider-block {
+  position: relative;
+  margin: 0.5rem 0;
+}
+
+.divider-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sheet-divider {
+  flex: 1;
+  border: none;
+  border-top: 1px solid var(--border-color, #e5e7eb);
+  margin: 0;
+}
+
+.divider-block:hover .remove-btn {
+  opacity: 1;
+}
+
 .section-header-input {
   width: 100%;
   font-size: 1.5rem;
@@ -3462,4 +3485,94 @@ html[dir="rtl"] .prompt-card {
   to {
     transform: rotate(360deg);
   }
+
+/* ============================================================
+   SearchResultCard — Phase 03-02
+   ============================================================ */
+
+.search-result-card {
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  background: var(--card-bg, #fff);
+}
+
+.search-result-card .result-ref {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  color: var(--primary-color, #2563eb);
+}
+
+.search-result-card .result-he {
+  font-family: var(--font-hebrew, 'Frank Ruhl Libre', serif);
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--sheet-text, #1f2937);
+  margin-bottom: 0.25rem;
+}
+
+.search-result-card .result-en {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #6b7280);
+  margin-bottom: 0.5rem;
+}
+
+.add-to-sheet-btn {
+  background: var(--primary-color, #2563eb);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.add-to-sheet-btn:hover {
+  opacity: 0.9;
+}
+
+/* ============================================================
+   SearchPanel — Phase 03-02
+   ============================================================ */
+
+.search-panel {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background: var(--input-bg, #fff);
+  color: var(--text-primary, #1f2937);
+  box-sizing: border-box;
+  margin-bottom: 0.5rem;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary-color, #2563eb);
+}
+
+.search-loading {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #6b7280);
+  padding: 0.25rem 0;
+}
+
+.search-error {
+  font-size: 0.85rem;
+  color: var(--error-color, #dc2626);
+  padding: 0.25rem 0;
+}
+
+.search-results {
+  margin-top: 0.5rem;
+}
 }
