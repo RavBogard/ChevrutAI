@@ -34,7 +34,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 5 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Export and test flattenSefariaText against all 6 JaggedArray depths (DATA-03)
+- [x] 01-01-PLAN.md — Export and test flattenSefariaText against all 6 JaggedArray depths (DATA-03)
 - [ ] 01-02-PLAN.md — Create useSheetStore with Zustand 5 + zundo temporal middleware and store unit tests (DATA-01, DATA-04)
 - [ ] 01-03-PLAN.md — Add schemaVersion: 1 to Firestore writes and export loadSheetWithDefaults (DATA-02)
 - [ ] 01-04-PLAN.md — Wire EditorContainer to useSheetStore; create useAutosave; delete replaced hooks and context (DATA-01, DATA-04)
@@ -127,7 +127,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Data Layer Foundation | 0/5 | In progress | - |
+| 1. Data Layer Foundation | 1/5 | In progress | - |
 | 2. Hebrew Typography and Bilingual Layout | 0/3 | Not started | - |
 | 3. Core Editor Rebuild | 0/4 | Not started | - |
 | 4. PDF Export and Public Sharing | 0/3 | Not started | - |
