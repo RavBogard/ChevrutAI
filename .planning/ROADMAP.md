@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Hebrew Typography and Bilingual Layout** - Establish correct Hebrew font rendering and synagogue bilingual column layout
 - [x] **Phase 3: Core Editor Rebuild** - Rebuild the editor panel on top of the stable store and typography
 - [x] **Phase 4: PDF Export and Public Sharing** - Add print-quality PDF export and public sheet URL sharing
-- [ ] **Phase 5: AI Translation** - On-demand AI translation for sources lacking English text
+- [x] **Phase 5: AI Translation** - On-demand AI translation for sources lacking English text (completed 2026-03-04)
 - [ ] **Phase 6: AI Source Suggestions** - Topic-to-source suggestions via Gemini + Sefaria validation
 
 ## Phase Details
@@ -131,5 +131,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 2. Hebrew Typography and Bilingual Layout | 3/3 | Complete | 2026-03-04 |
 | 3. Core Editor Rebuild | 4/4 | Complete | 2026-03-04 |
 | 4. PDF Export and Public Sharing | 0/3 | Not started | - |
-| 5. AI Translation | 2/3 | In Progress|  |
+| 5. AI Translation | 3/3 | Complete   | 2026-03-04 |
 | 6. AI Source Suggestions | 0/2 | Not started | - |

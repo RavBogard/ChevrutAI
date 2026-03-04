@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-last_updated: "2026-03-04T21:31:34Z"
+last_updated: "2026-03-04T21:36:00Z"
 progress:
   total_phases: 6
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 20
-  completed_plans: 16
+  completed_plans: 17
 ---
 
 # Project State
@@ -18,23 +18,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-04)
 
 **Core value:** Rabbi goes from topic to beautiful, print-ready sheet in minutes — with AI helping find sources and fill translation gaps.
-**Current focus:** Phase 5 — AI Translation
+**Current focus:** Phase 5 — AI Translation (Complete) / Phase 6 — Sefaria Bulk Import (Next)
 
 ## Current Position
 
-Phase: 5 of 6 (AI Translation) — In Progress
-Plan: 2 of 3 complete (05-01, 05-02 done)
-Status: Phase 5 in progress — 05-02 complete (aiTranslation service, AiTranslationLabel badge, SourceBlock translate button + render, CSS print rule)
-Last activity: 2026-03-04 — Completed 05-02 (translate button in SourceBlock, non-dismissable AI Translation badge, App.css badge+print styles — AI-01 + AI-02 complete)
+Phase: 5 of 6 (AI Translation) — Complete
+Plan: 3 of 3 complete (05-01, 05-02, 05-03 done)
+Status: Phase 5 complete — AI-01, AI-02, AI-05 all satisfied across three plans
+Last activity: 2026-03-04 — Completed 05-03 (DOCX export AI translation label — '[AI Translation] ' prefix in English cell for isAiTranslated sources)
 
-Progress: [#############.] 78%
+Progress: [##############] 85%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 15
-- Average duration: 3.5 minutes
-- Total execution time: 46 minutes
+- Total plans completed: 17
+- Average duration: 3.4 minutes
+- Total execution time: 48 minutes
 
 **By Phase:**
 
@@ -43,11 +43,11 @@ Progress: [#############.] 78%
 | 1 - Data Layer Foundation | 5 | 29 min | 6 min |
 | 2 - Hebrew Typography | 3 | 7 min | 2.3 min |
 | 3 - Core Editor | 4 | 13 min | 3.3 min |
-| 4 - PDF Export & Sharing (in progress) | 3 | 17 min | 5.7 min |
-| 5 - AI Translation (in progress) | 2 | 4 min | 2 min |
+| 4 - PDF Export & Sharing | 3 | 17 min | 5.7 min |
+| 5 - AI Translation (complete) | 3 | 6 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: 04-01 (4 min), 04-02 (1 min), 04-03 (12 min), 05-01 (2 min)
+- Last 5 plans: 04-03 (12 min), 05-01 (2 min), 05-02 (2 min), 05-03 (2 min)
 - Trend: Fast
 
 *Updated after each plan completion*
@@ -88,6 +88,8 @@ Recent decisions affecting current work:
 - [05-02]: AiTranslationLabel placed inside English column div (NOT .source-controls with data-html2canvas-ignore) — ensures badge visible in PDF/html2canvas export
 - [05-02]: SourceBlock uses strict isAiTranslated === true check — Firestore sanitize() removes undefined keys; missing field on old sources treated as false
 - [05-02]: source.en never overwritten by translate flow — Sefaria data provenance preserved; AI writes to aiTranslation/isAiTranslated/aiTranslationMeta
+- [05-03]: formatText called on source.aiTranslation in docxExport (not raw value) — strips HTML from editable field before writing to DOCX cell
+- [05-03]: isAiTranslated === true strict check in docxExport — consistent with SourceBlock.jsx; undefined on old sources evaluates false, no false positives
 
 ### Pending Todos
 
@@ -104,5 +106,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-04
-Stopped at: Completed 05-02-PLAN.md (aiTranslation service, AiTranslationLabel badge, SourceBlock translate button + render, CSS badge+print styles — AI-01 + AI-02 complete)
+Stopped at: Completed 05-03-PLAN.md (DOCX export AI translation label — AI-02 fully satisfied; Phase 5 AI Translation complete)
 Resume file: None
