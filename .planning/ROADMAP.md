@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Data Layer Foundation** - Migrate sheet state to Zustand, version Firestore schema, stabilize Sefaria text normalization
 - [x] **Phase 2: Hebrew Typography and Bilingual Layout** - Establish correct Hebrew font rendering and synagogue bilingual column layout
-- [ ] **Phase 3: Core Editor Rebuild** - Rebuild the editor panel on top of the stable store and typography
+- [x] **Phase 3: Core Editor Rebuild** - Rebuild the editor panel on top of the stable store and typography
 - [ ] **Phase 4: PDF Export and Public Sharing** - Add print-quality PDF export and public sheet URL sharing
 - [ ] **Phase 5: AI Translation** - On-demand AI translation for sources lacking English text
 - [ ] **Phase 6: AI Source Suggestions** - Topic-to-source suggestions via Gemini + Sefaria validation
@@ -72,7 +72,7 @@ Plans:
 - [x] 03-01-PLAN.md — Patch addSource uuid assignment, create DividerBlock and SortableItem (EDIT-03, EDIT-04, EDIT-06)
 - [x] 03-02-PLAN.md — Build SearchPanel and SearchResultCard with debounced two-mode Sefaria search (EDIT-01, EDIT-02)
 - [x] 03-03-PLAN.md — Build SheetCanvas (DnD + block rendering) and EditorToolbar (EDIT-03, EDIT-04, EDIT-05, EDIT-06, EDIT-07)
-- [ ] 03-04-PLAN.md — Wire all components into EditorContainer; smoke test all 8 EDIT requirements (EDIT-01 through EDIT-08)
+- [x] 03-04-PLAN.md — Wire all components into EditorContainer; smoke test all 8 EDIT requirements (EDIT-01 through EDIT-08)
 
 ### Phase 4: PDF Export and Public Sharing
 **Goal**: Users can produce a print-ready PDF and share a read-only sheet URL with students
@@ -129,7 +129,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 |-------|----------------|--------|-----------|
 | 1. Data Layer Foundation | 5/5 | Complete | 2026-03-04 |
 | 2. Hebrew Typography and Bilingual Layout | 3/3 | Complete | 2026-03-04 |
-| 3. Core Editor Rebuild | 3/4 | In progress | - |
+| 3. Core Editor Rebuild | 4/4 | Complete | 2026-03-04 |
 | 4. PDF Export and Public Sharing | 0/3 | Not started | - |
 | 5. AI Translation | 0/3 | Not started | - |
 | 6. AI Source Suggestions | 0/2 | Not started | - |

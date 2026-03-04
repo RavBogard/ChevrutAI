@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-last_updated: "2026-03-04T20:54:30Z"
+last_updated: "2026-03-04T20:58:52Z"
 progress:
   total_phases: 6
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 20
-  completed_plans: 11
+  completed_plans: 12
 ---
 
 # Project State
@@ -22,12 +22,12 @@ See: .planning/PROJECT.md (updated 2026-03-04)
 
 ## Current Position
 
-Phase: 3 of 6 (Core Editor)
-Plan: 3 of 4 complete (03-01, 03-02, 03-03 done)
-Status: In progress — 03-04 is next
-Last activity: 2026-03-04 — Completed 03-03 (SheetCanvas + EditorToolbar — EDIT-03 through EDIT-07 complete — DnD 8px fix + store-direct toolbar)
+Phase: 3 of 6 (Core Editor) — COMPLETE
+Plan: 4 of 4 complete (03-01, 03-02, 03-03, 03-04 done)
+Status: Phase 3 complete — ready for Phase 4 (Export)
+Last activity: 2026-03-04 — Completed 03-04 (EditorContainer integration cutover — all 8 EDIT requirements wired end-to-end)
 
-Progress: [#########░] 55%
+Progress: [##########] 60%
 
 ## Performance Metrics
 
@@ -42,10 +42,10 @@ Progress: [#########░] 55%
 |-------|-------|-------|----------|
 | 1 - Data Layer Foundation | 5 | 29 min | 6 min |
 | 2 - Hebrew Typography | 3 | 7 min | 2.3 min |
-| 3 - Core Editor | 3 | 10 min | 3.3 min |
+| 3 - Core Editor | 4 | 13 min | 3.3 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-02 (3 min), 02-03 (2 min), 03-01 (3 min), 03-02 (5 min), 03-03 (2 min)
+- Last 5 plans: 02-03 (2 min), 03-01 (3 min), 03-02 (5 min), 03-03 (2 min), 03-04 (3 min)
 - Trend: Fast
 
 *Updated after each plan completion*
@@ -88,6 +88,9 @@ Recent decisions affecting current work:
 - [03-03]: EditorToolbar uses useStoreWithEqualityFn(useSheetStore.temporal, ...) for canUndo/canRedo — zundo exposes history via separate .temporal store, not main store fields
 - [03-03]: PointerSensor activationConstraint: { distance: 8 } is the DnD bug fix — original SheetView had no constraint causing drag to steal focus from contentEditable
 - [03-03]: SheetCanvas CSS class is sheet-canvas with id=sheet-export-area; EditorToolbar CSS class is editor-toolbar — Plan 03-04 uses these to compose the layout
+- [03-04]: SheetView removed from EditorContainer shell-content — replaced with zero-prop SearchPanel + EditorToolbar + SheetCanvas; SheetView.jsx left on disk for Phase 4 cleanup
+- [03-04]: Local state for chat (messages), userSheets, Google Docs, and disambiguation stays in EditorContainer — useSheetStore does not have sendMessage/deleteSheet/userSheets; Phase 4 will migrate or clean up
+- [03-04]: Checkpoint auto-approved per user instruction "execute everything!" — no manual verification pause taken
 
 ### Pending Todos
 
@@ -103,5 +106,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-04
-Stopped at: Completed 03-03-PLAN.md (SheetCanvas + EditorToolbar — EDIT-03 through EDIT-07 complete — DnD 8px fix)
+Stopped at: Completed 03-04-PLAN.md (EditorContainer integration cutover — all 8 EDIT requirements complete — Phase 3 done)
 Resume file: None
