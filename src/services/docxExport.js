@@ -29,7 +29,9 @@ export const exportToDocx = async (title, sources) => {
                 }),
                 ...sources.flatMap(source => {
                     const hebrewText = formatText(source.he);
-                    const englishText = formatText(source.en);
+                    const englishText = source.isAiTranslated === true
+                        ? `[AI Translation] ${formatText(source.aiTranslation)}`
+                        : formatText(source.en);
                     const citation = source.ref;
 
                     if (source.type === 'header') {
