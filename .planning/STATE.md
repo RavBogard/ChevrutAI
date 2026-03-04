@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-03-04)
 ## Current Position
 
 Phase: 1 of 6 (Data Layer Foundation)
-Plan: 3 of 5 complete (01-01, 01-02, 01-03 done; 01-04 next)
+Plan: 4 of 5 complete (01-01, 01-02, 01-03, 01-04 done; 01-05 next)
 Status: In progress
-Last activity: 2026-03-04 — Completed 01-03 (Firestore schemaVersion: 1 on all writes + loadSheetWithDefaults with ?? defaults + 5 unit tests)
+Last activity: 2026-03-04 — Completed 01-04 (EditorContainer migration to useSheetStore + useAutosave + 6 legacy file deletions, build clean, 43/43 tests)
 
-Progress: [###░░░░░░░] 15%
+Progress: [####░░░░░░] 20%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: 8 minutes
-- Total execution time: 24 minutes
+- Total plans completed: 4
+- Average duration: 6 minutes
+- Total execution time: 27 minutes
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1 - Data Layer Foundation | 3 | 24 min | 8 min |
+| 1 - Data Layer Foundation | 4 | 27 min | 7 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2 min), 01-03 (12 min), 01-02 (10 min)
-- Trend: -
+- Last 5 plans: 01-01 (2 min), 01-03 (12 min), 01-02 (10 min), 01-04 (3 min)
+- Trend: Fast
 
 *Updated after each plan completion*
 
@@ -53,6 +53,9 @@ Recent decisions affecting current work:
 - [01-03]: Firebase SDK vi.mocks must use function() constructors (not arrow functions) for exports used with 'new' keyword
 - [01-02]: zundo partialize alone is insufficient to exclude status flags from undo history — equality option required: (a, b) => a.sources === b.sources && a.title === b.title prevents false history entries on set() calls that don't change tracked fields
 - [01-02]: Middleware nesting order subscribeWithSelector(devtools(temporal(...))) is required — subscribeWithSelector must be outermost to enable .subscribe(selector, cb) pattern for Plan 04 autosave
+- [01-04]: Messages stay in local useState inside EditorContainer for Phase 1 — store owns only title and sources per research open question #2
+- [01-04]: addSource keeps Sefaria fetch + disambiguation logic in EditorContainer and delegates store.addSource as the final write — async logic stays out of Zustand store
+- [01-04]: useSheetStore.temporal.getState().clear() called on every sheet load to prevent undo history crossing sheet boundaries
 
 ### Pending Todos
 
@@ -68,5 +71,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-04
-Stopped at: Completed 01-03-PLAN.md (Firestore schemaVersion + loadSheetWithDefaults) — 01-04 is next
+Stopped at: Completed 01-04-PLAN.md (EditorContainer migration to useSheetStore + useAutosave) — 01-05 is next
 Resume file: None
