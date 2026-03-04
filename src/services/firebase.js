@@ -89,6 +89,7 @@ export const saveSheetToFirestore = async (userId, sheetData) => {
         ...sheetData,
         id: sheetId,
         ownerId: userId,
+        schemaVersion: 1,
         updatedAt: serverTimestamp(),
         // If it's new, set createdAt
         ...(sheetData.createdAt ? {} : { createdAt: serverTimestamp() })
@@ -108,6 +109,24 @@ export const getSheetFromFirestore = async (sheetId) => {
     } else {
         return null;
     }
+};
+
+/**
+ * Apply defensive defaults to a raw Firestore document so old documents
+ * without schemaVersion or newer fields never crash.
+ * schemaVersion 0 = pre-versioning (created before Phase 1 rebuild).
+ */
+export const loadSheetWithDefaults = (rawDoc) => {
+    return {
+        id: rawDoc.id ?? null,
+        title: rawDoc.title ?? 'New Source Sheet',
+        sources: rawDoc.sources ?? [],
+        schemaVersion: rawDoc.schemaVersion ?? 0,
+        isPublic: rawDoc.isPublic ?? false,
+        ownerId: rawDoc.ownerId ?? null,
+        createdAt: rawDoc.createdAt ?? null,
+        updatedAt: rawDoc.updatedAt ?? null,
+    };
 };
 
 // Subscribe to User's Sheets (for Sidebar)
