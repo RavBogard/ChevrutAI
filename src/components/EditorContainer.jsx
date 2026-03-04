@@ -17,7 +17,9 @@ import { sendGeminiMessage } from '../services/ai';
 import { exportToGoogleDoc, syncToGoogleDoc } from '../services/google';
 import { useResizableSidebar } from '../hooks/useResizableSidebar';
 import { useToast } from '../components/Toast';
-import SheetView from './SheetView';
+import SearchPanel from './editor/SearchPanel';
+import EditorToolbar from './editor/EditorToolbar';
+import SheetCanvas from './sheet/SheetCanvas';
 import ChatSidebar from './ChatSidebar';
 import UnifiedHeader from './UnifiedHeader';
 import GuestBanner from './common/GuestBanner';
@@ -553,38 +555,9 @@ const EditorContainer = ({ darkMode, toggleDarkMode, language, toggleLanguage })
 
             {/* Main Content Area */}
             <main className="shell-content">
-                <SheetView
-                    sources={sources}
-                    onRemoveSource={removeSource}
-                    onUpdateSource={updateSource}
-                    onReorder={reorderSources}
-                    onClearSheet={clearSheet}
-                    onUndo={undo}
-                    onRedo={redo}
-                    canUndo={canUndo}
-                    canRedo={canRedo}
-                    language={language}
-                    onSuggestionClick={handleSuggestionClick}
-                    sheetTitle={title}
-                    onTitleChange={setTitle}
-                    onSendMessage={handleSendMessage}
-                    chatStarted={chatStarted}
-                    onAddSource={addSource}
-                    userSheets={userSheets}
-                    onLoadSheet={handleLoadSheet}
-                    darkMode={darkMode}
-                    toggleDarkMode={toggleDarkMode}
-                    toggleLanguage={toggleLanguage}
-                    googleDocId={googleDocId}
-                    googleDocUrl={googleDocUrl}
-                    isSyncing={isSyncing}
-                    onSyncGoogleDoc={syncToLinkedGoogleDoc}
-                    onUnlinkGoogleDoc={unlinkGoogleDoc}
-                    onLinkToGoogleDoc={linkToGoogleDoc}
-                    disambiguationState={disambiguationState}
-                    onResolveDisambiguation={resolveDisambiguation}
-                    onCancelDisambiguation={cancelDisambiguation}
-                />
+                <SearchPanel />
+                <EditorToolbar />
+                <SheetCanvas />
             </main>
 
             {/* Overlays / Global Elements */}
