@@ -94,6 +94,8 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
+| AUTH-01 | Phase 1 | Pending |
+| AUTH-02 | Phase 1 | Pending |
 | DATA-01 | Phase 1 | Pending |
 | DATA-02 | Phase 1 | Pending |
 | DATA-03 | Phase 1 | Pending |
@@ -120,11 +122,9 @@
 | SHARE-04 | Phase 4 | Pending |
 | AI-01 | Phase 5 | Pending |
 | AI-02 | Phase 5 | Pending |
+| AI-05 | Phase 5 | Pending |
 | AI-03 | Phase 6 | Pending |
 | AI-04 | Phase 6 | Pending |
-| AI-05 | Phase 5 | Pending |
-| AUTH-01 | Phase 1 | Pending |
-| AUTH-02 | Phase 1 | Pending |
 
 **Coverage:**
 - v1 requirements: 31 total
@@ -133,4 +133,4 @@
 
 ---
 *Requirements defined: 2026-03-04*
-*Last updated: 2026-03-04 after initial definition*
+*Last updated: 2026-03-04 after roadmap creation — traceability finalized*
