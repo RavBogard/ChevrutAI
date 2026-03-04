@@ -2,26 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-03-04T20:47:22.616Z"
+status: in_progress
+last_updated: "2026-03-04T20:49:12Z"
 progress:
   total_phases: 6
   completed_phases: 2
   total_plans: 20
-  completed_plans: 9
----
-
----
-gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: in_progress
-last_updated: "2026-03-04T20:36:45Z"
-progress:
-  total_phases: 6
-  completed_phases: 1
-  total_plans: 20
-  completed_plans: 8
+  completed_plans: 10
 ---
 
 # Project State
@@ -36,18 +23,18 @@ See: .planning/PROJECT.md (updated 2026-03-04)
 ## Current Position
 
 Phase: 3 of 6 (Core Editor)
-Plan: 1 of 4 complete (03-01 done)
-Status: In progress — 03-02 is next
-Last activity: 2026-03-04 — Completed 03-01 (stable uuid patch, DividerBlock, SortableItem — EDIT-03, EDIT-04, EDIT-06 complete)
+Plan: 2 of 4 complete (03-01, 03-02 done)
+Status: In progress — 03-03 is next
+Last activity: 2026-03-04 — Completed 03-02 (SearchPanel + SearchResultCard — EDIT-01, EDIT-02 complete — 14 TDD tests green)
 
-Progress: [#######░░░] 45%
+Progress: [########░░] 50%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9
+- Total plans completed: 10
 - Average duration: 4 minutes
-- Total execution time: 36 minutes
+- Total execution time: 41 minutes
 
 **By Phase:**
 
@@ -55,15 +42,13 @@ Progress: [#######░░░] 45%
 |-------|-------|-------|----------|
 | 1 - Data Layer Foundation | 5 | 29 min | 6 min |
 | 2 - Hebrew Typography | 3 | 7 min | 2.3 min |
-| 3 - Core Editor | 1 | 3 min | 3 min |
+| 3 - Core Editor | 2 | 8 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-05 (2 min), 02-01 (2 min), 02-02 (3 min), 02-03 (2 min), 03-01 (3 min)
+- Last 5 plans: 02-01 (2 min), 02-02 (3 min), 02-03 (2 min), 03-01 (3 min), 03-02 (5 min)
 - Trend: Fast
 
 *Updated after each plan completion*
-
-| Phase 3 - Core Editor | 1 | 3 min | 3 min |
 
 ## Accumulated Context
 
@@ -96,6 +81,10 @@ Recent decisions affecting current work:
 - [Phase 03-core-editor]: useSheetStore.addSource owns id assignment via crypto.randomUUID() — every path to the store always gets a stable id, not caller-assigned
 - [Phase 03-core-editor]: SortableItem uses id prop (uuid) not source.ref as useSortable key — prevents DnD breakage on duplicate refs
 - [Phase 03-core-editor]: type='custom' and type='commentary' both map to CustomSourceBlock in SortableItem for Firestore backward compatibility
+- [03-02]: SearchPanel uses useSheetStore.getState().addSource() not the hook — avoids subscribing SearchPanel to store changes and causing re-renders on every source add
+- [03-02]: Loading indicator TDD test switches to vi.useRealTimers() inside that single test — waitFor polling uses setTimeout internally, which breaks when fake timers are active
+- [03-02]: autoFocus is set on SearchPanel search input — Plan 03-04 (EditorContainer) must be aware of this when mounting
+- [03-02]: SearchPanel CSS added to App.css (not component-scoped) — consistent with existing App.css pattern
 
 ### Pending Todos
 
@@ -111,5 +100,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-04
-Stopped at: Completed 03-01-PLAN.md (stable uuid patch, DividerBlock, SortableItem — EDIT-03, EDIT-04, EDIT-06 complete)
+Stopped at: Completed 03-02-PLAN.md (SearchPanel + SearchResultCard — EDIT-01, EDIT-02 complete — 14 TDD tests green)
 Resume file: None

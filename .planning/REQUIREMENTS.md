@@ -14,8 +14,8 @@
 
 ### Editor
 
-- [ ] **EDIT-01**: User can search Sefaria by reference or keyword and preview the Hebrew + English text before adding it to the sheet
-- [ ] **EDIT-02**: User can add a Sefaria source to their sheet in two clicks or fewer
+- [x] **EDIT-01**: User can search Sefaria by reference or keyword and preview the Hebrew + English text before adding it to the sheet
+- [x] **EDIT-02**: User can add a Sefaria source to their sheet in two clicks or fewer
 - [x] **EDIT-03**: User can reorder sheet sources via drag-and-drop
 - [x] **EDIT-04**: User can remove a source from the sheet
 - [ ] **EDIT-05**: User can insert their own commentary/text block between sources
@@ -104,8 +104,8 @@
 | TYPO-02 | Phase 2 | Complete |
 | TYPO-03 | Phase 2 | Complete |
 | TYPO-04 | Phase 2 | Complete |
-| EDIT-01 | Phase 3 | Pending |
-| EDIT-02 | Phase 3 | Pending |
+| EDIT-01 | Phase 3 | Complete |
+| EDIT-02 | Phase 3 | Complete |
 | EDIT-03 | Phase 3 | Complete |
 | EDIT-04 | Phase 3 | Complete |
 | EDIT-05 | Phase 3 | Pending |

@@ -69,8 +69,8 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — Patch addSource uuid assignment, create DividerBlock and SortableItem (EDIT-03, EDIT-04, EDIT-06)
-- [ ] 03-02-PLAN.md — Build SearchPanel and SearchResultCard with debounced two-mode Sefaria search (EDIT-01, EDIT-02)
+- [x] 03-01-PLAN.md — Patch addSource uuid assignment, create DividerBlock and SortableItem (EDIT-03, EDIT-04, EDIT-06)
+- [x] 03-02-PLAN.md — Build SearchPanel and SearchResultCard with debounced two-mode Sefaria search (EDIT-01, EDIT-02)
 - [ ] 03-03-PLAN.md — Build SheetCanvas (DnD + block rendering) and EditorToolbar (EDIT-03, EDIT-04, EDIT-05, EDIT-06, EDIT-07)
 - [ ] 03-04-PLAN.md — Wire all components into EditorContainer; smoke test all 8 EDIT requirements (EDIT-01 through EDIT-08)
 
@@ -129,7 +129,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 |-------|----------------|--------|-----------|
 | 1. Data Layer Foundation | 5/5 | Complete | 2026-03-04 |
 | 2. Hebrew Typography and Bilingual Layout | 3/3 | Complete | 2026-03-04 |
-| 3. Core Editor Rebuild | 0/4 | Not started | - |
+| 3. Core Editor Rebuild | 2/4 | In progress | - |
 | 4. PDF Export and Public Sharing | 0/3 | Not started | - |
 | 5. AI Translation | 0/3 | Not started | - |
 | 6. AI Source Suggestions | 0/2 | Not started | - |
