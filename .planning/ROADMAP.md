@@ -31,7 +31,14 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Sheet state does not split between multiple hooks — a single Zustand store is the sole source of truth
   4. Sefaria text fetch works without runtime errors for Tanakh, Talmud, Mishnah, Rashi, and Zohar sources
   5. User stays logged in with Google across browser refresh (existing Firebase auth validated as working)
-**Plans**: TBD
+**Plans**: 5 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Export and test flattenSefariaText against all 6 JaggedArray depths (DATA-03)
+- [ ] 01-02-PLAN.md — Create useSheetStore with Zustand 5 + zundo temporal middleware and store unit tests (DATA-01, DATA-04)
+- [ ] 01-03-PLAN.md — Add schemaVersion: 1 to Firestore writes and export loadSheetWithDefaults (DATA-02)
+- [ ] 01-04-PLAN.md — Wire EditorContainer to useSheetStore; create useAutosave; delete replaced hooks and context (DATA-01, DATA-04)
+- [ ] 01-05-PLAN.md — Write AuthContext validation tests for AUTH-01 and AUTH-02
 
 ### Phase 2: Hebrew Typography and Bilingual Layout
 **Goal**: Hebrew text renders beautifully with correct RTL direction, vowel-point clearance, and synagogue bilingual column layout in the editor preview
@@ -42,7 +49,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Sheet preview shows Hebrew in the right column and English in the left column, matching the standard synagogue bilingual format
   3. Hebrew column text flows right-to-left and English column text flows left-to-right, with no direction bleed into the app shell
   4. Preview renders the bilingual layout correctly at normal screen size before any export
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Font setup: install @fontsource-variable/frank-ruhl-libre, update --font-hebrew CSS var, fix line-height to 1.9, create SheetPreview.css (TYPO-01)
+- [ ] 02-02-PLAN.md — SheetPreview component with BilingualBlock dir="ltr" wrapper and per-column RTL scoping, wire into SheetView (TYPO-02, TYPO-03)
+- [ ] 02-03-PLAN.md — Integration tests validating all four TYPO requirements (TYPO-04)
 
 ### Phase 3: Core Editor Rebuild
 **Goal**: Users can build a complete, well-structured sheet through a fast, minimal-friction editor
@@ -54,7 +66,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. User can insert their own commentary block and a section header anywhere in the sheet between sources
   4. User sets a sheet title and the sheet saves automatically — no save button required
   5. Existing sheets appear in the user's library and are accessible from the dashboard
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Patch addSource uuid assignment, create DividerBlock and SortableItem (EDIT-03, EDIT-04, EDIT-06)
+- [ ] 03-02-PLAN.md — Build SearchPanel and SearchResultCard with debounced two-mode Sefaria search (EDIT-01, EDIT-02)
+- [ ] 03-03-PLAN.md — Build SheetCanvas (DnD + block rendering) and EditorToolbar (EDIT-03, EDIT-04, EDIT-05, EDIT-06, EDIT-07)
+- [ ] 03-04-PLAN.md — Wire all components into EditorContainer; smoke test all 8 EDIT requirements (EDIT-01 through EDIT-08)
 
 ### Phase 4: PDF Export and Public Sharing
 **Goal**: Users can produce a print-ready PDF and share a read-only sheet URL with students
@@ -66,7 +84,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Source blocks do not split across page breaks unnecessarily
   4. User marks a sheet public and shares its URL; a recipient without a login can view the sheet read-only
   5. User can filter their sheet library by title to find a specific sheet
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — Replace html2pdf.js with window.print() and add complete @media print stylesheet (EXPRT-01, EXPRT-02, EXPRT-03, EXPRT-04)
+- [ ] 04-02-PLAN.md — Create firestore.rules with public/private read scoping; add setSheetPublic and getUserSheets to firebase.js (SHARE-01, SHARE-02)
+- [ ] 04-03-PLAN.md — Upgrade ShareButton to toggle isPublic; create SheetLibrary component; wire /library route; add read-only mode to EditorContainer (SHARE-01, SHARE-02, SHARE-03, SHARE-04)
 
 ### Phase 5: AI Translation
 **Goal**: Users can get an AI-generated English translation for any Sefaria source that has no existing translation, with clear attribution
@@ -76,7 +99,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   1. A "Translate with AI" button appears on source blocks where the English translation field is empty; it does not appear on already-translated sources
   2. After the user requests translation, the AI translation appears with a non-dismissable "AI Translation — verify before use" label in both the editor and on printed output
   3. The AI translation is stored separately from the Sefaria source text and does not overwrite it
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 05-01-PLAN.md — Create POST /api/translate serverless endpoint with Claude Haiku 4.5, rate limiting (5/min), and AI-05 system prompt (AI-01, AI-05)
+- [ ] 05-02-PLAN.md — UI: Translate with AI button + AiTranslationLabel badge in SourceBlock, aiTranslation service, CSS with print rules (AI-01, AI-02)
+- [ ] 05-03-PLAN.md — DOCX export: prepend [AI Translation] label when source.isAiTranslated is true (AI-02)
 
 ### Phase 6: AI Source Suggestions
 **Goal**: Users can describe a topic and receive a ranked list of relevant Sefaria sources they can add to their sheet directly
@@ -86,7 +114,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   1. User enters a topic description and receives a list of Sefaria source references with Hebrew preview snippets
   2. User clicks "Add to sheet" on any suggested source and it appears in the editor immediately
   3. Suggestions that cannot be validated against the Sefaria API degrade gracefully (shown with a warning, not a crash)
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 06-01-PLAN.md — Create POST /api/suggest serverless endpoint with Gemini JSON output and sequential Sefaria validation (AI-03)
+- [ ] 06-02-PLAN.md — Build Find Sources tab in ChatSidebar with SuggestPanel, useSuggestions hook, and suggestion card CSS (AI-03, AI-04)
 
 ## Progress
 
@@ -95,9 +127,9 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Data Layer Foundation | 0/TBD | Not started | - |
-| 2. Hebrew Typography and Bilingual Layout | 0/TBD | Not started | - |
-| 3. Core Editor Rebuild | 0/TBD | Not started | - |
-| 4. PDF Export and Public Sharing | 0/TBD | Not started | - |
-| 5. AI Translation | 0/TBD | Not started | - |
-| 6. AI Source Suggestions | 0/TBD | Not started | - |
+| 1. Data Layer Foundation | 0/5 | In progress | - |
+| 2. Hebrew Typography and Bilingual Layout | 0/3 | Not started | - |
+| 3. Core Editor Rebuild | 0/4 | Not started | - |
+| 4. PDF Export and Public Sharing | 0/3 | Not started | - |
+| 5. AI Translation | 0/3 | Not started | - |
+| 6. AI Source Suggestions | 0/2 | Not started | - |
