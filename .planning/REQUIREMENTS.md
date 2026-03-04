@@ -39,8 +39,8 @@
 
 ### Sharing & Library
 
-- [ ] **SHARE-01**: User can mark a sheet as public, generating a shareable URL accessible without login
-- [ ] **SHARE-02**: Public sheet view is read-only; Firestore security rules scope public reads to `isPublic == true` only (not the entire collection)
+- [x] **SHARE-01**: User can mark a sheet as public, generating a shareable URL accessible without login
+- [x] **SHARE-02**: Public sheet view is read-only; Firestore security rules scope public reads to `isPublic == true` only (not the entire collection)
 - [ ] **SHARE-03**: User can view all their saved sheets in a library/dashboard
 - [ ] **SHARE-04**: User can search or filter their sheet library by title
 
@@ -116,8 +116,8 @@
 | EXPRT-02 | Phase 4 | Pending |
 | EXPRT-03 | Phase 4 | Pending |
 | EXPRT-04 | Phase 4 | Pending |
-| SHARE-01 | Phase 4 | Pending |
-| SHARE-02 | Phase 4 | Pending |
+| SHARE-01 | Phase 4 | Complete |
+| SHARE-02 | Phase 4 | Complete |
 | SHARE-03 | Phase 4 | Pending |
 | SHARE-04 | Phase 4 | Pending |
 | AI-01 | Phase 5 | Pending |
