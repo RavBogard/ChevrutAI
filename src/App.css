@@ -3665,4 +3665,60 @@ html[dir="rtl"] .prompt-card {
 .search-results {
   margin-top: 0.5rem;
 }
+
+/* ============================================================
+   AI Translation — Phase 05-02
+   ============================================================ */
+
+/* AI Translation Badge - visible in screen AND print */
+.ai-translation-badge {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #7c3aed;
+  background: #f5f3ff;
+  border: 1px solid #c4b5fd;
+  border-radius: 4px;
+  padding: 0.2rem 0.5rem;
+  margin-top: 0.4rem;
+  letter-spacing: 0.01em;
+  /* No cursor pointer — it is non-dismissable */
+}
+
+.ai-translation-badge__aramaic,
+.ai-translation-badge__uncertainty {
+  color: #b45309;
+  font-weight: 500;
+}
+
+.translate-ai-btn {
+  background: none;
+  border: none;
+  color: #7c3aed;
+  cursor: pointer;
+  font-style: normal;
+  text-decoration: underline;
+  font-size: inherit;
+  padding: 0;
+}
+
+.translate-ai-btn:disabled {
+  color: #9ca3af;
+  cursor: wait;
+}
+
+/* CRITICAL: badge must survive print */
+@media print {
+  .ai-translation-badge {
+    display: flex !important;
+    border: 1px solid #9ca3af !important;
+    background: transparent !important;
+    color: #374151 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
 }

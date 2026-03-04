@@ -1,10 +1,36 @@
 import React, { useState } from 'react';
 import { getSefariaTextByVersion } from '../../services/sefaria';
 import EditableContent from './EditableContent';
+import { useToast } from '../Toast';
+import { translateWithAI, normalizeText } from '../../services/aiTranslation';
+import AiTranslationLabel from './AiTranslationLabel';
 
 const SourceBlock = ({ source, onRemove, onUpdate, dragHandleProps, onRefine }) => {
     const viewMode = source.viewMode || 'bilingual';
     const [loadingVersion, setLoadingVersion] = useState(false);
+    const { showToast } = useToast();
+    const [isTranslating, setIsTranslating] = useState(false);
+
+    const handleAiTranslate = async () => {
+        setIsTranslating(true);
+        try {
+            const heText = normalizeText(source.he);
+            const result = await translateWithAI(source.ref, heText);
+            onUpdate({
+                aiTranslation: result.translation,
+                isAiTranslated: true,
+                aiTranslationMeta: {
+                    isAramaic: result.isAramaic,
+                    confidence: result.confidence,
+                    model: result.model
+                }
+            });
+        } catch (err) {
+            showToast(`Translation failed: ${err.message}`, 'error');
+        } finally {
+            setIsTranslating(false);
+        }
+    };
 
     const handleVersionChange = async (e) => {
         const newTitle = e.target.value;
@@ -101,8 +127,30 @@ const SourceBlock = ({ source, onRemove, onUpdate, dragHandleProps, onRefine }) 
                     <>
                         {(viewMode === 'bilingual' || viewMode === 'english') && (
                             <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                                {!hasContent(source.en) ? (
-                                    <div className="empty-content-msg">No English text available</div>
+                                {source.isAiTranslated === true ? (
+                                    <>
+                                        <EditableContent
+                                            className="text-eng"
+                                            dir="ltr"
+                                            html={source.aiTranslation}
+                                            onChange={(val) => onUpdate({ aiTranslation: val })}
+                                        />
+                                        <AiTranslationLabel
+                                            isAramaic={source.aiTranslationMeta?.isAramaic}
+                                            confidence={source.aiTranslationMeta?.confidence}
+                                        />
+                                    </>
+                                ) : !hasContent(source.en) ? (
+                                    <div className="empty-content-msg">
+                                        No English text available.{' '}
+                                        <button
+                                            className="translate-ai-btn"
+                                            onClick={handleAiTranslate}
+                                            disabled={isTranslating}
+                                        >
+                                            {isTranslating ? 'Translating...' : 'Translate with AI'}
+                                        </button>
+                                    </div>
                                 ) : (
                                     <EditableContent
                                         className="text-eng"
