@@ -17,6 +17,26 @@ const normalizeText = (text) => {
 };
 
 /**
+ * Recursively flattens and joins Sefaria JaggedArray text into a single string.
+ * Handles all production depths: string, string[], string[][], string[][][].
+ * Filters null/undefined gap nodes (Sefaria sparse arrays).
+ * @param {string|Array|null|undefined} text
+ * @returns {string}
+ */
+export const flattenSefariaText = (text) => {
+    if (!text) return '';
+    if (typeof text === 'string') return text;
+    if (Array.isArray(text)) {
+        return text
+            .map(flattenSefariaText)
+            .filter(Boolean)
+            .join(' ')
+            .trim();
+    }
+    return String(text);
+};
+
+/**
  * Tries to resolve a fuzzy or incorrect ref to a canonical Sefaria Ref using the Name API.
  * @param {string} ref 
  * @returns {Promise<string|null>} The corrected ref or null
