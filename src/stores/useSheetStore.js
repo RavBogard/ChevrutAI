@@ -73,12 +73,14 @@ const useSheetStore = create(
         }),
         // zundo options: only track sources and title in undo history
         // Status flags (isSaving, isLoading, isDirty, isPersisted) are excluded
+        // equality: skip recording when partialized state (sources + title) has not changed
         {
           partialize: (state) => ({
             sources: state.sources,
             title: state.title,
           }),
           limit: 50,
+          equality: (a, b) => a.sources === b.sources && a.title === b.title,
         }
       )
     )
