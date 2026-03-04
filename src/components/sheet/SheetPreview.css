@@ -1,0 +1,131 @@
+/* ============================================================
+   SheetPreview.css — Sheet paper typography and bilingual layout
+   Phase 2: Hebrew Typography and Bilingual Layout (TYPO-01 through TYPO-04)
+   Phase 4 will extend this file with @media print rules.
+   DO NOT import this file from App.css — import only from SheetPreview.jsx.
+   ============================================================ */
+
+/* ============================
+   Sheet Preview Container
+   ============================ */
+.sheet-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1rem 0;
+}
+
+/* ============================
+   Individual Source Block
+   ============================ */
+.sheet-source-block {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  background-color: var(--source-bg);
+}
+
+/* ============================
+   Source Reference Header
+   ============================ */
+.sheet-source-header {
+  margin-bottom: 0.75rem;
+}
+
+.sheet-source-ref {
+  font-family: var(--font-english-serif);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+/* ============================
+   No-content fallback
+   ============================ */
+.sheet-no-content {
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  color: var(--sidebar-text);
+  opacity: 0.6;
+  font-style: italic;
+  margin: 0.5rem 0;
+}
+
+/* ============================
+   Bilingual Row (TYPO-02, TYPO-03)
+   dir="ltr" on the element anchors physical column positions.
+   Without this, an RTL document context would flip the columns
+   so Hebrew ends up on the left. The dir attribute on the wrapper
+   overrides the inherited document direction for flex ordering.
+   ============================ */
+.source-bilingual-row {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  align-items: flex-start;
+  margin-top: 0.75rem;
+}
+
+/* ============================
+   English Column (TYPO-03: ltr scoped)
+   unicode-bidi: embed prevents LTR direction bleeding to parent.
+   ============================ */
+.source-col--english {
+  flex: 1;
+  direction: ltr;
+  text-align: left;
+  unicode-bidi: embed;
+  font-family: var(--font-english-serif);
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--sheet-text);
+}
+
+/* ============================
+   Hebrew Column (TYPO-01, TYPO-03)
+   direction: rtl scoped ONLY to this element — NOT on body, html,
+   or any ancestor. unicode-bidi: embed prevents RTL from leaking
+   outward through the bidi algorithm to sibling elements or the
+   flex container. line-height: 1.9 satisfies the 1.8 minimum
+   required by TYPO-01 for nikud clearance.
+   ============================ */
+.source-col--hebrew {
+  flex: 1;
+  direction: rtl;
+  text-align: right;
+  unicode-bidi: embed;
+  font-family: var(--font-hebrew);
+  font-size: 1.45rem;
+  line-height: 1.9;
+  color: var(--sheet-text);
+}
+
+/* ============================
+   Single-language fallbacks
+   When only one language is present, expand to full width.
+   ============================ */
+.source-bilingual-row--hebrew-only .source-col--hebrew,
+.source-bilingual-row--english-only .source-col--english {
+  flex: 0 0 100%;
+  max-width: 100%;
+}
+
+/* ============================
+   Mobile: stack columns vertically (TYPO-04 screen rendering)
+   Hebrew stacks on top (order: 1) as it is the primary script
+   for the synagogue context this app serves.
+   ============================ */
+@media (max-width: 768px) {
+  .source-bilingual-row {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .source-col--hebrew {
+    order: 1;
+  }
+
+  .source-col--english {
+    order: 2;
+  }
+}
