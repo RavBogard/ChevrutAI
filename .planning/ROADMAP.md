@@ -131,5 +131,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 2. Hebrew Typography and Bilingual Layout | 3/3 | Complete | 2026-03-04 |
 | 3. Core Editor Rebuild | 4/4 | Complete | 2026-03-04 |
 | 4. PDF Export and Public Sharing | 0/3 | Not started | - |
-| 5. AI Translation | 1/3 | In Progress|  |
+| 5. AI Translation | 2/3 | In Progress|  |
 | 6. AI Source Suggestions | 0/2 | Not started | - |

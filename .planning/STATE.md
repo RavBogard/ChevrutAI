@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-last_updated: "2026-03-04T21:29:00Z"
+last_updated: "2026-03-04T21:31:34Z"
 progress:
   total_phases: 6
   completed_phases: 3
   total_plans: 20
-  completed_plans: 15
+  completed_plans: 16
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-03-04)
 ## Current Position
 
 Phase: 5 of 6 (AI Translation) — In Progress
-Plan: 1 of 3 complete (05-01 done)
-Status: Phase 5 in progress — 05-01 complete (POST /api/translate endpoint, @anthropic-ai/sdk installed, TRANSLATION_SYSTEM_PROMPT with Aramaic detection)
-Last activity: 2026-03-04 — Completed 05-01 (api/translate.js: Claude Haiku 4.5 translation endpoint, rate limit 5/min, AI-01 + AI-05 requirements met)
+Plan: 2 of 3 complete (05-01, 05-02 done)
+Status: Phase 5 in progress — 05-02 complete (aiTranslation service, AiTranslationLabel badge, SourceBlock translate button + render, CSS print rule)
+Last activity: 2026-03-04 — Completed 05-02 (translate button in SourceBlock, non-dismissable AI Translation badge, App.css badge+print styles — AI-01 + AI-02 complete)
 
-Progress: [############..] 75%
+Progress: [#############.] 78%
 
 ## Performance Metrics
 
@@ -44,7 +44,7 @@ Progress: [############..] 75%
 | 2 - Hebrew Typography | 3 | 7 min | 2.3 min |
 | 3 - Core Editor | 4 | 13 min | 3.3 min |
 | 4 - PDF Export & Sharing (in progress) | 3 | 17 min | 5.7 min |
-| 5 - AI Translation (in progress) | 1 | 2 min | 2 min |
+| 5 - AI Translation (in progress) | 2 | 4 min | 2 min |
 
 **Recent Trend:**
 - Last 5 plans: 04-01 (4 min), 04-02 (1 min), 04-03 (12 min), 05-01 (2 min)
@@ -85,6 +85,9 @@ Recent decisions affecting current work:
 - [05-01]: Claude Haiku 4.5 chosen for translation over Gemini — superior rabbinic Hebrew and Talmudic Aramaic handling
 - [05-01]: Rate limit 5/min for translate endpoint (vs 20/min for chat) — translation is expensive, users translate individual sources on demand
 - [05-01]: AI translation stored in source.aiTranslation, never source.en — preserves Sefaria data provenance
+- [05-02]: AiTranslationLabel placed inside English column div (NOT .source-controls with data-html2canvas-ignore) — ensures badge visible in PDF/html2canvas export
+- [05-02]: SourceBlock uses strict isAiTranslated === true check — Firestore sanitize() removes undefined keys; missing field on old sources treated as false
+- [05-02]: source.en never overwritten by translate flow — Sefaria data provenance preserved; AI writes to aiTranslation/isAiTranslated/aiTranslationMeta
 
 ### Pending Todos
 
@@ -101,5 +104,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-04
-Stopped at: Completed 05-01-PLAN.md (POST /api/translate endpoint: Claude Haiku 4.5, rate limit 5/min, TRANSLATION_SYSTEM_PROMPT with Aramaic detection — AI-01 + AI-05 complete)
+Stopped at: Completed 05-02-PLAN.md (aiTranslation service, AiTranslationLabel badge, SourceBlock translate button + render, CSS badge+print styles — AI-01 + AI-02 complete)
 Resume file: None
