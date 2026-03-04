@@ -25,7 +25,23 @@ const useSheetStore = create(
 
           // Actions — sources
           addSource: (source) =>
-            set((state) => ({ sources: [...state.sources, source] })),
+            set((state) => {
+              // Assign a stable unique id if not already present
+              const sourceWithId = { ...source, id: source.id || crypto.randomUUID() };
+
+              // Non-Sefaria block types: push directly without fetching
+              if (
+                sourceWithId.type === 'custom' ||
+                sourceWithId.type === 'commentary' ||
+                sourceWithId.type === 'header' ||
+                sourceWithId.type === 'divider'
+              ) {
+                return { sources: [...state.sources, sourceWithId] };
+              }
+
+              // Default: push source block (Sefaria fetch is handled by caller — EditorContainer)
+              return { sources: [...state.sources, sourceWithId] };
+            }),
 
           removeSource: (index) =>
             set((state) => ({
