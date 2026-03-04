@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-last_updated: "2026-03-04T20:49:12Z"
+last_updated: "2026-03-04T20:54:30Z"
 progress:
   total_phases: 6
   completed_phases: 2
   total_plans: 20
-  completed_plans: 10
+  completed_plans: 11
 ---
 
 # Project State
@@ -23,18 +23,18 @@ See: .planning/PROJECT.md (updated 2026-03-04)
 ## Current Position
 
 Phase: 3 of 6 (Core Editor)
-Plan: 2 of 4 complete (03-01, 03-02 done)
-Status: In progress — 03-03 is next
-Last activity: 2026-03-04 — Completed 03-02 (SearchPanel + SearchResultCard — EDIT-01, EDIT-02 complete — 14 TDD tests green)
+Plan: 3 of 4 complete (03-01, 03-02, 03-03 done)
+Status: In progress — 03-04 is next
+Last activity: 2026-03-04 — Completed 03-03 (SheetCanvas + EditorToolbar — EDIT-03 through EDIT-07 complete — DnD 8px fix + store-direct toolbar)
 
-Progress: [########░░] 50%
+Progress: [#########░] 55%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 10
+- Total plans completed: 11
 - Average duration: 4 minutes
-- Total execution time: 41 minutes
+- Total execution time: 43 minutes
 
 **By Phase:**
 
@@ -42,10 +42,10 @@ Progress: [########░░] 50%
 |-------|-------|-------|----------|
 | 1 - Data Layer Foundation | 5 | 29 min | 6 min |
 | 2 - Hebrew Typography | 3 | 7 min | 2.3 min |
-| 3 - Core Editor | 2 | 8 min | 4 min |
+| 3 - Core Editor | 3 | 10 min | 3.3 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-01 (2 min), 02-02 (3 min), 02-03 (2 min), 03-01 (3 min), 03-02 (5 min)
+- Last 5 plans: 02-02 (3 min), 02-03 (2 min), 03-01 (3 min), 03-02 (5 min), 03-03 (2 min)
 - Trend: Fast
 
 *Updated after each plan completion*
@@ -85,6 +85,9 @@ Recent decisions affecting current work:
 - [03-02]: Loading indicator TDD test switches to vi.useRealTimers() inside that single test — waitFor polling uses setTimeout internally, which breaks when fake timers are active
 - [03-02]: autoFocus is set on SearchPanel search input — Plan 03-04 (EditorContainer) must be aware of this when mounting
 - [03-02]: SearchPanel CSS added to App.css (not component-scoped) — consistent with existing App.css pattern
+- [03-03]: EditorToolbar uses useStoreWithEqualityFn(useSheetStore.temporal, ...) for canUndo/canRedo — zundo exposes history via separate .temporal store, not main store fields
+- [03-03]: PointerSensor activationConstraint: { distance: 8 } is the DnD bug fix — original SheetView had no constraint causing drag to steal focus from contentEditable
+- [03-03]: SheetCanvas CSS class is sheet-canvas with id=sheet-export-area; EditorToolbar CSS class is editor-toolbar — Plan 03-04 uses these to compose the layout
 
 ### Pending Todos
 
@@ -100,5 +103,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-04
-Stopped at: Completed 03-02-PLAN.md (SearchPanel + SearchResultCard — EDIT-01, EDIT-02 complete — 14 TDD tests green)
+Stopped at: Completed 03-03-PLAN.md (SheetCanvas + EditorToolbar — EDIT-03 through EDIT-07 complete — DnD 8px fix)
 Resume file: None

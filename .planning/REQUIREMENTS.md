@@ -18,9 +18,9 @@
 - [x] **EDIT-02**: User can add a Sefaria source to their sheet in two clicks or fewer
 - [x] **EDIT-03**: User can reorder sheet sources via drag-and-drop
 - [x] **EDIT-04**: User can remove a source from the sheet
-- [ ] **EDIT-05**: User can insert their own commentary/text block between sources
+- [x] **EDIT-05**: User can insert their own commentary/text block between sources
 - [x] **EDIT-06**: User can add section headers and visual dividers to structure the sheet
-- [ ] **EDIT-07**: User can set a title for their sheet
+- [x] **EDIT-07**: User can set a title for their sheet
 - [ ] **EDIT-08**: Sheet auto-saves to Firestore without user action
 
 ### Typography & Layout
@@ -108,9 +108,9 @@
 | EDIT-02 | Phase 3 | Complete |
 | EDIT-03 | Phase 3 | Complete |
 | EDIT-04 | Phase 3 | Complete |
-| EDIT-05 | Phase 3 | Pending |
+| EDIT-05 | Phase 3 | Complete |
 | EDIT-06 | Phase 3 | Complete |
-| EDIT-07 | Phase 3 | Pending |
+| EDIT-07 | Phase 3 | Complete |
 | EDIT-08 | Phase 3 | Pending |
 | EXPRT-01 | Phase 4 | Pending |
 | EXPRT-02 | Phase 4 | Pending |
@@ -133,4 +133,4 @@
 
 ---
 *Requirements defined: 2026-03-04*
-*Last updated: 2026-03-04 after 02-03 completion — TYPO-04 marked complete; Phase 2 fully complete*
+*Last updated: 2026-03-04 after 03-03 completion — EDIT-05, EDIT-07 marked complete (SheetCanvas title + EditorToolbar Add Note); EDIT-03, EDIT-04, EDIT-06 previously complete from 03-01*
