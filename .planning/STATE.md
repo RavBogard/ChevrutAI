@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-last_updated: "2026-03-04T21:09:00Z"
+last_updated: "2026-03-04T21:29:00Z"
 progress:
   total_phases: 6
   completed_phases: 3
   total_plans: 20
-  completed_plans: 14
+  completed_plans: 15
 ---
 
 # Project State
@@ -18,23 +18,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-04)
 
 **Core value:** Rabbi goes from topic to beautiful, print-ready sheet in minutes — with AI helping find sources and fill translation gaps.
-**Current focus:** Phase 4 — PDF Export & Sharing
+**Current focus:** Phase 5 — AI Translation
 
 ## Current Position
 
-Phase: 4 of 6 (PDF Export & Sharing) — In Progress
-Plan: 3 of 5 complete (04-01 done, 04-02 done, 04-03 done)
-Status: Phase 4 in progress — 04-03 complete (Share UI: isPublic toggle, ShareButton, SheetLibrary, /library route, isReadOnly)
-Last activity: 2026-03-04 — Completed 04-03 (ShareButton upgraded, isPublic/isReadOnly in EditorContainer, SheetLibrary created, My Library link in UnifiedHeader)
+Phase: 5 of 6 (AI Translation) — In Progress
+Plan: 1 of 3 complete (05-01 done)
+Status: Phase 5 in progress — 05-01 complete (POST /api/translate endpoint, @anthropic-ai/sdk installed, TRANSLATION_SYSTEM_PROMPT with Aramaic detection)
+Last activity: 2026-03-04 — Completed 05-01 (api/translate.js: Claude Haiku 4.5 translation endpoint, rate limit 5/min, AI-01 + AI-05 requirements met)
 
-Progress: [###########...] 70%
+Progress: [############..] 75%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 13
-- Average duration: 3.7 minutes
-- Total execution time: 44 minutes
+- Total plans completed: 15
+- Average duration: 3.5 minutes
+- Total execution time: 46 minutes
 
 **By Phase:**
 
@@ -44,9 +44,10 @@ Progress: [###########...] 70%
 | 2 - Hebrew Typography | 3 | 7 min | 2.3 min |
 | 3 - Core Editor | 4 | 13 min | 3.3 min |
 | 4 - PDF Export & Sharing (in progress) | 3 | 17 min | 5.7 min |
+| 5 - AI Translation (in progress) | 1 | 2 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-03 (2 min), 03-04 (3 min), 04-01 (4 min), 04-02 (1 min), 04-03 (12 min)
+- Last 5 plans: 04-01 (4 min), 04-02 (1 min), 04-03 (12 min), 05-01 (2 min)
 - Trend: Fast
 
 *Updated after each plan completion*
@@ -81,6 +82,9 @@ Recent decisions affecting current work:
 - [04-03]: isReadOnly = !isOwner where isOwner checks currentUser + userSheets.some(s => s.id === currentSheetId) — gates entire editor chrome without extra Firestore reads
 - [04-03]: ShareButton wired through EditorToolbar (actual toolbar) not SheetToolbar/SheetView (legacy component not mounted in EditorContainer)
 - [04-03]: SheetLibrary uses subscribeToUserSheets (real-time) for live updates while library is open
+- [05-01]: Claude Haiku 4.5 chosen for translation over Gemini — superior rabbinic Hebrew and Talmudic Aramaic handling
+- [05-01]: Rate limit 5/min for translate endpoint (vs 20/min for chat) — translation is expensive, users translate individual sources on demand
+- [05-01]: AI translation stored in source.aiTranslation, never source.en — preserves Sefaria data provenance
 
 ### Pending Todos
 
@@ -90,11 +94,12 @@ None yet.
 
 - [Phase 4]: Cross-browser print behavior with mixed Hebrew/English columnar layout needs integration testing in Chrome, Firefox, and Safari with 10+ source sheets before marking Phase 4 complete — research flagged this as needing validation
 - [Phase 4]: firestore.rules must be deployed via `firebase deploy --only firestore:rules` before public sharing goes live — not automated in any plan yet
-- [Phase 5]: Gemini classical Hebrew and Aramaic translation quality is MEDIUM confidence — needs prompt iteration and human review with actual Talmud Bavli, Mishnah, and Rashi passages before shipping
+- [Phase 5]: ANTHROPIC_API_KEY must be added to Vercel project environment variables before api/translate.js will function — manual Vercel dashboard step
+- [Phase 5]: Translation quality for classical Hebrew/Aramaic needs human review with actual Talmud Bavli, Mishnah, and Rashi passages after deploy
 - [Phase 6]: Sefaria API rate limits are undocumented — use sequential (not concurrent) ref resolution from day one; validate actual threshold during Phase 6
 
 ## Session Continuity
 
 Last session: 2026-03-04
-Stopped at: Completed 04-03-PLAN.md (Share UI: isPublic toggle, isReadOnly, SheetLibrary, /library route, My Library link — SHARE-01 through SHARE-04 complete)
+Stopped at: Completed 05-01-PLAN.md (POST /api/translate endpoint: Claude Haiku 4.5, rate limit 5/min, TRANSLATION_SYSTEM_PROMPT with Aramaic detection — AI-01 + AI-05 complete)
 Resume file: None
