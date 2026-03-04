@@ -18,6 +18,20 @@ vi.mock('../../stores/useSheetStore', () => {
 
 import { getSefariaText, searchSefariaText } from '../../services/sefaria';
 
+/**
+ * Helper: advance fake timers by `ms` then flush all microtasks so
+ * Promise-based mock resolutions complete inside the act() boundary.
+ */
+const advanceAndFlush = async (ms) => {
+  await act(async () => {
+    vi.advanceTimersByTime(ms);
+    // Flush pending microtasks (resolved Promises) after advancing
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+  });
+};
+
 describe('SearchPanel', () => {
   beforeEach(() => {
     vi.useFakeTimers();
@@ -51,30 +65,38 @@ describe('SearchPanel', () => {
 
   it('does not call getSefariaText when input is empty', async () => {
     render(<SearchPanel />);
-    await act(async () => { vi.advanceTimersByTime(500); });
+    await advanceAndFlush(500);
     expect(getSefariaText).not.toHaveBeenCalled();
   });
 
   it('does not call getSefariaText before 400ms debounce elapses', async () => {
     render(<SearchPanel />);
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Genesis 1:1' } });
-    await act(async () => { vi.advanceTimersByTime(300); });
+    act(() => {
+      fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Genesis 1:1' } });
+    });
+    await advanceAndFlush(300);
     expect(getSefariaText).not.toHaveBeenCalled();
   });
 
   it('calls getSefariaText after 400ms with the query value', async () => {
     render(<SearchPanel />);
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Genesis 1:1' } });
-    await act(async () => { vi.advanceTimersByTime(400); });
+    act(() => {
+      fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Genesis 1:1' } });
+    });
+    await advanceAndFlush(400);
     expect(getSefariaText).toHaveBeenCalledWith('Genesis 1:1');
   });
 
   it('only fires one API call when query changes quickly (debounce resets)', async () => {
     render(<SearchPanel />);
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Gen' } });
-    await act(async () => { vi.advanceTimersByTime(200); });
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Genesis' } });
-    await act(async () => { vi.advanceTimersByTime(400); });
+    act(() => {
+      fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Gen' } });
+    });
+    await advanceAndFlush(200);
+    act(() => {
+      fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Genesis' } });
+    });
+    await advanceAndFlush(400);
     expect(getSefariaText).toHaveBeenCalledTimes(1);
     expect(getSefariaText).toHaveBeenCalledWith('Genesis');
   });
@@ -88,11 +110,11 @@ describe('SearchPanel', () => {
       versions: [],
     });
     render(<SearchPanel />);
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Genesis 1:1' } });
-    await act(async () => { vi.advanceTimersByTime(400); });
-    await waitFor(() => {
-      expect(screen.getByText('Genesis 1:1')).toBeInTheDocument();
+    act(() => {
+      fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Genesis 1:1' } });
     });
+    await advanceAndFlush(400);
+    expect(screen.getByText('Genesis 1:1')).toBeInTheDocument();
   });
 
   it('falls back to searchSefariaText when getSefariaText returns error object', async () => {
@@ -101,11 +123,11 @@ describe('SearchPanel', () => {
       { ref: 'Genesis 1:2', he: 'וְהָאָרֶץ', en: 'And the earth' },
     ]);
     render(<SearchPanel />);
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'genesis' } });
-    await act(async () => { vi.advanceTimersByTime(400); });
-    await waitFor(() => {
-      expect(searchSefariaText).toHaveBeenCalledWith('genesis');
+    act(() => {
+      fireEvent.change(screen.getByRole('textbox'), { target: { value: 'genesis' } });
     });
+    await advanceAndFlush(400);
+    expect(searchSefariaText).toHaveBeenCalledWith('genesis');
   });
 
   it('falls back to searchSefariaText when getSefariaText returns null', async () => {
@@ -114,32 +136,32 @@ describe('SearchPanel', () => {
       { ref: 'Genesis 1:2', he: 'וְהָאָרֶץ', en: 'And the earth' },
     ]);
     render(<SearchPanel />);
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'genesis' } });
-    await act(async () => { vi.advanceTimersByTime(400); });
-    await waitFor(() => {
-      expect(searchSefariaText).toHaveBeenCalledWith('genesis');
+    act(() => {
+      fireEvent.change(screen.getByRole('textbox'), { target: { value: 'genesis' } });
     });
+    await advanceAndFlush(400);
+    expect(searchSefariaText).toHaveBeenCalledWith('genesis');
   });
 
   it('shows no-results error when both APIs return empty', async () => {
     getSefariaText.mockResolvedValue({ error: 'Not found' });
     searchSefariaText.mockResolvedValue([]);
     render(<SearchPanel />);
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'xyzzy' } });
-    await act(async () => { vi.advanceTimersByTime(400); });
-    await waitFor(() => {
-      expect(screen.getByText(/No results found/i)).toBeInTheDocument();
+    act(() => {
+      fireEvent.change(screen.getByRole('textbox'), { target: { value: 'xyzzy' } });
     });
+    await advanceAndFlush(400);
+    expect(screen.getByText(/No results found/i)).toBeInTheDocument();
   });
 
   it('shows connection error message on network failure', async () => {
     getSefariaText.mockRejectedValue(new Error('Network error'));
     render(<SearchPanel />);
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Genesis' } });
-    await act(async () => { vi.advanceTimersByTime(400); });
-    await waitFor(() => {
-      expect(screen.getByText(/Search failed/i)).toBeInTheDocument();
+    act(() => {
+      fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Genesis' } });
     });
+    await advanceAndFlush(400);
+    expect(screen.getByText(/Search failed/i)).toBeInTheDocument();
   });
 
   it('clears query and results after clicking Add to Sheet', async () => {
@@ -151,16 +173,16 @@ describe('SearchPanel', () => {
       versions: [],
     });
     render(<SearchPanel />);
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Genesis 1:1' } });
-    await act(async () => { vi.advanceTimersByTime(400); });
-    await waitFor(() => {
-      expect(screen.getByText('Add to Sheet')).toBeInTheDocument();
+    act(() => {
+      fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Genesis 1:1' } });
     });
-    fireEvent.click(screen.getByText('Add to Sheet'));
-    await waitFor(() => {
-      expect(screen.getByRole('textbox').value).toBe('');
-      expect(screen.queryByText('Genesis 1:1')).not.toBeInTheDocument();
+    await advanceAndFlush(400);
+    expect(screen.getByText('Add to Sheet')).toBeInTheDocument();
+    act(() => {
+      fireEvent.click(screen.getByText('Add to Sheet'));
     });
+    expect(screen.getByRole('textbox').value).toBe('');
+    expect(screen.queryByText('Genesis 1:1')).not.toBeInTheDocument();
   });
 
   it('calls useSheetStore.getState().addSource with correct shape on add', async () => {
@@ -172,12 +194,14 @@ describe('SearchPanel', () => {
       versions: [],
     });
     render(<SearchPanel />);
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Genesis 1:1' } });
-    await act(async () => { vi.advanceTimersByTime(400); });
-    await waitFor(() => {
-      expect(screen.getByText('Add to Sheet')).toBeInTheDocument();
+    act(() => {
+      fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Genesis 1:1' } });
     });
-    fireEvent.click(screen.getByText('Add to Sheet'));
+    await advanceAndFlush(400);
+    expect(screen.getByText('Add to Sheet')).toBeInTheDocument();
+    act(() => {
+      fireEvent.click(screen.getByText('Add to Sheet'));
+    });
     expect(mockAddSource).toHaveBeenCalledWith({
       type: 'source',
       ref: 'Genesis 1:1',
@@ -189,17 +213,28 @@ describe('SearchPanel', () => {
   });
 
   it('shows loading indicator while API call is in flight', async () => {
+    // Use real timers for this test so waitFor polling works
+    vi.useRealTimers();
+
     let resolveGetText;
     getSefariaText.mockReturnValue(
       new Promise(resolve => { resolveGetText = resolve; })
     );
     render(<SearchPanel />);
+
+    // Trigger search with real debounce timing
     fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Genesis' } });
-    await act(async () => { vi.advanceTimersByTime(400); });
-    expect(screen.getByText(/Searching/i)).toBeInTheDocument();
+
+    // Wait for loading to appear after 400ms debounce
+    await waitFor(() => {
+      expect(screen.getByText(/Searching/i)).toBeInTheDocument();
+    }, { timeout: 1000 });
+
+    // Resolve the promise and wait for loading to disappear
     await act(async () => {
       resolveGetText({ ref: 'Genesis 1:1', he: 'text', en: 'text', versionTitle: null, versions: [] });
     });
+
     await waitFor(() => {
       expect(screen.queryByText(/Searching/i)).not.toBeInTheDocument();
     });
