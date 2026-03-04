@@ -2225,16 +2225,106 @@ html[dir="rtl"] .prompt-card {
 }
 
 @media print {
-
-  .sheet-toolbar,
-  .custom-source-title,
-  .section-header-input {
-    border-bottom: none !important;
+  /* 0. Force white background / black text to defeat dark mode CSS variables */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  :root {
+    --sheet-bg: white;
+    --sheet-text: black;
+    --source-bg: white;
+  }
+
+  /* 1. Hide all app chrome */
+  .shell-sidebar,
+  .shell-header,
+  .shell-overlays,
+  .sheet-toolbar,
+  .source-controls,
+  .drag-handle,
+  .sheet-footer,
+  .empty-state,
+  .gemini-input-box,
+  .gemini-suggestions,
+  .toast-container,
+  [data-html2canvas-ignore="true"] {
+    display: none !important;
+  }
+
+  /* 2. Collapse app-shell grid to full-page content only
+     CRITICAL: overflow: hidden on .app-shell clips print pages */
+  .app-shell {
+    display: block !important;
+    height: auto !important;
+    width: 100% !important;
+    overflow: visible !important;
+  }
+
+  /* 3. Make shell-content fill the page
+     CRITICAL: overflow: hidden on .shell-content (AppShell.css line 75)
+     clips everything after the first viewport — must be visible in print */
+  .shell-content {
+    display: block !important;
+    overflow: visible !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  /* 4. Sheet view resets */
+  .sheet-view {
+    overflow: visible !important;
+    height: auto !important;
+    padding: 0 !important;
+  }
+
+  /* 5. Paper fills page */
+  .sheet-paper {
+    max-width: 100% !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  /* 6. Preserve bilingual columns — flex still works in print */
+  .source-content {
+    display: flex !important;
+    gap: 1.5rem !important;
+  }
+
+  /* 7. THE CRITICAL PAGE-BREAK RULE
+     Must be on .sortable-item (block-level wrapper), NOT on flex children.
+     page-break-inside: avoid on a flex container (.source-content) is
+     unreliable across Chrome/Firefox per CSS fragmentation spec. */
+  .sortable-item {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* 8. Source block also gets the rule for defense-in-depth */
+  .source-block {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* 9. Input fields: hide chrome, show value */
+  .title-input,
   .custom-source-title,
   .section-header-input {
+    border: none !important;
     background: transparent !important;
+    padding: 0 !important;
+  }
+
+  .title-input {
+    font-size: 1.8rem !important;
+    font-weight: bold !important;
   }
 }
 
