@@ -16,7 +16,10 @@ describe('useSheetStore', () => {
       const source = { ref: 'Genesis 1:1', text: 'In the beginning...' };
       useSheetStore.getState().addSource(source);
       expect(useSheetStore.getState().sources).toHaveLength(1);
-      expect(useSheetStore.getState().sources[0]).toEqual(source);
+      // id is auto-assigned; check all original fields are present
+      const stored = useSheetStore.getState().sources[0];
+      expect(stored.ref).toBe(source.ref);
+      expect(stored.text).toBe(source.text);
     });
 
     it('appends multiple sources in order', () => {
@@ -25,7 +28,53 @@ describe('useSheetStore', () => {
       useSheetStore.getState().addSource(s1);
       useSheetStore.getState().addSource(s2);
       expect(useSheetStore.getState().sources).toHaveLength(2);
-      expect(useSheetStore.getState().sources[1]).toEqual(s2);
+      expect(useSheetStore.getState().sources[1].ref).toBe(s2.ref);
+    });
+
+    // --- EDIT-03: stable unique id assignment ---
+    it('assigns a unique id (string) to each source added without an existing id', () => {
+      useSheetStore.getState().addSource({ ref: 'Genesis 1:1' });
+      const stored = useSheetStore.getState().sources[0];
+      expect(typeof stored.id).toBe('string');
+      expect(stored.id.length).toBeGreaterThan(0);
+    });
+
+    it('preserves an existing id if the source already has one', () => {
+      const existing = { ref: 'Genesis 1:1', id: 'my-custom-id' };
+      useSheetStore.getState().addSource(existing);
+      expect(useSheetStore.getState().sources[0].id).toBe('my-custom-id');
+    });
+
+    it('adding the same ref twice produces two objects with different ids (EDIT-03)', () => {
+      useSheetStore.getState().addSource({ ref: 'Genesis 1:1' });
+      useSheetStore.getState().addSource({ ref: 'Genesis 1:1' });
+      const [a, b] = useSheetStore.getState().sources;
+      expect(a.id).not.toBe(b.id);
+    });
+
+    it('handles type="divider" without fetching — pushes directly with id', () => {
+      useSheetStore.getState().addSource({ type: 'divider', ref: 'divider-1234' });
+      expect(useSheetStore.getState().sources).toHaveLength(1);
+      expect(useSheetStore.getState().sources[0].type).toBe('divider');
+      expect(typeof useSheetStore.getState().sources[0].id).toBe('string');
+    });
+
+    it('handles type="commentary" without fetching — pushes directly with id', () => {
+      useSheetStore.getState().addSource({ type: 'commentary', ref: 'note-123', en: 'Some text' });
+      expect(useSheetStore.getState().sources).toHaveLength(1);
+      expect(useSheetStore.getState().sources[0].type).toBe('commentary');
+    });
+
+    it('handles type="header" without fetching — pushes directly with id', () => {
+      useSheetStore.getState().addSource({ type: 'header', ref: 'header-1', en: 'Section Title' });
+      expect(useSheetStore.getState().sources).toHaveLength(1);
+      expect(useSheetStore.getState().sources[0].type).toBe('header');
+    });
+
+    it('handles type="custom" without fetching — pushes directly with id (backward compat)', () => {
+      useSheetStore.getState().addSource({ type: 'custom', ref: 'note-5678', en: 'Custom text' });
+      expect(useSheetStore.getState().sources).toHaveLength(1);
+      expect(useSheetStore.getState().sources[0].type).toBe('custom');
     });
   });
 
