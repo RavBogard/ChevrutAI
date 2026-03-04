@@ -3,6 +3,7 @@ import SkeletonLoader from './common/SkeletonLoader';
 import ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router-dom';
 import Logo from './common/Logo';
+import SuggestPanel from './sheet/SuggestPanel';
 
 const ChatSidebar = ({
     messages,
@@ -173,6 +174,12 @@ const ChatSidebar = ({
                         Chat
                     </button>
                     <button
+                        className={`sidebar-tab ${activeTab === 'suggest' ? 'active' : ''}`}
+                        onClick={() => handleTabChange('suggest')}
+                    >
+                        Find Sources
+                    </button>
+                    <button
                         className={`sidebar-tab ${activeTab === 'history' ? 'active' : ''}`}
                         onClick={() => handleTabChange('history')}
                     >
@@ -330,6 +337,8 @@ const ChatSidebar = ({
                         )}
                     </div>
                 </>
+            ) : activeTab === 'suggest' ? (
+                <SuggestPanel addSource={onAddSource} />
             ) : (
                 <div className="history-list">
                     {userSheets.length === 0 ? (
