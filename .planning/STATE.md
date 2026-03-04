@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-04T20:42:24.348Z"
+last_updated: "2026-03-04T20:47:22.616Z"
 progress:
   total_phases: 6
   completed_phases: 2
   total_plans: 20
-  completed_plans: 8
+  completed_plans: 9
 ---
 
 ---
@@ -31,23 +31,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-04)
 
 **Core value:** Rabbi goes from topic to beautiful, print-ready sheet in minutes — with AI helping find sources and fill translation gaps.
-**Current focus:** Phase 2 — Hebrew Typography and Bilingual Layout
+**Current focus:** Phase 3 — Core Editor
 
 ## Current Position
 
-Phase: 2 of 6 (Hebrew Typography and Bilingual Layout)
-Plan: 3 of 4 complete (02-01, 02-02, 02-03 done)
-Status: In progress — 02-04 is next
-Last activity: 2026-03-04 — Completed 02-03 (TYPO test suite — 57 tests verifying all four TYPO requirements — TYPO-04 complete)
+Phase: 3 of 6 (Core Editor)
+Plan: 1 of 4 complete (03-01 done)
+Status: In progress — 03-02 is next
+Last activity: 2026-03-04 — Completed 03-01 (stable uuid patch, DividerBlock, SortableItem — EDIT-03, EDIT-04, EDIT-06 complete)
 
-Progress: [######░░░░] 40%
+Progress: [#######░░░] 45%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8
-- Average duration: 5 minutes
-- Total execution time: 33 minutes
+- Total plans completed: 9
+- Average duration: 4 minutes
+- Total execution time: 36 minutes
 
 **By Phase:**
 
@@ -55,12 +55,15 @@ Progress: [######░░░░] 40%
 |-------|-------|-------|----------|
 | 1 - Data Layer Foundation | 5 | 29 min | 6 min |
 | 2 - Hebrew Typography | 3 | 7 min | 2.3 min |
+| 3 - Core Editor | 1 | 3 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-04 (3 min), 01-05 (2 min), 02-01 (2 min), 02-02 (3 min), 02-03 (2 min)
+- Last 5 plans: 01-05 (2 min), 02-01 (2 min), 02-02 (3 min), 02-03 (2 min), 03-01 (3 min)
 - Trend: Fast
 
 *Updated after each plan completion*
+
+| Phase 3 - Core Editor | 1 | 3 min | 3 min |
 
 ## Accumulated Context
 
@@ -90,6 +93,9 @@ Recent decisions affecting current work:
 - [02-01]: SheetPreview.css is standalone, not imported from App.css — Phase 4 will extend it with @media print rules
 - [02-03]: CSS assertions use fs.readFileSync in vitest/node context — jsdom cannot compute CSS variables or cascade, so class presence + raw CSS file checks are the correct verification pattern for TYPO-01
 - [02-03]: RTL bleed test uses row.contains(el) on each [dir=rtl] element — more reliable DOM API for verifying RTL containment than ancestor traversal
+- [Phase 03-core-editor]: useSheetStore.addSource owns id assignment via crypto.randomUUID() — every path to the store always gets a stable id, not caller-assigned
+- [Phase 03-core-editor]: SortableItem uses id prop (uuid) not source.ref as useSortable key — prevents DnD breakage on duplicate refs
+- [Phase 03-core-editor]: type='custom' and type='commentary' both map to CustomSourceBlock in SortableItem for Firestore backward compatibility
 
 ### Pending Todos
 
@@ -105,5 +111,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-04
-Stopped at: Completed 02-03-PLAN.md (TYPO test suite — 57 tests verifying all four TYPO requirements — TYPO-04 complete)
+Stopped at: Completed 03-01-PLAN.md (stable uuid patch, DividerBlock, SortableItem — EDIT-03, EDIT-04, EDIT-06 complete)
 Resume file: None
