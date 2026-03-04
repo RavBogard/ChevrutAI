@@ -102,8 +102,11 @@ describe('SheetView Integration', () => {
 
     it('renders sources correctly', () => {
         renderWithRouter(<SheetView {...mockProps} />);
-        expect(screen.getByText('Genesis 1:1')).toBeInTheDocument();
-        expect(screen.getByText('In the beginning')).toBeInTheDocument();
+        // SheetPreview renders ref in addition to SourceBlock header, so getAllByText is correct
+        const refElements = screen.getAllByText('Genesis 1:1');
+        expect(refElements.length).toBeGreaterThanOrEqual(1);
+        // English text appears in both SourceBlock and SheetPreview preview
+        expect(screen.getAllByText('In the beginning').length).toBeGreaterThanOrEqual(1);
     });
 
     it('calls onAddSource when Add Note is clicked', () => {

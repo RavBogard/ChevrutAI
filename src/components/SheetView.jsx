@@ -16,6 +16,7 @@ import SectionHeaderBlock from './sheet/SectionHeaderBlock';
 import SheetToolbar from './sheet/SheetToolbar';
 import UserMenu from './auth/UserMenu';
 import SourceDisambiguationModal from './SourceDisambiguationModal';
+import SheetPreview from './sheet/SheetPreview';
 
 const SortableSourceItem = ({ source, id, onRemove, onUpdate, onRefine }) => {
     const {
@@ -288,27 +289,34 @@ const SheetView = ({ sources, onRemoveSource, onUpdateSource, onReorder, onClear
                         )}
                     </div>
                 ) : (
-                    <DndContext
-                        sensors={sensors}
-                        collisionDetection={closestCenter}
-                        onDragEnd={handleDragEnd}
-                    >
-                        <SortableContext
-                            items={sources.map(s => s.ref)}
-                            strategy={verticalListSortingStrategy}
+                    <>
+                        <DndContext
+                            sensors={sensors}
+                            collisionDetection={closestCenter}
+                            onDragEnd={handleDragEnd}
                         >
-                            {sources.map((source, index) => (
-                                <SortableSourceItem
-                                    key={source.ref} // Assuming Ref is unique. If duplicates allowed, need uuid.
-                                    id={source.ref}
-                                    source={source}
-                                    onRemove={() => onRemoveSource(index)}
-                                    onUpdate={(newData) => onUpdateSource(index, newData)}
-                                    onRefine={handleRefine}
-                                />
-                            ))}
-                        </SortableContext>
-                    </DndContext>
+                            <SortableContext
+                                items={sources.map(s => s.ref)}
+                                strategy={verticalListSortingStrategy}
+                            >
+                                {sources.map((source, index) => (
+                                    <SortableSourceItem
+                                        key={source.ref} // Assuming Ref is unique. If duplicates allowed, need uuid.
+                                        id={source.ref}
+                                        source={source}
+                                        onRemove={() => onRemoveSource(index)}
+                                        onUpdate={(newData) => onUpdateSource(index, newData)}
+                                        onRefine={handleRefine}
+                                    />
+                                ))}
+                            </SortableContext>
+                        </DndContext>
+                        <SheetPreview
+                            sources={sources}
+                            onRemoveSource={onRemoveSource}
+                            onUpdateSource={onUpdateSource}
+                        />
+                    </>
                 )}
             </div>
 
