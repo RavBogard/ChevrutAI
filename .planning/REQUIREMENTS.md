@@ -25,7 +25,7 @@
 
 ### Typography & Layout
 
-- [ ] **TYPO-01**: Hebrew text renders using Frank Ruhl Libre (self-hosted WOFF2), with nikud-safe line-height (minimum 1.8)
+- [x] **TYPO-01**: Hebrew text renders using Frank Ruhl Libre (self-hosted WOFF2), with nikud-safe line-height (minimum 1.8)
 - [ ] **TYPO-02**: Sheet displays Hebrew and English side-by-side in two columns (Hebrew right, English left) — the standard synagogue bilingual format
 - [ ] **TYPO-03**: Hebrew column uses `direction: rtl`; English column uses `direction: ltr`; these are scoped per-column and do not affect the app shell
 - [ ] **TYPO-04**: Sheet preview panel renders the bilingual layout correctly at screen size before export
@@ -100,7 +100,7 @@
 | DATA-02 | Phase 1 | Complete |
 | DATA-03 | Phase 1 | Complete |
 | DATA-04 | Phase 1 | Complete |
-| TYPO-01 | Phase 2 | Pending |
+| TYPO-01 | Phase 2 | Complete |
 | TYPO-02 | Phase 2 | Pending |
 | TYPO-03 | Phase 2 | Pending |
 | TYPO-04 | Phase 2 | Pending |

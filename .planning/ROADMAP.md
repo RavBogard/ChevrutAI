@@ -52,7 +52,7 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Font setup: install @fontsource-variable/frank-ruhl-libre, update --font-hebrew CSS var, fix line-height to 1.9, create SheetPreview.css (TYPO-01)
+- [x] 02-01-PLAN.md — Font setup: install @fontsource-variable/frank-ruhl-libre, update --font-hebrew CSS var, fix line-height to 1.9, create SheetPreview.css (TYPO-01)
 - [ ] 02-02-PLAN.md — SheetPreview component with BilingualBlock dir="ltr" wrapper and per-column RTL scoping, wire into SheetView (TYPO-02, TYPO-03)
 - [ ] 02-03-PLAN.md — Integration tests validating all four TYPO requirements (TYPO-04)
 
@@ -128,7 +128,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Data Layer Foundation | 5/5 | Complete | 2026-03-04 |
-| 2. Hebrew Typography and Bilingual Layout | 0/3 | Not started | - |
+| 2. Hebrew Typography and Bilingual Layout | 1/3 | In progress | - |
 | 3. Core Editor Rebuild | 0/4 | Not started | - |
 | 4. PDF Export and Public Sharing | 0/3 | Not started | - |
 | 5. AI Translation | 0/3 | Not started | - |

@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-03-04T20:24:50.849Z"
+status: in_progress
+last_updated: "2026-03-04T20:27:45Z"
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 20
-  completed_plans: 5
+  completed_plans: 6
 ---
 
 # Project State
@@ -18,32 +18,33 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-04)
 
 **Core value:** Rabbi goes from topic to beautiful, print-ready sheet in minutes — with AI helping find sources and fill translation gaps.
-**Current focus:** Phase 1 — Data Layer Foundation
+**Current focus:** Phase 2 — Hebrew Typography and Bilingual Layout
 
 ## Current Position
 
-Phase: 1 of 6 (Data Layer Foundation)
-Plan: 5 of 5 complete (01-01, 01-02, 01-03, 01-04, 01-05 done — Phase 1 complete)
-Status: Phase 1 complete — ready for Phase 2
-Last activity: 2026-03-04 — Completed 01-05 (AuthContext unit tests for AUTH-01 and AUTH-02, 47/47 tests passing)
+Phase: 2 of 6 (Hebrew Typography and Bilingual Layout)
+Plan: 1 of 4 complete (02-01 done)
+Status: In progress — 02-02 is next
+Last activity: 2026-03-04 — Completed 02-01 (Frank Ruhl Libre Variable, --font-hebrew fix, SheetPreview.css foundation — TYPO-01)
 
-Progress: [#####░░░░░] 25%
+Progress: [######░░░░] 30%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
+- Total plans completed: 6
 - Average duration: 6 minutes
-- Total execution time: 29 minutes
+- Total execution time: 31 minutes
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1 - Data Layer Foundation | 5 | 29 min | 6 min |
+| 2 - Hebrew Typography | 1 | 2 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2 min), 01-03 (12 min), 01-02 (10 min), 01-04 (3 min), 01-05 (2 min)
+- Last 5 plans: 01-03 (12 min), 01-02 (10 min), 01-04 (3 min), 01-05 (2 min), 02-01 (2 min)
 - Trend: Fast
 
 *Updated after each plan completion*
@@ -71,6 +72,9 @@ Recent decisions affecting current work:
 - [01-04]: useSheetStore.temporal.getState().clear() called on every sheet load to prevent undo history crossing sheet boundaries
 - [01-05]: AuthContext exposes login (wrapping loginWithGoogle) not loginWithGoogle directly in context value — AUTH-01 test asserts typeof login === 'function'
 - [01-05]: Firebase mock pattern for React component tests: vi.mock('../services/firebase') capturing subscribeToAuth callback in module-level variable, reset in beforeEach
+- [02-01]: Fontsource import placed as first line of main.jsx before index.css — @font-face declarations must be registered before CSS selectors referencing the font family are parsed (Pitfall 3 from research)
+- [02-01]: Frank Ruhl Libre Variable fallback chain: Variable -> Static -> David (macOS) -> Arial Hebrew -> serif — covers all platforms
+- [02-01]: SheetPreview.css is standalone, not imported from App.css — Phase 4 will extend it with @media print rules
 
 ### Pending Todos
 
@@ -86,5 +90,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-04
-Stopped at: Completed 01-05-PLAN.md (AuthContext validation tests — Phase 1 complete) — Phase 2 is next
+Stopped at: Completed 02-01-PLAN.md (Frank Ruhl Libre Variable font install, CSS var fix, SheetPreview.css — TYPO-01 foundation)
 Resume file: None
